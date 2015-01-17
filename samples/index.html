@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="sampleapp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Dave Kerr">
+    <title>Crosswords.JS Samples</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.8/angular.js"></script>
+    <script src="sampleapp.js"></script>
+
+    <!-- Rock out some crosswords.js -->
+    <link href="crosswords.css" rel="stylesheet">
+    <script src="crosswords.js"></script>
+    
+    <style>
+    body {
+      padding-top: 50px;
+    }
+    .starter-template {
+      padding: 40px 15px;
+      text-align: center;
+    }
+    .sample {
+      padding: 40px 15px;
+    }
+    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body data-spy="scroll" data-target="#mainNav" ng-controller="MainController">
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Angular Modal Service Samples</a>
+        </div>
+        <div id="mainNav" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#yesno">Yes No Modal</a></li>
+            <li><a href="#complex">Complex Modal</a></li>
+            <li><a href="#custom">Custom Modal</a></li>
+            <li><a href="https://github.com/dwmkerr/angular-modal-service">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Crosswords.JS</h1>
+        <p class="lead">Samples for <a href="https://github.com/dwmkerr/crosswordsjs">Crosswords.JS</a>.</p>
+      </div>
+
+      <hr />
+
+      <h3>{{title}}</h3>
+      <div id="crossword1"></div>
+      
+      <script type="text/javascript">
+    $(window).load(function(){
+
+        $.get('crosswords/guardian_quiptic_89.json', function(data) {
+          console.log(data);
+
+          var theCrossword = crossword({
+            element: document.getElementById('crossword1'),
+            crossword: data
+          });
+
+          $('#crossword1').scope().crosswordState = theCrossword;
+
+        });
+    });
+
+</script>
+    </div>
+
+  </body>
+</html>

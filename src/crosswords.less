@@ -1,0 +1,58 @@
+@cellSize: 28px;
+
+.crossword {
+
+  display: flex;
+  flex-direction: column;
+
+  background: red;
+  
+  .cwrow {
+
+    display: flex;
+    flex-direction: row;
+
+    .cwcell {
+      position: relative;
+      width: @cellSize;
+      height: @cellSize;
+      background: black;
+      &.light {
+        border: 1px solid black;
+        background: white;
+      }
+
+      .cwcluelabel {
+        position: absolute;
+        font-size: 9px;
+        width: 10px;
+        height: 10px;
+        left: 2px;
+        top: 0px;
+        z-index: 1;
+      }
+
+      input { 
+        font-family: sans-serif;
+        font-variant: small-caps;
+        font-size: 0.9em;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        border: none;
+        height: @cellSize;
+        width: @cellSize;
+
+        &.active {
+          background: #E1E1FF;
+        }
+      }
+    }
+
+  }
+
+  .clue {
+    background: #ff0000;
+  }
+
+}

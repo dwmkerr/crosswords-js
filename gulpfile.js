@@ -1,0 +1,105 @@
+var gulp = require('gulp');
+var jshint = require('gulp-jshint');
+var uglify = require('gulp-uglify');
+var less = require('gulp-less');
+var minifyCss = require('gulp-minify-css');
+var rename = require('gulp-rename');
+var stylish = require('jshint-stylish');
+var karma = require('karma').server;
+var express = require('express');
+var path = require('path');
+var connectLivereload = require('connect-livereload');
+var opn = require('opn');
+
+//  Builds the js code.
+gulp.task('js', function() {
+
+  return gulp.src('src/crosswords.js')
+    .pipe(gulp.dest('./dist'))
+    .pipe(uglify())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('./dist'));
+
+});
+
+//  Builds the css.
+gulp.task('css', function() {
+
+  return gulp.src('src/crosswords.less')
+    .pipe(less())
+    .pipe(gulp.dest('./dist'))
+    .pipe(minifyCss())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('./dist'));
+
+});
+
+//  Hints all of the javascript.
+gulp.task('jshint', function() {
+
+  return gulp.src(['src/crosswords.js', 'test/**/*.spec.js'])
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish))
+
+});
+
+//  Starts the express server.
+gulp.task('serve', function() {
+
+  //  Create the app. Serve the samples and the dist.
+  var app = express();
+  app.use(connectLivereload());
+  app.use(express.static(path.join(__dirname, 'samples')));
+  app.use(express.static(path.join(__dirname, 'dist')));
+  app.listen(3000);
+  console.log('Exchange cross words on port 3000');
+
+});
+
+//  Starts the livereload server.
+var tinylr;
+gulp.task('livereload', function() {
+  tinylr = require('tiny-lr')();
+  tinylr.listen(35729);
+});
+
+function notifyLiveReload(event) {
+  var fileName = path.relative(__dirname, event.path);
+
+  console.log(fileName + " changed, reloading.")
+
+  tinylr.changed({
+    body: {
+      files: [fileName]
+    }
+  });
+}
+
+//  Opens the sample app.
+gulp.task('open', function() {
+  gulp.src('./')
+})
+
+gulp.task('test', function (done) {
+  karma.start({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done);
+});
+
+//  Sets up watchers.
+gulp.task('watch', function() {
+
+  //  When our source js/less changes, rebuild it.
+  gulp.watch(['src/**.js'], ['jshint', 'js']);
+  gulp.watch(['src/**.less'], ['css']);
+
+  //  When our built js or tests change, retest and livereload.
+  gulp.watch(['dist/*.js', 'test/**/*.spec.js'], ['test'], notifyLiveReload);
+  gulp.watch(['dist/*.css', 'samples/**/*.*'], notifyLiveReload);
+
+});
+
+gulp.task('default', ['js', 'css', 'serve', 'livereload', 'watch'], function() {
+  opn('http://localhost:3000');
+});
