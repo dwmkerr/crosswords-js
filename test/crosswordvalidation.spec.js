@@ -8,18 +8,18 @@ describe('crossword validation', function() {
 
     var expectedError = new Error("The crossword bounds are invalid.");
 
-    options.crossword = {
+    options.crosswordDefinition = {
       width: null
     };
     expect(function() { crossword(options); }).toThrow(expectedError);
 
-    options.crossword = {
+    options.crosswordDefinition = {
       width: 3,
       height: -1
     };
     expect(function() { crossword(options); }).toThrow(expectedError);
  
-    options.crossword = {
+    options.crosswordDefinition = {
       height: -2
     };
     expect(function() { crossword(options); }).toThrow(expectedError); 
@@ -28,41 +28,46 @@ describe('crossword validation', function() {
 
   it('should fail if a clue exceeds the bounds of the crossword', function() {
 
-    options.crossword = {
+    options.crosswordDefinition = {
       width: 10,
-      height: 10
+      height: 10,
+      acrossClues: [],
+      downClues: []
     };
 
-    options.crossword.clues = [
-      {number: 3, x: 3, y: 1, direction: 'across', length: [12]}
+    options.crosswordDefinition.acrossClues = [
+      {number: 3, x: 3, y: 1, length: [12]}
     ];
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 3 exceeds horizontal bounds."));
+    expect(function() { crossword(options); }).toThrow(new Error("Clue 3a exceeds horizontal bounds."));
 
-    options.crossword.clues = [
-      {number: 3, x: 1, y: 3, direction: 'down', length: [3,1,5]}
+    options.crosswordDefinition.acrossClues = [];
+    options.crosswordDefinition.downClues = [
+      {number: 3, x: 1, y: 3, length: [3,1,5]}
     ];
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 3 exceeds vertical bounds."));
+    expect(function() { crossword(options); }).toThrow(new Error("Clue 3d exceeds vertical bounds."));
 
-    options.crossword.clues = [
+    options.crosswordDefinition.acrossClues = [
       {number: 3, x: 3, y: -1, length: [12]}
     ];
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 3 doesn't start in the bounds."));
+    expect(function() { crossword(options); }).toThrow(new Error("Clue 3a doesn't start in the bounds."));
 
   });
 
   it('should validate the coherence of a clue if the answers are provided', function() {
 
     //  This is incoherent - (3,3) is both A and P.
-    options.crossword = {
+    options.crosswordDefinition = {
       width: 10,
       height: 10,
-      clues: [
-        {number: 1, x: 3, y: 3, length: [5], direction: 'across', answer: 'APPLE' },
-        {number: 1, x: 3, y: 3, length: [5], direction: 'down', answer: 'PEACH' },
+      acrossClues: [
+        {number: 1, x: 3, y: 3, length: [5], answer: 'APPLE' }
+      ],
+      downClues: [
+        {number: 1, x: 3, y: 3, length: [5], answer: 'PEACH' },
       ]
     };
 
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 1 at (3, 3) is not coherent with previous clues answers."));
+    expect(function() { crossword(options); }).toThrow(new Error("Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer."));
 
   });
 

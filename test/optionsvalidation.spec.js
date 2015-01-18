@@ -22,7 +22,7 @@ describe('options validation', function() {
       element: div
     };
 
-    expect(function() { crossword(options); }).toThrow(new Error("The crossword must be initialised with a crossword."));
+    expect(function() { crossword(options); }).toThrow(new Error("The crossword must be initialised with a crossword definition."));
 
   });
 

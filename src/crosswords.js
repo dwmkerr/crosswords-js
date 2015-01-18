@@ -1,23 +1,20 @@
 "use strict";
 
-//  Every time we build a crossword, we create a crossword state.
-var crosswordStates = [];
-
-//  The cellElementData array contains the references between cell
-//  elements and the state data.
-var cellElementDataMap = [];
+//  Every cell created is in the map, which lists the cell, associated
+//  crossword model and DOM element.
+var cellMap = [];
 var getCellElementData = function getCellElementData(cellElement) {
-  for(var i = 0; i < cellElementDataMap.length; i++) {
-    if(cellElementDataMap[i].cellElement === cellElement) {
-      return cellElementDataMap[i];
+  for(var i = 0; i < cellMap.length; i++) {
+    if(cellMap[i].cellElement === cellElement) {
+      return cellMap[i];
     }
   }
   return null;
 };
 var getCellData = function getCellData(cell) {
-  for(var i = 0; i < cellElementDataMap.length; i++) {
-    if(cellElementDataMap[i].cell === cell) {
-      return cellElementDataMap[i];
+  for(var i = 0; i < cellMap.length; i++) {
+    if(cellMap[i].cell === cell) {
+      return cellMap[i];
     }
   }
   return null;  
@@ -25,12 +22,12 @@ var getCellData = function getCellData(cell) {
 
 //  Remove a class
 var removeClass = function removeClass(element, className) {
-  var expression = new RegExp("(?:^|\\s)" + className + "(?!\\S)");
+  var expression = new RegExp("(?:^|\\s)" + className + "(?!\\S)", "g");
   element.className = element.className.replace(expression, '');
-}
+};
 var addClass = function addClass(element, className) {
   element.className += " " + className;
-}
+};
 
 //  Validate options. Throws if there are issues.
 var validateOptions = function validateOptions(options) {
@@ -43,27 +40,26 @@ var validateOptions = function validateOptions(options) {
     throw new Error("The crossword must be initialised with a valid DOM element.");
   }
 
-  if(options.crossword === null || options.crossword === undefined) {
-    throw new Error("The crossword must be initialised with a crossword.");
+  if(options.crosswordDefinition === null || options.crosswordDefinition === undefined) {
+    throw new Error("The crossword must be initialised with a crossword definition.");
   }
 
 };
 
-//  Builds a cell model from the crossword. Throws if there
-//  are problems with the crossword provided.
-//  TODO: Expose as a dedicated API for others. Useful for
-//  others to load crossword data and validate it.
-var buildCellModel = function buildCellModel(crossword) {
+//  Builds a crosswordModel from a crosswordDefinition.
+var buildCrosswordModel = function buildCrosswordModel(crosswordDefinition) {
 
-  var width = crossword.width;
-  var height = crossword.height;
+  //  We'll use the width and height a lot.
+  var width = crosswordDefinition.width;
+  var height = crosswordDefinition.height;
 
+  //  Validate the bounds.
   if(width === undefined || width === null || width < 0 ||
     height === undefined || height === null || height < 0) {
     throw new Error("The crossword bounds are invalid.");
   }
 
-  //  We need to create an array of cell objects.
+  //  We need to create an array of cell models.
   var cells = [];
   for(var x = 0; x < width; x++) {
     cells[x] = [];
@@ -72,70 +68,108 @@ var buildCellModel = function buildCellModel(crossword) {
         x: x,
         y: y,
         light: false,
-        clue: null
+        clueLabel: null,
+        acrossClue: null,
+        acrossClueLetterIndex: null,
+        downClue: null,
+        downClueLetterIndex: null
       };
     }
   }
 
+  //  Create the structure of the model.
+  var crosswordModel = {
+    width: width,
+    height: height,
+    cells: cells,
+    acrossClues: [],
+    downClues: []
+  };
+
+  //  We're going to go through the across clues, then the down clues.
+  var clueDefinitions = crosswordDefinition.acrossClues.concat(crosswordDefinition.downClues);
+  
   //  We can now go through the clues and decorate the cells.
-  for(var c = 0; c < crossword.clues.length; c++) {
-    var clue = crossword.clues[c];
-    clue.cells = [];
+  for(var c = 0; c < clueDefinitions.length; c++) {
+  
+    var across = c < crosswordDefinition.acrossClues.length;
+  
+    //  Create the clue model, with space for pointers to its cell.
+    var clueDefinition = clueDefinitions[c];
+    var clueModel = {
+      number: clueDefinition.number,
+      code: clueDefinition.number + (across ? "a" : "d"),
+      answer: clueDefinition.answer,
+      x: clueDefinition.x - 1,    //  Definitions are 1 based, models are more useful 0 based.
+      y: clueDefinition.y - 1,
+      across: across,
+      length: [],
+      totalLength: 0,
+      clue: clueDefinition.clue,
+      cells: []
+    };
 
-    //  Total length of the clue is the sum of the length
-    //  array, which looks like [3,2,3].
-    var length = 0;
-    for(var i = 0; i < clue.length.length; i++) {
-      length += clue.length[i];
+    //  The clue position must be in the bounds.
+    if(clueModel.x < 0 || clueModel.x >= width || clueModel.y < 0 || clueModel.y >= height) {
+      throw new Error("Clue " + clueModel.code + " doesn't start in the bounds.");
     }
 
-    //  The clue must not exceed the bounds.
-    if(clue.x < 1 || clue.x > width || clue.y < 1 || clue.y > height) {
-      throw new Error("Clue " + clue.number + " doesn't start in the bounds.");
+    //  Copy over the clue definition length into the model,
+    //  also keeping track of the total length.
+    for(var i = 0; i < clueDefinition.length.length; i++) {
+      clueModel.length.push(clueDefinition.length[i]);
+      clueModel.totalLength += clueDefinition.length[i];
     }
-    if(clue.direction === 'across') {
-      if((clue.x + length - 1) > width) {
-        throw new Error("Clue " + clue.number + " exceeds horizontal bounds.");
+
+    //  Make sure the clue is not too long.
+    if(across) {
+      if((clueModel.x + clueModel.totalLength) > width) {
+        throw new Error("Clue " + clueModel.code + " exceeds horizontal bounds.");
       }
     } else {
-      if((clue.y + length - 1) > height) {
-        throw new Error("Clue " + clue.number + " exceeds vertical bounds.");
+      if((clueModel.y + clueModel.totalLength) > height) {
+        throw new Error("Clue " + clueModel.code + " exceeds vertical bounds.");
       }
     }
 
     //  We can now mark the cells as light. If the clue has 
     //  an answer (which is optional), we can validate it 
     //  is coherent.
-    var x = clue.x - 1;
-    var y = clue.y - 1;
-    for(var letter = 0; letter < length; letter++) {
+    var x = clueModel.x;
+    var y = clueModel.y;
+    for(var letter = 0; letter < clueModel.totalLength; letter++) {
       var cell = cells[x][y];
       cell.light = true;
-      cell.clue = clue;
-      clue.cells.push(clue);
+      cell[across ? 'acrossClue' : 'downClue'] = clueModel;
+      cell[across ? 'acrossClueLetterIndex' : 'downClueLetterIndex'] = letter;
+      clueModel.cells.push(cell);
 
-      if(clue.answer && clue.answer[letter]) {
-        if(cell.answer && clue.answer[letter] !== cell.answer) {
-          throw new Error("Clue " + clue.number + " at (" + (x + 1) + ", " + (y + 1) + ") is not coherent with previous clues answers.");
+      //  If the clue has an answer we set it in the cell...
+      if(clueModel.answer) {
+
+        //  ...but only if it is not different to an existing answer.
+        if(cell.answer !== undefined && cell.answer !== clueModel.answer[letter]) {
+          throw new Error("Clue " + clueModel.code + " answer at (" + (x + 1) + ", " + (y + 1) + ") is not coherent with previous clue (" + cell.acrossClue.code + ") answer.");
         }
-        cell.answer = clue.answer[letter];
+        cell.answer = clueModel.answer[letter];
       }
 
-      //  todo validate the cell label.
       if(letter === 0) {
-        cell.clueLabel = clue.number;
+        if(cell.clueLabel !== null && cell.clueLabel !== clueModel.number) {
+          throw new Error("Clue " + clueModel.code + " has a label which is inconsistent with another clue (" + cell.acrossClue.code + ").");
+        }
+        cell.clueLabel = clueModel.number;
       }
 
-      if(clue.direction === 'across') {
+      if(across) {
         x++;
       } else {
         y++;
       }
     }
-    
   }
 
-  return cells;
+  return crosswordModel;
 
 };
 
@@ -172,16 +206,24 @@ function createCellElement(cell) {
     //  Get the cell data.
     var cellElement = event.target.parentNode;
     var cellData = getCellElementData(cellElement);
-    var crosswordState = cellData.crosswordState;
-    crosswordState.currentX = cellData.cell.x;
-    crosswordState.currentY = cellData.cell.y;
+    var crosswordModel = cellData.crosswordModel;
+    crosswordModel.currentX = cellData.cell.x;
+    crosswordModel.currentY = cellData.cell.y;
 
+    //  Find the clue we are focusing.
+    //  TODO: If we have both down and across, we must toggle between them.
+
+    //  Get the clue in the cell we're going to focus. Prefer the current orientation.
+    var focusedClue = (crosswordModel.currentClue && crosswordModel.currentClue === cellData.cell.downClue) 
+                        ? cellData.cell.downClue || cellData.cell.acrossClue
+                        : cellData.cell.acrossClue || cellData.cell.downClue;
+ 
     //  Deactivate all cells, except those which match the clue.
-    for(var x = 0; x < crosswordState.cells.length; x++) {
-      for(var y = 0; y < crosswordState.cells[x].length; y++) {
-        var cell = crosswordState.cells[x][y];
+    for(var x = 0; x < crosswordModel.cells.length; x++) {
+      for(var y = 0; y < crosswordModel.cells[x].length; y++) {
+        var cell = crosswordModel.cells[x][y];
         if(cell.light === true) { 
-          if(cell.clue === cellData.cell.clue) {
+          if((cell.acrossClue === focusedClue) || (cell.downClue === focusedClue)) {
             addClass(cell.cellElement.querySelector('input'), "active");
           } else {
             removeClass(cell.cellElement.querySelector('input'), "active");
@@ -190,21 +232,78 @@ function createCellElement(cell) {
       }
     }
 
+    //  Set the current clue.
+    crosswordModel.currentClue = focusedClue;
+
+  });
+
+  //  Listen for keydown events.
+  cellElement.addEventListener("keydown", function(event) {
+
+    if(event.keyCode === 8) { // backspace
+        
+      //  Blat the contents of the cell. No need to process the backspace.
+      event.preventDefault();
+      event.target.value = "";
+
+      //  Try and move to the previous cell of the clue.
+      var cellElement = event.target.parentNode;
+      var cellData = getCellElementData(cellElement);
+      var cell = cellData.cell;
+      var clue = cellData.crosswordModel.currentClue;
+      var currentIndex = cell.acrossClue === clue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
+      var previousIndex = currentIndex - 1;
+      if(previousIndex >= 0) {
+        clue.cells[previousIndex].cellElement.querySelector('input').focus();
+      }
+
+    }
+
+  });
+
+  //  Listen for keypress events.
+  cellElement.addEventListener("keypress", function(event) {
+
+    //  We've just pressed a key that generates a char. In all
+    //  cases, we're going to overwrite by blatting the current 
+    //  content. If the key is space, we suppress so we don't get
+    //  a space, then we always move to the next cell in the clue.
+    
+    //  No spaces in empty cells.
+    if(event.keyCode === 32) {
+      event.preventDefault();
+    }
+
+    //  Blat current content.
+    event.target.value = "";
+
+    //  Move to the next cell in the clue.
+    var cellElement = event.target.parentNode;
+    var cellData = getCellElementData(cellElement);
+    var cell = cellData.cell;
+    var clue = cellData.crosswordModel.currentClue;
+    var currentIndex = cell.acrossClue === clue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
+    var nextIndex = currentIndex + 1;
+    if(nextIndex < clue.cells.length) {
+      clue.cells[nextIndex].cellElement.querySelector('input').focus();
+    }
+
   });
 
   //  Listen for keyup events.
   cellElement.addEventListener("keyup", function(event) {
     switch (event.keyCode) {
       case 37: // left
+      
         var cellElement = event.target.parentNode;
         var cellData = getCellElementData(cellElement);
         var cell = cellData.cell;
         var x = cell.x, y = cell.y;
 
         //  If we can go left, go left.
-        if(cell.x > 0 && cellData.crosswordState.cells[x-1][y].light === true) {
+        if(cell.x > 0 && cellData.crosswordModel.cells[x-1][y].light === true) {
           //  TODO: optimise with children[0]?
-          cellData.crosswordState.cells[x-1][y].cellElement.querySelector('input').focus();
+          cellData.crosswordModel.cells[x-1][y].cellElement.querySelector('input').focus();
         }
         break;
       case 38: // up
@@ -214,34 +313,41 @@ function createCellElement(cell) {
         var x = cell.x, y = cell.y;
 
         //  If we can go up, go up.
-        if(cell.y > 0 && cellData.crosswordState.cells[x][y-1].light === true) {
+        if(cell.y > 0 && cellData.crosswordModel.cells[x][y-1].light === true) {
           //  TODO: optimise with children[0]?
-          cellData.crosswordState.cells[x][y-1].cellElement.querySelector('input').focus();
+          cellData.crosswordModel.cells[x][y-1].cellElement.querySelector('input').focus();
         }
         break;
       case 39: // right
         var cellElement = event.target.parentNode;
         var cellData = getCellElementData(cellElement);
-        var cell = cellData.cell, width = cellData.crosswordState.width;
+        var cell = cellData.cell, width = cellData.crosswordModel.width;
         var x = cell.x, y = cell.y;
 
         //  If we can go right, go right.
-        if(cell.x + 1 < width && cellData.crosswordState.cells[x+1][y].light === true) {
+        if(cell.x + 1 < width && cellData.crosswordModel.cells[x+1][y].light === true) {
           //  TODO: optimise with children[0]?
-          cellData.crosswordState.cells[x+1][y].cellElement.querySelector('input').focus();
+          cellData.crosswordModel.cells[x+1][y].cellElement.querySelector('input').focus();
         }
         break;
       case 40: // down
         var cellElement = event.target.parentNode;
         var cellData = getCellElementData(cellElement);
-        var cell = cellData.cell, height = cellData.crosswordState.height;
+        var cell = cellData.cell, height = cellData.crosswordModel.height;
         var x = cell.x, y = cell.y;
 
         //  If we can go down, go down.
-        if(cell.y + 1 < height && cellData.crosswordState.cells[x][y+1].light === true) {
+        if(cell.y + 1 < height && cellData.crosswordModel.cells[x][y+1].light === true) {
           //  TODO: optimise with children[0]?
-          cellData.crosswordState.cells[x][y+1].cellElement.querySelector('input').focus();
+          cellData.crosswordModel.cells[x][y+1].cellElement.querySelector('input').focus();
         }
+        break;
+      case 9: // tab
+        //  todo
+        break;
+
+      default: // anything else...
+        //  todo
         break;
     }
   });
@@ -254,26 +360,20 @@ function crossword(options) {
   //  Validate the options.
   validateOptions(options);
 
-  //  Now build the cell model from the crossword.
-  var cells = buildCellModel(options.crossword);
+  //  Now create the crossword model, which also validates
+  //  the crossword definition.
+  var crosswordModel = buildCrosswordModel(options.crosswordDefinition);
 
-  //  We can now construct the crossword state.
-  var crosswordState = {
-    number: crosswordStates.length,
-    width: options.crossword.width,
-    height: options.crossword.height,
-    cells: cells,
-    element: null,
-    currentX: null,
-    currentY: null
-  };
+  //  Add state to the model.
+  crosswordModel.currentX = null;
+  crosswordModel.currentY = null;
+  crosswordModel.currentClue = null;
 
-  var width = options.crossword.width;
-  var height = options.crossword.height;
+  var width = crosswordModel.width;
+  var height = crosswordModel.height;
 
   //  Create the main crossword element. This has the 
   var container = document.createElement('div');
-  container.id = "cw" + crosswordState.number;
   container.className = "crossword";
 
   for(var y = 0; y < height; y++) {
@@ -284,19 +384,16 @@ function crossword(options) {
 
     for(var x = 0; x < width; x++) {
 
-      var cell = cells[x][y];
+      var cell = crosswordModel.cells[x][y];
 
-      //  Build the cell element.
+      //  Build the cell element and add it to the row.
       var cellElement = createCellElement(cell);
-
       row.appendChild(cellElement);
 
-      //  We've got a cell element, so we should add it to the 
-      //  cell element data map. This is how we go from the DOM
-      //  to state.
-      cellElementDataMap.push({
+      //  Update the map of cells
+      cellMap.push({
         cellElement: cellElement,
-        crosswordState: crosswordState,
+        crosswordModel: crosswordModel,
         cell: cell
       });
 
@@ -306,10 +403,6 @@ function crossword(options) {
 
   options.element.appendChild(container);
 
-  //  We've built the crossword. Add the state to our global 
-  //  set of crosswords and return it.
-  crosswordState.element = container;
-  crosswordStates.push(crosswordState);
-  return crosswordState;
+  return crosswordModel;
 }
 
