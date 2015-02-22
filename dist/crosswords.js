@@ -46,6 +46,21 @@ var validateOptions = function validateOptions(options) {
 
 };
 
+//  Sends a state change message.
+var stateChange = function stateChange(crosswordModel, message) {
+
+  var eventHandler = crosswordModel.onStateChanged;
+  if(!eventHandler) {
+    return;
+  }
+
+  //  Send the message.
+  eventHandler({
+    message: message
+  });
+
+};
+
 //  Builds a crosswordModel from a crosswordDefinition.
 var buildCrosswordModel = function buildCrosswordModel(crosswordDefinition) {
 
@@ -83,7 +98,8 @@ var buildCrosswordModel = function buildCrosswordModel(crosswordDefinition) {
     height: height,
     cells: cells,
     acrossClues: [],
-    downClues: []
+    downClues: [],
+    onStateChanged: null
   };
 
   //  We're going to go through the across clues, then the down clues.
@@ -108,6 +124,7 @@ var buildCrosswordModel = function buildCrosswordModel(crosswordDefinition) {
       clue: clueDefinition.clue,
       cells: []
     };
+    crosswordModel[across ? 'acrossClues' : 'downClues'].push(clueModel);
 
     //  The clue position must be in the bounds.
     if(clueModel.x < 0 || clueModel.x >= width || clueModel.y < 0 || clueModel.y >= height) {
@@ -232,8 +249,11 @@ function createCellElement(cell) {
       }
     }
 
-    //  Set the current clue.
-    crosswordModel.currentClue = focusedClue;
+    //  If the focused clue is not the current clue, select it and notify.
+    if(crosswordModel.currentClue !== focusedClue) {
+      crosswordModel.currentClue = focusedClue;
+      stateChange(crosswordModel, "clueSelected");
+    }
 
   });
 

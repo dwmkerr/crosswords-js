@@ -11,6 +11,16 @@ var path = require('path');
 var connectLivereload = require('connect-livereload');
 var opn = require('opn');
 
+//  Copies vendor files over.
+gulp.task('vendor', function() {
+  gulp.src('./bower_components/angular/angular.js')
+    .pipe(gulp.dest('./samples/vendor/angular'));
+  gulp.src('./bower_components/bootstrap/dist/**/*.*')
+    .pipe(gulp.dest('./samples/vendor/bootstrap'));
+  gulp.src('./bower_components/jquery/dist/**/*.*')
+    .pipe(gulp.dest('./samples/vendor/jquery'));
+});
+
 //  Builds the js code.
 gulp.task('js', function() {
 
@@ -66,8 +76,6 @@ gulp.task('livereload', function() {
 function notifyLiveReload(event) {
   var fileName = path.relative(__dirname, event.path);
 
-  console.log(fileName + " changed, reloading.")
-
   tinylr.changed({
     body: {
       files: [fileName]
@@ -100,6 +108,6 @@ gulp.task('watch', function() {
 
 });
 
-gulp.task('default', ['js', 'css', 'serve', 'livereload', 'watch'], function() {
+gulp.task('default', ['vendor', 'js', 'css', 'serve', 'livereload', 'watch'], function() {
   opn('http://localhost:3000');
 });

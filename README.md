@@ -2,6 +2,8 @@
 
 Tiny, lightweight crossword for control for the web.
 
+**Work in progress!**
+
 ### Desgin Goals
 
 * No frameworks
@@ -9,17 +11,18 @@ Tiny, lightweight crossword for control for the web.
 * Lightweight
 * Any device
 
-Crossword Definition -> buildModel -> Crossword Model
-Crossword Model -> buildCrossword -> Crossword ?
+### Coding
 
+Check out the code, then:
 
-### Tips and Tricks
+```
+npm install
+bower install
+gulp
+```
 
- * Run the karma tests by installing the karma-cli.
-   ```
-   npm install -g karma-cli
-   karma todo
-   ```
+The samples will run at the address [localhost:3000](http://localhost:3000/). Tests run
+when the code changes.
 
 ### TODO
 
@@ -33,22 +36,35 @@ Crossword Model -> buildCrossword -> Crossword ?
  * State reported in demo
  * DONE: Fix defocus bug
  * don't use cdns (shit when poor connectivity)
+ * Better AngularJS based sample app
+ * Styling on right and bottom edges is wrong.
+ * Support select clue in sample app
+ * Side by side across and down clues in sample app.
 
- #### The Crossword Definition
+#### The Crossword Definition
 
- The Crossword Definition is a minimal object that defines the
- crossword. It should have the following properties:
+The Crossword Definition is a minimal object that defines the
+crossword. It should have the following properties:
 
- crosswordDefinition.width: The width of the crossword.
- crosswordDefinition.height: The hight of the crossword.
- crosswordDefinition.acrossClues: The clues which go across.
- crosswordDefinition.downClues: The clues which go down.
+crosswordDefinition.width: The width of the crossword.
+crosswordDefinition.height: The hight of the crossword.
+crosswordDefinition.acrossClues: The clues which go across.
+crosswordDefinition.downClues: The clues which go down.
 
- Clues have the following fields:
+Clues have the following fields:
 
- clue.number: The clue number.
- clue.length: The length, an array such as [6] or [4,2].
- clue.clue: The actual clue text.
+clue.number: The clue number.
+clue.length: The length, an array such as [6] or [4,2].
+clue.clue: The actual clue text.
+
+### The Crossword Model
+
+The Crossword Model is the object built by the main `crossword` function.
+
+### State Changed Messages
+
+`clueSelected`: Fired when the selected clue is changed.
+
 
 ### Keyboard Functionality
 

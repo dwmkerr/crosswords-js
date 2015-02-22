@@ -2,13 +2,29 @@ var sampleapp = angular.module('sampleapp', []);
 
 sampleapp.controller('MainController', function($scope, $http) {
 
-  $scope.title = "Test";
+  $http.get('crosswords/guardian_quiptic_89.json').success(function(crosswordDefinition) {
 
-  $scope.$watch('crosswordState', function(newState, oldState) {
+    var model = crossword({
+      element: document.getElementById('crossword1'),
+      crosswordDefinition: crosswordDefinition
+    });
 
-    console.log(newState);
-    console.log(oldState);
+    $scope.acrossClues = model.acrossClues;
+    $scope.downClues = model.downClues;
 
-  }, true);
+    model.onStateChanged = function(message) {
+
+      if(message.message === "clueSelected") {
+        $scope.currentClue = model.currentClue;
+        $scope.$apply();
+      }
+
+    };
+
+  });
+
+  $scope.isSelectedClue = function(clue) {
+    return clue === $scope.currentClue;
+  };
 
 });

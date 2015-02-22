@@ -15,8 +15,18 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'bower_components/jquery/dist/jquery.min.js',
+      'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
       'src/crosswords.js',
-      'test/**/*.spec.js'
+      'test/**/*.spec.js',
+
+      //  JSON Fixtures
+      {
+        pattern: 'test/data/**/*.json',
+        watched: true,
+        served: true,
+        included: false
+      }
     ],
 
 
