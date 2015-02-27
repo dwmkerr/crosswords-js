@@ -90,7 +90,7 @@ gulp.task('open', function() {
 
 gulp.task('test', function (done) {
   karma.start({
-    configFile: __dirname + '/karma.conf.js',
+    configFile: path.combine(__dirname, './karma.conf.js'),
     singleRun: true
   }, done);
 });
