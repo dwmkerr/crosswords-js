@@ -2,6 +2,8 @@ var sampleapp = angular.module('sampleapp', []);
 
 sampleapp.controller('MainController', function($scope, $http) {
 
+  $scope.messages = [];
+
   $http.get('crosswords/guardian_quiptic_89.json').success(function(crosswordDefinition) {
 
     var model = crossword({
@@ -16,6 +18,10 @@ sampleapp.controller('MainController', function($scope, $http) {
 
       if(message.message === "clueSelected") {
         $scope.currentClue = model.currentClue;
+        $scope.messages.push({
+          text: message.message,
+          data: JSON.stringify(message.data)
+        })
         $scope.$apply();
       }
 

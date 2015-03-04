@@ -29,18 +29,20 @@ when the code changes.
  * DONE: Typing a letter overwrites the letter
  * DONE: Typing a letter moves to the next available letter
  * DONE: Selecting a cell focuses the clue
- * tab selects the next clue
+ * DONE: tab selects the next clue
+ * shift tab selects previous clue
  * selecting a cell with a down clue using the mouse prefers
    the down clue if it's the starting cell
- * enter changes orientation if possible
+ * DONE: enter changes orientation if possible
  * State reported in demo
  * DONE: Fix defocus bug
  * don't use cdns (shit when poor connectivity)
  * Better AngularJS based sample app
  * Styling on right and bottom edges is wrong.
  * Support select clue in sample app
- * Side by side across and down clues in sample app.
-
+ * DONE: Side by side across and down clues in sample app.
+ * Numbers shouldn't be in the titles of clues.
+ 
 #### The Crossword Definition
 
 The Crossword Definition is a minimal object that defines the
@@ -74,3 +76,4 @@ Backspace: Move to the previous cell in the focused clue, if one exists.
 Tab: Move to the first cell of the next clue, 'wrapping' to the first clue.
 A-Z: Enter the character. Not locale aware!
 Enter: Switch between across and down.
+webdriver-manager update

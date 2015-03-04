@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Dave Kerr">
-    <title>Crosswords.JS Samples</title>
+    <title>Crosswords.js Samples</title>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -50,7 +50,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Angular Modal Service Samples</a>
+          <a class="navbar-brand" href="#">Crosswords.js Samples</a>
         </div>
         <div id="mainNav" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -64,27 +64,28 @@
     </div>
 
     <div class="container">
-
-      <div class="starter-template">
-        <h1>Crosswords.JS</h1>
-        <p class="lead">Samples for <a href="https://github.com/dwmkerr/crosswordsjs">Crosswords.JS</a>.</p>
-      </div>
-
-      <hr />
-
       <h3>{{title}}</h3>
-      <table><tr>
-        <td width="50%"><div id="crossword1"></div></td>
-        <td width="50%">{{currentClue.clue}}</td>
-      </tr></table>
+      <table>
+        <tr>
+          <td width="50%"><div id="crossword1"></div></td>
+          <td width="50%">{{currentClue.clue}}</td>
+        </tr>
+        <tr>
+          <td>
+            <p><strong>Across</strong></p>
+            <p><span ng-repeat="clue in acrossClues" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p>
+          </td>
+          <td>
+            <p><strong>Down</strong></p>
+            <p><span ng-repeat="clue in downClues" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p> 
+          </td>
+        </tr>
+      </table>
 
-      <p><strong>Across</strong></p>
-      <p><span ng-repeat="clue in acrossClues" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p>
 
-      <p><strong>Down</strong></p>
-      <p><span ng-repeat="clue in downClues" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p>
-      
+      <p ng-repeat="message in messages">{{message.text}}<br />
+      <pre>{{message.data}}</pre>
+      </p>
     </div>
-
   </body>
 </html>

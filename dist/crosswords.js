@@ -47,7 +47,7 @@ var validateOptions = function validateOptions(options) {
 };
 
 //  Sends a state change message.
-var stateChange = function stateChange(crosswordModel, message) {
+var stateChange = function stateChange(crosswordModel, message, data) {
 
   var eventHandler = crosswordModel.onStateChanged;
   if(!eventHandler) {
@@ -56,7 +56,8 @@ var stateChange = function stateChange(crosswordModel, message) {
 
   //  Send the message.
   eventHandler({
-    message: message
+    message: message,
+    data: data
   });
 
 };
@@ -190,6 +191,28 @@ var buildCrosswordModel = function buildCrosswordModel(crosswordDefinition) {
 
 };
 
+//  Updates the DOM based on the model, ensuring that the CSS
+//  is correct for the state (i.e. the selected clue).
+function updateDOM(crosswordModel) {
+
+  var activeClue = crosswordModel.currentClue;
+
+  //  Deactivate all cells, except those which match the clue.
+  for(var x = 0; x < crosswordModel.cells.length; x++) {
+    for(var y = 0; y < crosswordModel.cells[x].length; y++) {
+      var cell = crosswordModel.cells[x][y];
+      if(cell.light === true) { 
+        if((cell.acrossClue === activeClue) || (cell.downClue === activeClue)) {
+          addClass(cell.cellElement.querySelector('input'), "active");
+        } else {
+          removeClass(cell.cellElement.querySelector('input'), "active");
+        }
+      }
+    }
+  }
+
+}
+
 function createCellElement(cell) {
 
   var cellElement = document.createElement('div');
@@ -234,24 +257,12 @@ function createCellElement(cell) {
     var focusedClue = (crosswordModel.currentClue && crosswordModel.currentClue === cellData.cell.downClue) 
                         ? cellData.cell.downClue || cellData.cell.acrossClue
                         : cellData.cell.acrossClue || cellData.cell.downClue;
- 
-    //  Deactivate all cells, except those which match the clue.
-    for(var x = 0; x < crosswordModel.cells.length; x++) {
-      for(var y = 0; y < crosswordModel.cells[x].length; y++) {
-        var cell = crosswordModel.cells[x][y];
-        if(cell.light === true) { 
-          if((cell.acrossClue === focusedClue) || (cell.downClue === focusedClue)) {
-            addClass(cell.cellElement.querySelector('input'), "active");
-          } else {
-            removeClass(cell.cellElement.querySelector('input'), "active");
-          }
-        }
-      }
-    }
+
 
     //  If the focused clue is not the current clue, select it and notify.
     if(crosswordModel.currentClue !== focusedClue) {
       crosswordModel.currentClue = focusedClue;
+      updateDOM(crosswordModel);
       stateChange(crosswordModel, "clueSelected");
     }
 
@@ -275,6 +286,53 @@ function createCellElement(cell) {
       var previousIndex = currentIndex - 1;
       if(previousIndex >= 0) {
         clue.cells[previousIndex].cellElement.querySelector('input').focus();
+      }
+
+    } else if(event.keyCode === 9) { // tab
+
+      //  We don't want default behaviour.
+      event.preventDefault();
+
+      //  Get the cell element and cell data.
+      var cellElement = event.target.parentNode;
+      var cellData = getCellElementData(cellElement);
+      var clue = cellData.crosswordModel.currentClue;
+      var model = cellData.crosswordModel;
+
+      //  Get the next clue.
+      var searchClues = clue.across ? model.acrossClues : model.downClues;
+      for(var i=0; i<searchClues.length; i++) {
+        if(clue === searchClues[i]) {
+          var newClue = null;
+          if(i < (searchClues.length - 1)) {
+            newClue = searchClues[i+1];
+          } else {
+            newClue = clue.across ? model.downClues[0] : model.acrossClues[0];
+          }
+          //  Select the new clue.
+          model.currentClue = newClue;
+          updateDOM(model);
+          newClue.cells[0].cellElement.querySelector('input').focus({internal: true});
+          break;
+        }
+      }
+
+    } else if (event.keyCode === 13) { // enter
+
+      //  We don't want default behaviour.
+      event.preventDefault();
+
+      //  Get the cell element and cell data.
+      var cellElement = event.target.parentNode;
+      var cellData = getCellElementData(cellElement);
+      var cell = cellData.cell;
+      var model = cellData.crosswordModel;
+
+      //  If we are in a cell with an across clue AND down clue, swap the
+      //  selected one.
+      if(cell.acrossClue && cell.downClue) {
+        model.currentClue = cell.acrossClue === model.currentClue ? cell.downClue : cell.acrossClue;
+        updateDOM(model);
       }
 
     }
