@@ -247,8 +247,6 @@ function createCellElement(cell) {
     var cellElement = event.target.parentNode;
     var cellData = getCellElementData(cellElement);
     var crosswordModel = cellData.crosswordModel;
-    crosswordModel.currentX = cellData.cell.x;
-    crosswordModel.currentY = cellData.cell.y;
 
     //  Find the clue we are focusing.
     //  TODO: If we have both down and across, we must toggle between them.
@@ -304,10 +302,18 @@ function createCellElement(cell) {
       for(var i=0; i<searchClues.length; i++) {
         if(clue === searchClues[i]) {
           var newClue = null;
-          if(i < (searchClues.length - 1)) {
-            newClue = searchClues[i+1];
+          if(event.shiftKey) {
+            if(i > 0) {
+              newClue = searchClues[i-1];
+            } else {
+              newClue = clue.across ? model.downClues[model.downClues.length-1] : model.acrossClues[model.acrossClues.length-1];
+            }
           } else {
-            newClue = clue.across ? model.downClues[0] : model.acrossClues[0];
+            if(i < (searchClues.length - 1)) {
+              newClue = searchClues[i+1];
+            } else {
+              newClue = clue.across ? model.downClues[0] : model.acrossClues[0];
+            }
           }
           //  Select the new clue.
           model.currentClue = newClue;
@@ -443,8 +449,6 @@ function crossword(options) {
   var crosswordModel = buildCrosswordModel(options.crosswordDefinition);
 
   //  Add state to the model.
-  crosswordModel.currentX = null;
-  crosswordModel.currentY = null;
   crosswordModel.currentClue = null;
 
   var width = crosswordModel.width;
@@ -484,3 +488,12 @@ function crossword(options) {
   return crosswordModel;
 }
 
+//  TODO the crossword should be a class, functions like this should be
+//  exposed on the class.
+
+function selectClue(crosswordModel, clue) {
+  crosswordModel.currentClue = clue;
+  updateDOM(crosswordModel);
+  crosswordModel.currentClue.cells[0].cellElement.focus();
+  stateChange(crosswordModel, "clueSelected");
+}

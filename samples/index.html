@@ -73,11 +73,11 @@
         <tr>
           <td>
             <p><strong>Across</strong></p>
-            <p><span ng-repeat="clue in acrossClues" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p>
+            <p><span ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p>
           </td>
           <td>
             <p><strong>Down</strong></p>
-            <p><span ng-repeat="clue in downClues" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p> 
+            <p><span ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p> 
           </td>
         </tr>
       </table>
