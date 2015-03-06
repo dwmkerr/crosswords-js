@@ -21,7 +21,8 @@
     "src",
     "test",
     ".gitignore",
-    "*.js",
+    "gulpfile.js",
+    "karma.conf.js",
     "package.json"
   ]
 }
