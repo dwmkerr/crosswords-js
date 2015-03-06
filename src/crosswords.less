@@ -2,11 +2,8 @@
 
 .crossword {
 
-  display: flex;
-  flex-direction: column;
+  display: inline-block;        
 
-  background: red;
-  
   .cwrow {
 
     display: flex;
@@ -20,6 +17,12 @@
       &.light {
         border: 1px solid black;
         background: white;
+        input:focus {
+          outline: none;
+        }
+      }
+      &.dark {
+        border: 1px solid black;
       }
 
       .cwcluelabel {
@@ -48,7 +51,6 @@
         }
       }
     }
-
   }
 
   .clue {

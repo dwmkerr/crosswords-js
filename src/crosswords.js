@@ -219,13 +219,13 @@ function createCellElement(cell) {
   cellElement.className = "cwcell";
   cell.cellElement = cellElement;
 
+  //  Add a class.
+  cellElement.className += cell.light ? " light" : " dark";
+
   //  If the cell is dark, we are done.
   if(!cell.light) {
     return cellElement;
   }
-
-  //  Light cells need another style.
-  cellElement.className += " light";
 
   //  Light cells also need an input.
   var inputElement = document.createElement('input');
@@ -247,23 +247,30 @@ function createCellElement(cell) {
     var cellElement = event.target.parentNode;
     var cellData = getCellElementData(cellElement);
     var crosswordModel = cellData.crosswordModel;
+    var across = cellData.cell.acrossClue;
+    var down = cellData.cell.downClue;
 
-    //  Find the clue we are focusing.
-    //  TODO: If we have both down and across, we must toggle between them.
-
-    //  Get the clue in the cell we're going to focus. Prefer the current orientation.
-    var focusedClue = (crosswordModel.currentClue && crosswordModel.currentClue === cellData.cell.downClue) 
-                        ? cellData.cell.downClue || cellData.cell.acrossClue
-                        : cellData.cell.acrossClue || cellData.cell.downClue;
-
-
-    //  If the focused clue is not the current clue, select it and notify.
-    if(crosswordModel.currentClue !== focusedClue) {
-      crosswordModel.currentClue = focusedClue;
-      updateDOM(crosswordModel);
-      stateChange(crosswordModel, "clueSelected");
+    //  If we have clicked somewhere which is part of the current clue, we
+    //  will not need to change it (we won't toggle either).
+    if(crosswordModel.currentClue && 
+       (crosswordModel.currentClue === across ||
+        crosswordModel.currentClue === down)) {
+      return;
     }
 
+    //  If we have an across clue XOR a down clue, pick the one we have.
+    if( (across && !down) || (!across && down) ) {
+      crosswordModel.currentClue = across || down;
+    } else {
+      //  We've got across AND down. Prefer across, unless we've on the 
+      //  first letter of a down clue only
+      crosswordModel.currentClue = cellData.cell.downClueLetterIndex === 0 && cellData.cell.acrossClueLetterIndex !== 0 ? down : across;     
+    }
+
+    //  Update the DOM, inform of state change.
+    updateDOM(crosswordModel);
+    stateChange(crosswordModel, "clueSelected");
+    
   });
 
   //  Listen for keydown events.

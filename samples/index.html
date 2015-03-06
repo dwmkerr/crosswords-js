@@ -54,10 +54,7 @@
         </div>
         <div id="mainNav" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#yesno">Yes No Modal</a></li>
-            <li><a href="#complex">Complex Modal</a></li>
-            <li><a href="#custom">Custom Modal</a></li>
-            <li><a href="https://github.com/dwmkerr/angular-modal-service">GitHub</a></li>
+            <li><a href="https://github.com/dwmkerr/crosswords-js">GitHub</a></li>
           </ul>
         </div>
       </div>
@@ -68,24 +65,19 @@
       <table>
         <tr>
           <td width="50%"><div id="crossword1"></div></td>
-          <td width="50%">{{currentClue.clue}}</td>
+          <td width="50%">{{currentClue.number}}. {{currentClue.clue}}</td>
         </tr>
         <tr>
           <td>
             <p><strong>Across</strong></p>
-            <p><span ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p>
+            <p><span ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.number}}. {{clue.clue}}<br /></span></p>
           </td>
           <td>
             <p><strong>Down</strong></p>
-            <p><span ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.clue}}<br /></span></p> 
+            <p><span ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.number}}. {{clue.clue}}<br /></span></p> 
           </td>
         </tr>
       </table>
-
-
-      <p ng-repeat="message in messages">{{message.text}}<br />
-      <pre>{{message.data}}</pre>
-      </p>
     </div>
   </body>
 </html>

@@ -24,25 +24,6 @@ gulp
 The samples will run at the address [localhost:3000](http://localhost:3000/). Tests run
 when the code changes.
 
-### TODO
-
- * DONE: Typing a letter overwrites the letter
- * DONE: Typing a letter moves to the next available letter
- * DONE: Selecting a cell focuses the clue
- * DONE: tab selects the next clue
- * DONE: shift tab selects previous clue
- * selecting a cell with a down clue using the mouse prefers
-   the down clue if it's the starting cell
- * DONE: enter changes orientation if possible
- * State reported in demo
- * DONE: Fix defocus bug
- * DONE: don't use cdns (shit when poor connectivity)
- * Better AngularJS based sample app
- * Styling on right and bottom edges is wrong.
- * Support select clue in sample app
- * DONE: Side by side across and down clues in sample app.
- * Numbers shouldn't be in the titles of clues.
- 
 #### The Crossword Definition
 
 The Crossword Definition is a minimal object that defines the

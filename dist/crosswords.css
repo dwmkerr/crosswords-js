@@ -1,7 +1,5 @@
 .crossword {
-  display: flex;
-  flex-direction: column;
-  background: red;
+  display: inline-block;
 }
 .crossword .cwrow {
   display: flex;
@@ -16,6 +14,12 @@
 .crossword .cwrow .cwcell.light {
   border: 1px solid black;
   background: white;
+}
+.crossword .cwrow .cwcell.light input:focus {
+  outline: none;
+}
+.crossword .cwrow .cwcell.dark {
+  border: 1px solid black;
 }
 .crossword .cwrow .cwcell .cwcluelabel {
   position: absolute;
