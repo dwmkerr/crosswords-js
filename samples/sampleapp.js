@@ -3,21 +3,21 @@ var sampleapp = angular.module('sampleapp', []);
 sampleapp.controller('MainController', function($scope, $http) {
 
   var crossword = null;
+  var crosswordDom = null;
 
   $http.get('crosswords/guardian_quiptic_89.json').success(function(crosswordDefinition) {
 
-    crossword = CrosswordsJS.buildCrossword({
-      element: document.getElementById('crossword1'),
-      crosswordDefinition: crosswordDefinition
-    });
+    //  Create the crossword model.
+    crossword = new CrosswordsJS.Crossword(crosswordDefinition);
+    crosswordDom = new CrosswordsJS.CrosswordDOM(crossword, document.getElementById('crossword1'));
 
     $scope.acrossClues = crossword.acrossClues;
     $scope.downClues = crossword.downClues;
 
-    crossword.onStateChanged = function(message) {
+    crosswordDom.onStateChanged = function(message) {
 
       if(message.message === "clueSelected") {
-        $scope.currentClue = crossword.currentClue;
+        $scope.currentClue = crosswordDom.currentClue;
         $scope.$apply();
       }
 
@@ -30,7 +30,7 @@ sampleapp.controller('MainController', function($scope, $http) {
   };
 
   $scope.selectClue = function(clue) {
-    selectClue(crossword, clue);
+    crosswordDom.selectClue(clue);
   };
 
 });

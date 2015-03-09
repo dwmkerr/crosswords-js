@@ -120,5 +120,6 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
 
   //  Define our public API.
   CrosswordsJS.Crossword = Crossword;
+  return CrosswordsJS;
 
-})(CrosswordsJS, window, document);
+})(CrosswordsJS || {}, window, document);

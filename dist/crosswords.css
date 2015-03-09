@@ -1,0 +1,49 @@
+.crossword {
+  display: inline-block;
+}
+.crossword .cwrow {
+  display: flex;
+  flex-direction: row;
+}
+.crossword .cwrow .cwcell {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  background: black;
+}
+.crossword .cwrow .cwcell.light {
+  border: 1px solid black;
+  background: white;
+}
+.crossword .cwrow .cwcell.light input:focus {
+  outline: none;
+}
+.crossword .cwrow .cwcell.dark {
+  border: 1px solid black;
+}
+.crossword .cwrow .cwcell .cwcluelabel {
+  position: absolute;
+  font-size: 9px;
+  width: 10px;
+  height: 10px;
+  left: 2px;
+  top: 0px;
+  z-index: 1;
+}
+.crossword .cwrow .cwcell input {
+  font-family: sans-serif;
+  font-variant: small-caps;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  border: none;
+  height: 28px;
+  width: 28px;
+}
+.crossword .cwrow .cwcell input.active {
+  background: #E1E1FF;
+}
+.crossword .clue {
+  background: #ff0000;
+}

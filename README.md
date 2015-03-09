@@ -27,22 +27,20 @@ Include the JavaScript and CSS:
 
 ```
 
-The public API is exposed on a module named `CrosswordsJS`. The one-and-only function
-is `buildCrossword`:
+The public API is exposed on a module named `CrosswordsJS`. There are two classes
+for working with crosswords. The first creates a `Crossword` object from a [Crossword
+Definition](docs/crossworddefinition.md).
 
 ```js
-var crossword = CrosswordsJS.buildCrossword({
-  element: document.body,
-  crosswordDefinition: definition
-});
+var crossword = new CrosswordsJS.Crossword(definition);
+```
 
-`buildCrossword` options are:
+The crossword returned is fully validated and has a model which contains cells.
+This object can be used to build the actual DOM for a crossword:
 
- * `element`: Required. Defines the element which will contain the crossword DOM.
- * `crosswordDefinition`. Required. An object that defines the crossword (dimensions, clues etc).
-   More details are available in the [docs](docs/) under [The Crossword Definition Object](docs/crossworddefinition.md).
-
-`buildCrossword` returns an object that allows you to interact with the crossword programmatically. See [The Crossword Object](docs/crosswordobject.md) for more details.
+```js
+var crosswordDom = new CrosswordsJS.CrosswordDOM(crossword, document.body);
+```
 
 ### Coding
 

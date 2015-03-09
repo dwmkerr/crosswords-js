@@ -6,7 +6,8 @@ module.exports = function(config) {
     files: [
       'bower_components/jquery/dist/jquery.min.js',
       'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
-      'src/crosswords.js',
+      'src/crossword.js',
+      'src/crossworddom.js',
       'test/**/*.spec.js',
 
       //  JSON Fixtures

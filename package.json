@@ -28,6 +28,7 @@
     "tiny-lr": "^0.1.4"
   },
   "scripts": {
+    "init": "npm install && npm install karma-phantomjs-launcher && bower install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

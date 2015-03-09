@@ -85,7 +85,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         var cell = crossword.cells[x][y];
 
         //  Build the cell element and add it to the row.
-        var cellElement = crossword._createCellDOM(cell);
+        var cellElement = this._createCellDOM(cell);
         row.appendChild(cellElement);
 
         //  Update the map of cells
@@ -100,7 +100,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
   }
 
   //  Selects a clue.
-  Crossword.prototype.selectClue = function selectClue(clue) {
+  CrosswordDOM.prototype.selectClue = function selectClue(clue) {
     this.currentClue = clue;
     this._updateDOM();
     cellMap.getCellElement(clue.cells[0]).focus();
@@ -108,7 +108,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
   };
 
   //  Completely cleans up the crossword.
-  Crossword.prototype.destroy = function destroy() {
+  CrosswordDOM.prototype.destroy = function destroy() {
     
     //  Clear the map, DOM and state change handler.
     cellMap.removeCrosswordCells(this.crossword);
@@ -118,7 +118,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
   };
 
   //  Sends a state change message.
-  Crossword.prototype._stateChange = function _stateChange(message, data) {
+  CrosswordDOM.prototype._stateChange = function _stateChange(message, data) {
 
     var eventHandler = this.onStateChanged;
     if(!eventHandler) {
@@ -134,8 +134,9 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
   };
 
   //  Creates DOM for a cell.
-  Crossword.prototype._createCellDOM = function _createCellDOM(cell) {
+  CrosswordDOM.prototype._createCellDOM = function _createCellDOM(cell) {
 
+    var self = this;
     var cellElement = document.createElement('div');
     cellElement.className = "cwcell";
     cell.cellElement = cellElement;
@@ -173,24 +174,24 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
 
       //  If we have clicked somewhere which is part of the current clue, we
       //  will not need to change it (we won't toggle either).
-      if(crossword.currentClue && 
-         (crossword.currentClue === across ||
-          crossword.currentClue === down)) {
+      if(self.currentClue && 
+         (self.currentClue === across ||
+          self.currentClue === down)) {
         return;
       }
 
       //  If we have an across clue XOR a down clue, pick the one we have.
       if( (across && !down) || (!across && down) ) {
-        crossword.currentClue = across || down;
+        self.currentClue = across || down;
       } else {
         //  We've got across AND down. Prefer across, unless we've on the 
         //  first letter of a down clue only
-        crossword.currentClue = cell.downClueLetterIndex === 0 && cell.acrossClueLetterIndex !== 0 ? down : across;     
+        self.currentClue = cell.downClueLetterIndex === 0 && cell.acrossClueLetterIndex !== 0 ? down : across;     
       }
 
       //  Update the DOM, inform of state change.
-      crossword._updateDOM();
-      crossword._stateChange("clueSelected");
+      self._updateDOM();
+      self._stateChange("clueSelected");
       
     });
 
@@ -206,10 +207,10 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         //  Try and move to the previous cell of the clue.
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
-        var currentIndex = cell.acrossClue === this.currentClue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
+        var currentIndex = cell.acrossClue === self.currentClue ? self.acrossClueLetterIndex : self.downClueLetterIndex;
         var previousIndex = currentIndex - 1;
         if(previousIndex >= 0) {
-          this.currentClue.cells[previousIndex].cellElement.querySelector('input').focus();
+          self.currentClue.cells[previousIndex].cellElement.querySelector('input').focus();
         }
 
       } else if(event.keyCode === 9) { // tab
@@ -221,7 +222,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
         var crossword = cell.crossword;
-        var clue = this.currentClue.currentClue;
+        var clue = self.currentClue;
 
         //  Get the next clue.
         var searchClues = clue.across ? crossword.acrossClues : crossword.downClues;
@@ -242,8 +243,8 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
               }
             }
             //  Select the new clue.
-            this.currentClue = newClue;
-            this._updateDOM();
+            self.currentClue = newClue;
+            self._updateDOM();
             cellMap.getCellElement(newClue.cells[0]).querySelector('input').focus({internal: true});
             break;
           }
@@ -262,8 +263,8 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         //  If we are in a cell with an across clue AND down clue, swap the
         //  selected one.
         if(cell.acrossClue && cell.downClue) {
-          crossword.currentClue = cell.acrossClue === crossword.currentClue ? cell.downClue : cell.acrossClue;
-          crossword._updateDOM();
+          self.currentClue = cell.acrossClue === self.currentClue ? cell.downClue : cell.acrossClue;
+          self._updateDOM();
         }
 
       }
@@ -290,7 +291,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
       var cellElement = event.target.parentNode;
       var cell = cellMap.getCell(cellElement);
       var crossword = cell.crossword;
-      var clue = crossword.currentClue;
+      var clue = self.currentClue;
       var currentIndex = cell.acrossClue === clue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
       var nextIndex = currentIndex + 1;
       if(nextIndex < clue.cells.length) {
@@ -364,7 +365,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
 
   //  Updates the DOM based on the model, ensuring that the CSS
   //  is correct for the state (i.e. the selected clue).
-  Crossword.prototype._updateDOM = function _updateDOM() {
+  CrosswordDOM.prototype._updateDOM = function _updateDOM() {
 
     //  TODO: pick a name - active, current or selected.
     var activeClue = this.currentClue;
@@ -376,9 +377,9 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         var cell = crossword.cells[x][y];
         if(cell.light === true) { 
           if((cell.acrossClue === activeClue) || (cell.downClue === activeClue)) {
-            addClass(cellMap.getCellElement(cell.cellElement).querySelector('input'), "active");
+            addClass(cellMap.getCellElement(cell).querySelector('input'), "active");
           } else {
-            removeClass(cellMap.getCellElement(cell.cellElement).querySelector('input'), "active");
+            removeClass(cellMap.getCellElement(cell).querySelector('input'), "active");
           }
         }
       }
@@ -390,5 +391,6 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
 
   //  Define our public API.
   CrosswordsJS.CrosswordDOM = CrosswordDOM;
+  return CrosswordsJS;
 
-})(CrosswordsJS, window, document);
+})(CrosswordsJS || {}, window, document);
