@@ -49,7 +49,7 @@ gulp.task('jshint', function() {
 
   return gulp.src(['src/crosswords.js', 'test/**/*.spec.js'])
     .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
+    .pipe(jshint.reporter(stylish));
 
 });
 
@@ -75,8 +75,6 @@ gulp.task('livereload', function() {
 
 function notifyLiveReload(event) {
 
-  console.log("Reloading for " + event.path);
-
   var fileName = path.relative(__dirname, event.path);
 
   tinylr.changed({
@@ -86,15 +84,19 @@ function notifyLiveReload(event) {
   });
 }
 
-//  Opens the sample app.
-gulp.task('open', function() {
-  gulp.src('./')
-})
-
 gulp.task('test', function (done) {
   karma.start({
     configFile: path.join(__dirname, './karma.conf.js'),
     singleRun: true
+  }, done);
+});
+
+gulp.task('test-debug', function (done) {
+  karma.start({
+    configFile: path.join(__dirname, './karma.conf.js'),
+    singleRun: false,
+    browsers: ['Chrome'],
+    autoWatch: true
   }, done);
 });
 

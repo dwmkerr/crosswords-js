@@ -11,18 +11,18 @@ describe('crossword validation', function() {
     options.crosswordDefinition = {
       width: null
     };
-    expect(function() { crossword(options); }).toThrow(expectedError);
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(expectedError);
 
     options.crosswordDefinition = {
       width: 3,
       height: -1
     };
-    expect(function() { crossword(options); }).toThrow(expectedError);
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(expectedError);
  
     options.crosswordDefinition = {
       height: -2
     };
-    expect(function() { crossword(options); }).toThrow(expectedError); 
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(expectedError);
 
 	});
 
@@ -38,18 +38,18 @@ describe('crossword validation', function() {
     options.crosswordDefinition.acrossClues = [
       {number: 3, x: 3, y: 1, length: [12]}
     ];
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 3a exceeds horizontal bounds."));
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(new Error("Clue 3a exceeds horizontal bounds."));
 
     options.crosswordDefinition.acrossClues = [];
     options.crosswordDefinition.downClues = [
       {number: 3, x: 1, y: 3, length: [3,1,5]}
     ];
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 3d exceeds vertical bounds."));
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(new Error("Clue 3d exceeds vertical bounds."));
 
     options.crosswordDefinition.acrossClues = [
       {number: 3, x: 3, y: -1, length: [12]}
     ];
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 3a doesn't start in the bounds."));
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(new Error("Clue 3a doesn't start in the bounds."));
 
   });
 
@@ -67,7 +67,7 @@ describe('crossword validation', function() {
       ]
     };
 
-    expect(function() { crossword(options); }).toThrow(new Error("Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer."));
+    expect(function() { CrosswordsJS.buildCrossword(options); }).toThrow(new Error("Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer."));
 
   });
 

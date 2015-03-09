@@ -1,15 +1,45 @@
-# Crossword.js
+# CrosswordsJS
 
-Tiny, lightweight crossword for control for the web.
+Tiny, lightweight crossword for control for the web. This component makes it easy
+to include a crossword in a web page. CrosswordsJS is:
 
-**Work in progress!**
-
-### Desgin Goals
-
-* No frameworks
+* Very lightweight
 * Fast
-* Lightweight
-* Any device
+* Simple
+* Framework Free
+
+## Usage
+
+Install with bower:
+
+```bash
+bower install crosswords-js
+```
+
+Include the JavaScript and CSS:
+
+```html
+<link href="bower_components/crosswords-js/crosswords.css" rel="stylesheet">
+<script src="bower_copmonents/crosswords-js/crosswords.js"></script>
+
+```
+
+The public API is exposed on a module named `CrosswordsJS`. The one-and-only function
+is `buildCrossword`:
+
+```js
+var crossword = CrosswordsJS.buildCrossword({
+  element: document.body,
+  crosswordDefinition: definition
+});
+
+`buildCrossword` options are:
+
+ * `element`: Required. Defines the element which will contain the crossword DOM.
+ * `crosswordDefinition`. Required. An object that defines the crossword (dimensions, clues etc).
+   More details are available in the [docs](docs/) under [The Crossword Definition Object](docs/crossworddefinition.md).
+
+`buildCrossword` returns an object that allows you to interact with the crossword programmatically. See [The Crossword Object](docs/crosswordobject.md) for more details.
 
 ### Coding
 
@@ -24,30 +54,14 @@ gulp
 The samples will run at the address [localhost:3000](http://localhost:3000/). Tests run
 when the code changes.
 
-#### The Crossword Definition
+#### Working with Tests
 
-The Crossword Definition is a minimal object that defines the
-crossword. It should have the following properties:
+Tests are automatically run in PhantomJS as you code. The following gulp commands
+can also be used:
 
-crosswordDefinition.width: The width of the crossword.
-crosswordDefinition.height: The hight of the crossword.
-crosswordDefinition.acrossClues: The clues which go across.
-crosswordDefinition.downClues: The clues which go down.
-
-Clues have the following fields:
-
-clue.number: The clue number.
-clue.length: The length, an array such as [6] or [4,2].
-clue.clue: The actual clue text.
-
-### The Crossword Model
-
-The Crossword Model is the object built by the main `crossword` function.
-
-### State Changed Messages
-
-`clueSelected`: Fired when the selected clue is changed.
-
+ * `gulp test`: Runs the tests once in PhantomJS.
+ * `gulp test-debug`: Runs the tests in Chrome, keeping the window open and reloading
+    when any changes. Useful for debugging tests.
 
 ### Keyboard Functionality
 

@@ -14,13 +14,13 @@ describe('model generation', function() {
       element: div,
       crosswordDefinition: getJSONFixture('quiptic89.json')
     };
-  })
+  });
 	
 	it('should provide basic details of the crossword in the model', function() {
 
     //  Generate the crossword.
     var definition = options.crosswordDefinition;
-    var model = crossword(options);
+    var model = CrosswordsJS.buildCrossword(options);
 
     //  Check the width, height and clues.
     expect(model.width).toEqual(definition.width);
@@ -34,7 +34,7 @@ describe('model generation', function() {
 
     //  Generate the crossword.
     var definition = options.crosswordDefinition;
-    var model = crossword(options);
+    var model = CrosswordsJS.buildCrossword(options);
 
     var definitionClue = definition.acrossClues[0];
     var modelClue = model.acrossClues[0];
