@@ -1,5 +1,7 @@
 var gulp = require('gulp');
 var jshint = require('gulp-jshint');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var less = require('gulp-less');
 var minifyCss = require('gulp-minify-css');
@@ -24,10 +26,13 @@ gulp.task('vendor', function() {
 //  Builds the js code.
 gulp.task('js', function() {
 
-  return gulp.src('src/crosswords.js')
+  return gulp.src(['src/crossword.js', 'src/crossworddom.js'])
+    .pipe(sourcemaps.init())
+    .pipe(concat('crosswords.js'))
     .pipe(gulp.dest('./dist'))
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./dist'));
 
 });

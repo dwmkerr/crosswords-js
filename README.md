@@ -1,5 +1,8 @@
 # CrosswordsJS
 
+**IMPORTANT**: This is work in progress! The API may change dramatically
+as I work out what is most suitable.
+
 Tiny, lightweight crossword for control for the web. This component makes it easy
 to include a crossword in a web page. CrosswordsJS is:
 

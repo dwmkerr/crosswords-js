@@ -34,7 +34,11 @@ var CrosswordsJS = (function(window, document) {
 
   //  The crossword class. When a crossword is built from a definition
   //  and options, this is the object which is returned.
-  function Crossword(parentElement, crosswordDefinition) {
+  function Crossword(crosswordDefinition) {
+
+    if(!crosswordDefinition) {
+      throw new Error("The Crossword must be initialised with a crossword definition.");
+    }
   
     //  Set up some data we'll store in the class.
     this.width = crosswordDefinition.width;
@@ -131,36 +135,10 @@ var CrosswordsJS = (function(window, document) {
         }
       }
     }
-
-    this.crosswordElement = this._createDOM(parentElement);
   }
 
-  //  Selects a clue.
-  Crossword.prototype.selectClue = function selectClue(clue) {
-    this.currentClue = clue;
-    this._updateDOM();
-    this.currentClue.cells[0].cellElement.focus();
-    this._stateChange("clueSelected");
-  };
-
-  //  Sends a state change message.
-  Crossword.prototype._stateChange = function _stateChange(message, data) {
-
-    var eventHandler = this.onStateChanged;
-    if(!eventHandler) {
-      return;
-    }
-
-    //  Send the message.
-    eventHandler({
-      message: message,
-      data: data
-    });
-
-  };
-
-  //  Creates the DOM for a crossword. Return the newly created crossword div.
-  Crossword.prototype._createDOM = function _createDOM(parentElement) {
+  //  Creates the DOM representation for the crossword.
+  Crossword.prototype.createDOM = function createDOM(parentElement) {
 
     //  Now build the DOM for the crossword.
     var container = document.createElement('div');
@@ -194,7 +172,50 @@ var CrosswordsJS = (function(window, document) {
 
     parentElement.appendChild(container);
   };
-  
+
+  //  Selects a clue.
+  Crossword.prototype.selectClue = function selectClue(clue) {
+    this.currentClue = clue;
+    this._updateDOM();
+    this.currentClue.cells[0].cellElement.focus();
+    this._stateChange("clueSelected");
+  };
+
+  //  Completely cleans up the crossword.
+  Crossword.prototype.destroyDOM = function destroyDOM() {
+    
+    //  Remove all cellmap entries.
+    for(var i=0; i<cellMap.length; i++) {
+      var entry = cellMap[i];
+      if(entry.crossword === this) {
+        cellMap.splice(i--, 1);
+      }
+    }
+
+    //  Destroy the DOM.
+    this.parentElement.removeChild(this.crosswordElement);
+
+    //  Clean up the object.
+    this.onStateChanged = null;
+
+  };
+
+  //  Sends a state change message.
+  Crossword.prototype._stateChange = function _stateChange(message, data) {
+
+    var eventHandler = this.onStateChanged;
+    if(!eventHandler) {
+      return;
+    }
+
+    //  Send the message.
+    eventHandler({
+      message: message,
+      data: data
+    });
+
+  };
+
   //  Creates DOM for a cell.
   Crossword.prototype._createCellDOM = function _createCellDOM(cell) {
 
@@ -461,9 +482,6 @@ var CrosswordsJS = (function(window, document) {
     if(options.element === null || options.element === undefined) {
       throw new Error("The crossword must be initialised with a valid DOM element.");
     }
-    if(options.crosswordDefinition === null || options.crosswordDefinition === undefined) {
-      throw new Error("The crossword must be initialised with a crossword definition.");
-    }
 
     //  Create the crossword object. Throws an exception if there are any issues.
     return new Crossword(options.element, options.crosswordDefinition);
@@ -471,9 +489,8 @@ var CrosswordsJS = (function(window, document) {
 
   //  Define our public API.
   return {
-    buildCrossword: function(options) {
-      return buildCrossword(options);
-    }
+    Crossword: Crossword,
+    CrosswordDOM: CrosswordDOM
   };
 
 })(window, document);
