@@ -2,12 +2,18 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
 
   'use strict';
 
-  function buildObjectArray2D(x, y) {
+  function buildCellArray2D(crossword) {
+    var x = crossword.width;
+    var y = crossword.height;
     var array = new Array(x);
     for(var i=0; i<y; i++) {
       array[i] = new Array(y);
       for(var j=0; j<y; j++) {
-        array[i][j] = {};
+        array[i][j] = {
+          crossword: crossword,
+          x: i,
+          y: j
+        };
       }
     }
     return array;
@@ -26,7 +32,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
     this.height = crosswordDefinition.height;
     this.acrossClues = [];
     this.downClues = [];
-    this.cells = buildObjectArray2D(this.width, this.height);
+    this.cells = buildCellArray2D(this);
 
     //  Validate the bounds.
     if(this.width === undefined || this.width === null || this.width < 0 ||

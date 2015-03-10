@@ -2,12 +2,18 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
 
   'use strict';
 
-  function buildObjectArray2D(x, y) {
+  function buildCellArray2D(crossword) {
+    var x = crossword.width;
+    var y = crossword.height;
     var array = new Array(x);
     for(var i=0; i<y; i++) {
       array[i] = new Array(y);
       for(var j=0; j<y; j++) {
-        array[i][j] = {};
+        array[i][j] = {
+          crossword: crossword,
+          x: i,
+          y: j
+        };
       }
     }
     return array;
@@ -26,7 +32,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
     this.height = crosswordDefinition.height;
     this.acrossClues = [];
     this.downClues = [];
-    this.cells = buildObjectArray2D(this.width, this.height);
+    this.cells = buildCellArray2D(this);
 
     //  Validate the bounds.
     if(this.width === undefined || this.width === null || this.width < 0 ||
@@ -332,7 +338,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         //  Try and move to the previous cell of the clue.
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
-        var currentIndex = cell.acrossClue === self.currentClue ? self.acrossClueLetterIndex : self.downClueLetterIndex;
+        var currentIndex = cell.acrossClue === self.currentClue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
         var previousIndex = currentIndex - 1;
         if(previousIndex >= 0) {
           self.currentClue.cells[previousIndex].cellElement.querySelector('input').focus();
@@ -435,7 +441,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
           var x = cell.x, y = cell.y;
 
           //  If we can go left, go left.
-          if(cell.x > 0 && cellData.crossword.cells[x-1][y].light === true) {
+          if(cell.x > 0 && cell.crossword.cells[x-1][y].light === true) {
             //  TODO: optimise with children[0]?
             cellMap.getCellElement(cell.crossword.cells[x-1][y]).querySelector('input').focus();
           }
@@ -446,7 +452,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
           var x = cell.x, y = cell.y;
 
           //  If we can go up, go up.
-          if(cell.y > 0 && cellData.crossword.cells[x][y-1].light === true) {
+          if(cell.y > 0 && cell.crossword.cells[x][y-1].light === true) {
             //  TODO: optimise with children[0]?
             cellMap.getCellElement(cell.crossword.cells[x][y-1]).querySelector('input').focus();
           }
