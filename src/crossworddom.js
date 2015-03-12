@@ -245,7 +245,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
             //  Select the new clue.
             self.currentClue = newClue;
             self._updateDOM();
-            cellMap.getCellElement(newClue.cells[0]).querySelector('input').focus({internal: true});
+            cellMap.getCellElement(newClue.cells[0]).querySelector('input').focus();
             break;
           }
         }
@@ -287,11 +287,30 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
       //  Blat current content.
       event.target.value = "";
 
-      //  Move to the next cell in the clue.
+      //  Get cell data.
       var cellElement = event.target.parentNode;
       var cell = cellMap.getCell(cellElement);
       var crossword = cell.crossword;
       var clue = self.currentClue;
+
+      //  Sets the letter of a string.
+      function setLetter(source, index, newLetter) {
+        var sourceNormalised = source === null || source === undefined ? "" : source;
+        var result = "";
+        while(sourceNormalised.length <= index) sourceNormalised = sourceNormalised + " ";
+        var seek = Math.max(index, sourceNormalised.length);
+        for(var i=0;i<seek;i++) {
+          result += i == index ? newLetter : sourceNormalised[i];
+        }
+        return result;
+      }
+
+      //  We need to update the answer.
+      var key = String.fromCharCode(event.keyCode);
+      if(cell.acrossClue) cell.acrossClue.answer = setLetter(cell.acrossClue.answer, cell.acrossClueLetterIndex, key);
+      if(cell.downClue) cell.downClue.answer = setLetter(cell.downClue.answer, cell.downClueLetterIndex, key);
+
+      //  Move to the next cell in the clue.
       var currentIndex = cell.acrossClue === clue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
       var nextIndex = currentIndex + 1;
       if(nextIndex < clue.cells.length) {
