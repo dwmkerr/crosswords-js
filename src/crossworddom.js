@@ -152,6 +152,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
     //  Light cells also need an input.
     var inputElement = document.createElement('input');
     inputElement.maxLength = 1;
+    if(cell.answer) inputElement.value = cell.answer;
     cellElement.appendChild(inputElement);
 
     //  We may need to add a clue label.

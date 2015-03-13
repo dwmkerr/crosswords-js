@@ -35,7 +35,8 @@
     },
     {
       "number": 12, "x": 1, "y": 5, "length": [5], 
-      "clue": "Put to rest in Tintern Abbey (5)"
+      "clue": "Put to rest in Tintern Abbey (5)",
+      "answer": "inter"
     },
     {
       "number": 13, "x": 7, "y": 5, "length": [3,6], 
