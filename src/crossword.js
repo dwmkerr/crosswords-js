@@ -102,7 +102,7 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
         if(clueModel.answer) {
 
           //  ...but only if it is not different to an existing answer.
-          if(cell.answer !== undefined && cell.answer !== clueModel.answer[letter]) {
+          if(cell.answer !== undefined && cell.answer !== " "  && cell.answer !== clueModel.answer[letter]) {
             throw new Error("Clue " + clueModel.code + " answer at (" + (x + 1) + ", " + (y + 1) + ") is not coherent with previous clue (" + cell.acrossClue.code + ") answer.");
           }
           cell.answer = clueModel.answer[letter];

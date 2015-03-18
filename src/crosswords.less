@@ -14,15 +14,18 @@
       width: @cellSize;
       height: @cellSize;
       background: black;
+
+
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+
       &.light {
-        border: 1px solid black;
         background: white;
         input:focus {
           outline: none;
         }
       }
       &.dark {
-        border: 1px solid black;
       }
 
       .cwcluelabel {
@@ -43,12 +46,23 @@
         text-align: center;
         vertical-align: middle;
         border: none;
-        height: @cellSize;
-        width: @cellSize;
+        height: 100%;
+        width: 100%;
 
         &.active {
           background: #E1E1FF;
         }
+      }
+    }
+
+    .cwcell:last-child {
+      border-right: 1px solid black;
+    }
+
+
+    &:last-child {
+      .cwcell {
+        border-bottom: 1px solid black;
       }
     }
   }
