@@ -1,5 +1,7 @@
 # CrosswordsJS
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/dwmkerr/crosswords-js.svg)](https://greenkeeper.io/)
+
 **IMPORTANT**: This is work in progress! The API may change dramatically
 as I work out what is most suitable.
 
