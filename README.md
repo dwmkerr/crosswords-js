@@ -1,5 +1,7 @@
 # CrosswordsJS
 
+[![GuardRails badge](https://badges.production.guardrails.io/dwmkerr/crosswords-js.svg)](https://www.guardrails.io)
+
 **IMPORTANT**: This is work in progress! The API may change dramatically
 as I work out what is most suitable.
 
