@@ -59,7 +59,13 @@ Check out the code, then run:
 make serve
 ```
 
-The samples will run at the address [localhost:8080](http://localhost:3000/). Tests run when the code changes.
+The sample will run at the address [localhost:8080](http://localhost:3000/).
+
+Run the tests with:
+
+```sh
+npm test
+```
 
 ### Keyboard Functionality
 
