@@ -12,13 +12,15 @@ to include a crossword in a web page. CrosswordsJS is:
 * Simple
 * Framework Free
 
+Here's a screenshot for CrosswordsJS in action:
+
 ![CrosswordsJS Screenshot](./docs/screenshot.png)
 
 ## Usage
 
 Install:
 
-```bash
+```sh
 npm install crosswords-js
 ```
 
@@ -44,10 +46,17 @@ var crosswordDom = new CrosswordsJS.CrosswordDOM(crossword, document.body);
 
 ### Coding
 
-Check out the code, then:
+Ensure you are using Node LTS. I recommend using [Node Version Manager](https://github.com/nvm-sh/nvm) for this:
 
+```sh
+nvm install --lts
+nvm use --lts
 ```
-npm install
+
+Check out the code, then run:
+
+```sh
+make serve
 ```
 
 The samples will run at the address [localhost:8080](http://localhost:3000/). Tests run when the code changes.
