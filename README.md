@@ -69,9 +69,9 @@ npm test
 
 ### Keyboard Functionality
 
-Left/Right/Up/Down: Move (if possible) to the cell in the direction specified.
-Space: Move to the next cell in the focused clue, if one exists.
-Backspace: Move to the previous cell in the focused clue, if one exists.
-Tab: Move to the first cell of the next clue, 'wrapping' to the first clue.
-A-Z: Enter the character. Not locale aware!
-Enter: Switch between across and down.
+- Left/Right/Up/Down: Move (if possible) to the cell in the direction specified.
+- Space: Move to the next cell in the focused clue, if one exists.
+- Backspace: Move to the previous cell in the focused clue, if one exists.
+- Tab: Move to the first cell of the next clue, 'wrapping' to the first clue.
+- A-Z: Enter the character. Not locale aware!
+- Enter: Switch between across and down.
