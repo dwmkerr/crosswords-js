@@ -1,7 +1,3 @@
-var CrosswordsJS = (function(CrosswordsJS, window, document) {
-
-  'use strict';
-
   function buildCellArray2D(crossword) {
     var x = crossword.width;
     var y = crossword.height;
@@ -124,8 +120,5 @@ var CrosswordsJS = (function(CrosswordsJS, window, document) {
     }
   }
 
-  //  Define our public API.
-  CrosswordsJS.Crossword = Crossword;
-  return CrosswordsJS;
 
-})(CrosswordsJS || {}, window, document);
+module.exports = Crossword;

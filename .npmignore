@@ -1,0 +1,7 @@
+.circlci/
+.github/
+docs/
+sample/
+src/
+*.*
+.*
