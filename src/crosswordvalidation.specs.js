@@ -1,24 +1,28 @@
-describe('crossword validation', function() {
-	
-	it('should fail if the bounds of the crossword are invalid', function() {
+const { expect } = require('chai');
+const Crossword = require('./crossword');
+const quiptic89 = require('./data/quiptic89.json');
 
-    var expectedError = new Error("The crossword bounds are invalid.");
+describe('crossword validation', () => {
+	
+  it('should fail if the bounds of the crossword are invalid', () => {
+
+    var expectedError = "The crossword bounds are invalid.";
 
     var crosswordDefinition = {
       width: null
     };
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(expectedError);
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw(expectedError);
 
     crosswordDefinition = {
       width: 3,
       height: -1
     };
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(expectedError);
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw(expectedError);
  
     crosswordDefinition = {
       height: -2
     };
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(expectedError);
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw(expectedError);
 
 	});
 
@@ -34,18 +38,18 @@ describe('crossword validation', function() {
     crosswordDefinition.acrossClues = [
       {number: 3, x: 3, y: 1, length: [12]}
     ];
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(new Error("Clue 3a exceeds horizontal bounds."));
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw("Clue 3a exceeds horizontal bounds.");
 
     crosswordDefinition.acrossClues = [];
     crosswordDefinition.downClues = [
       {number: 3, x: 1, y: 3, length: [3,1,5]}
     ];
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(new Error("Clue 3d exceeds vertical bounds."));
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw("Clue 3d exceeds vertical bounds.");
 
     crosswordDefinition.acrossClues = [
       {number: 3, x: 3, y: -1, length: [12]}
     ];
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(new Error("Clue 3a doesn't start in the bounds."));
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw("Clue 3a doesn't start in the bounds.");
 
   });
 
@@ -63,7 +67,7 @@ describe('crossword validation', function() {
       ]
     };
 
-    expect(function() { new CrosswordsJS.Crossword(crosswordDefinition); }).toThrow(new Error("Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer."));
+    expect(function() { new Crossword(crosswordDefinition); }).to.throw("Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer.");
 
   });
 
