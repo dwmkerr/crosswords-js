@@ -14,6 +14,6 @@ build-sample-site:
 	rm -rf artifacts || true
 	mkdir artifacts
 	mkdir artifacts/sample-site
-	cp -r dist/* sample/* artifacts/sample-site/.
+	cp -r dist/. sample/. artifacts/sample-site/.
 
 .PHONY: build serve build-sample-site
