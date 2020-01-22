@@ -98,7 +98,4 @@ This project is currently a work in progress. The overall design goals are:
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
-- [ ] Deploy the sample site to GitHub pages, update the readme and repo information with the link to the site.
-- [ ] refactor: Move the build from GitHub actions to CircleCI, keeping it one place.
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
-- [ ] docs: note the source of the sample crossword

@@ -7,6 +7,9 @@ sampleapp.controller('MainController', function($scope, $http) {
 
   $http.get('crosswords/guardian_quiptic_89.json').success(function(crosswordDefinition) {
 
+    //  Set the crossword info.
+    $scope.info = crosswordDefinition.info;
+
     //  Create the crossword model.
     crossword = new CrosswordsJS.Crossword(crosswordDefinition);
     crosswordDom = new CrosswordsJS.CrosswordDOM(crossword, document.getElementById('crossword1'));
