@@ -14,10 +14,7 @@ to include a crossword in a web page. CrosswordsJS is:
 
 See it in action at [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js/)!
 
-Here's a screenshot for CrosswordsJS in action:
-
-[![CrosswordsJS Screenshot](./docs/screenshot.png)](https://dwmkerr.github.io/crosswords-js/)
-
+<a href="https://dwmkerr.github.io/crosswords-js/"><img src="./docs/screenshot.png" alt="CrosswordsJS Screenshot" width="480px" /></a>
 
 <!-- vim-markdown-toc GFM -->
 
@@ -104,3 +101,4 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] Deploy the sample site to GitHub pages, update the readme and repo information with the link to the site.
 - [ ] refactor: Move the build from GitHub actions to CircleCI, keeping it one place.
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
+- [ ] docs: note the source of the sample crossword
