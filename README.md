@@ -16,6 +16,16 @@ Here's a screenshot for CrosswordsJS in action:
 
 ![CrosswordsJS Screenshot](./docs/screenshot.png)
 
+
+<!-- vim-markdown-toc GFM -->
+
+* [Usage](#usage)
+    * [Coding](#coding)
+    * [Keyboard Functionality](#keyboard-functionality)
+* [Design Goals](#design-goals)
+
+<!-- vim-markdown-toc -->
+
 ## Usage
 
 Install:
@@ -75,3 +85,11 @@ npm test
 - Tab: Move to the first cell of the next clue, 'wrapping' to the first clue.
 - A-Z: Enter the character. Not locale aware!
 - Enter: Switch between across and down.
+
+## Design Goals
+
+This project is currently a work in progress. The overall design goals are:
+
+1. This should be _agnostic_ to the type of crossword. It shouldn't depend on any proprietary formats or structures used by specific publications.
+2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
+3. This project should be _simple to us_, without requiring a lot of third party dependencies or knowledge.
