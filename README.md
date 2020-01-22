@@ -23,6 +23,7 @@ Here's a screenshot for CrosswordsJS in action:
     * [Coding](#coding)
     * [Keyboard Functionality](#keyboard-functionality)
 * [Design Goals](#design-goals)
+* [TODO](#todo)
 
 <!-- vim-markdown-toc -->
 
@@ -93,3 +94,11 @@ This project is currently a work in progress. The overall design goals are:
 1. This should be _agnostic_ to the type of crossword. It shouldn't depend on any proprietary formats or structures used by specific publications.
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to us_, without requiring a lot of third party dependencies or knowledge.
+
+## TODO
+
+This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
+
+- [ ] Deploy the sample site to GitHub pages, update the readme and repo information with the link to the site.
+- [ ] refactor: Move the build from GitHub actions to CircleCI, keeping it one place.
+- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
