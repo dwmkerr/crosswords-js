@@ -12,9 +12,11 @@ to include a crossword in a web page. CrosswordsJS is:
 * Simple
 * Framework Free
 
+See it in action at [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js/)!
+
 Here's a screenshot for CrosswordsJS in action:
 
-![CrosswordsJS Screenshot](./docs/screenshot.png)
+[![CrosswordsJS Screenshot](./docs/screenshot.png)](https://dwmkerr.github.io/crosswords-js/)
 
 
 <!-- vim-markdown-toc GFM -->
