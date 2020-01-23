@@ -26,7 +26,7 @@
   "scripts": {
     "lint": "eslint src",
     "test": "nyc mocha ./src/{,**/}*.specs.js",
-    "test:debug": "mocha -w ./src/{,**/}*.specs.js",
+    "test:debug": "mocha --inspect-brk -w ./src/{,**/}*.specs.js",
     "release": "standard-version"
   },
   "keywords": [

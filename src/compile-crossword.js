@@ -1,12 +1,14 @@
-function buildCellArray2D(crossword) {
-  const x = crossword.width;
-  const y = crossword.height;
+const compileClue = require('./compile-clue');
+
+function buildCellArray2D(crosswordModel) {
+  const x = crosswordModel.width;
+  const y = crosswordModel.height;
   const array = new Array(x);
   for (let i = 0; i < y; i++) {
     array[i] = new Array(y);
     for (let j = 0; j < y; j++) {
       array[i][j] = {
-        crossword,
+        crossword: crosswordModel,
         x: i,
         y: j,
       };
@@ -17,23 +19,29 @@ function buildCellArray2D(crossword) {
 
 //  The crossword class. When a crossword is built from a definition
 //  and options, this is the object which is returned.
-function Crossword(crosswordDefinition) {
+function compileCrossword(crosswordDefinition) {
   if (!crosswordDefinition) {
     throw new Error('The Crossword must be initialised with a crossword definition.');
   }
 
-  //  Set up some data we'll store in the class.
-  this.width = crosswordDefinition.width;
-  this.height = crosswordDefinition.height;
-  this.acrossClues = [];
-  this.downClues = [];
-  this.cells = buildCellArray2D(this);
+  //  Create the basic model structure.
+  const model = {
+    width: crosswordDefinition.width,
+    height: crosswordDefinition.height,
+    acrossClues: [],
+    downClues: [],
+    cells: [],
+  };
 
   //  Validate the bounds.
-  if (this.width === undefined || this.width === null || this.width < 0
-      || this.height === undefined || this.height === null || this.height < 0) {
+  if (model.width === undefined || model.width === null || model.width < 0
+      || model.height === undefined || model.height === null || model.height < 0) {
     throw new Error('The crossword bounds are invalid.');
   }
+
+  //  Create the array of cells. Each element has a refence back to the model
+  //  for convenience.
+  model.cells = buildCellArray2D(model);
 
   //  We're going to go through the across clues, then the down clues.
   const clueDefinitions = crosswordDefinition.acrossClues.concat(crosswordDefinition.downClues);
@@ -42,39 +50,30 @@ function Crossword(crosswordDefinition) {
     const clueDefinition = clueDefinitions[c];
     const across = c < crosswordDefinition.acrossClues.length;
 
-    //  Create a model for the clue.
-    const clueModel = {
-      number: clueDefinition.number,
-      code: clueDefinition.number + (across ? 'a' : 'd'),
-      answer: clueDefinition.answer,
-      x: clueDefinition.x - 1, //  Definitions are 1 based, models are more useful 0 based.
-      y: clueDefinition.y - 1,
-      across,
-      length: [],
-      totalLength: 0,
-      clue: clueDefinition.clue,
-      cells: [],
-    };
-    this[across ? 'acrossClues' : 'downClues'].push(clueModel);
+    //  Compile the clue from the clue model.
+    const clueModel = compileClue(clueDefinition.clue);
+
+    //  TODO: extract this into the clueCompile function.
+    //  Update the clue model.
+    clueModel.code = clueModel.number + (across ? 'a' : 'd');
+    clueModel.answer = clueDefinition.answer;
+    clueModel.x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
+    clueModel.y = clueDefinition.y - 1;
+    clueModel.across = across;
+    clueModel.cells = [];
+    model[across ? 'acrossClues' : 'downClues'].push(clueModel);
 
     //  The clue position must be in the bounds.
-    if (clueModel.x < 0 || clueModel.x >= this.width || clueModel.y < 0 || clueModel.y >= this.height) {
+    if (clueModel.x < 0 || clueModel.x >= model.width || clueModel.y < 0 || clueModel.y >= model.height) {
       throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
-    }
-
-    //  Copy over the clue definition length into the model,
-    //  also keeping track of the total length.
-    for (let i = 0; i < clueDefinition.length.length; i++) {
-      clueModel.length.push(clueDefinition.length[i]);
-      clueModel.totalLength += clueDefinition.length[i];
     }
 
     //  Make sure the clue is not too long.
     if (across) {
-      if ((clueModel.x + clueModel.totalLength) > this.width) {
+      if ((clueModel.x + clueModel.totalLength) > model.width) {
         throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
       }
-    } else if ((clueModel.y + clueModel.totalLength) > this.height) {
+    } else if ((clueModel.y + clueModel.totalLength) > model.height) {
       throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
     }
 
@@ -84,7 +83,7 @@ function Crossword(crosswordDefinition) {
     let { x } = clueModel;
     let { y } = clueModel;
     for (let letter = 0; letter < clueModel.totalLength; letter++) {
-      const cell = this.cells[x][y];
+      const cell = model.cells[x][y];
       cell.light = true;
       cell[across ? 'acrossClue' : 'downClue'] = clueModel;
       cell[across ? 'acrossClueLetterIndex' : 'downClueLetterIndex'] = letter;
@@ -113,7 +112,8 @@ function Crossword(crosswordDefinition) {
       }
     }
   }
+
+  return model;
 }
 
-
-module.exports = Crossword;
+module.exports = compileCrossword;

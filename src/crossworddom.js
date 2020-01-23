@@ -1,5 +1,9 @@
 const CellMap = require('./cell-map.js');
 const { removeClass, addClass } = require('./helpers');
+
+//  Create a single global instance of a cell map.
+const cellMap = new CellMap();
+
 //  Creates the DOM representation of a Crossword.
 function CrosswordDOM(crossword, parentElement) {
   this.crossword = crossword;
@@ -321,8 +325,5 @@ CrosswordDOM.prototype._updateDOM = function _updateDOM() {
     }
   }
 };
-
-//  Create a single global instance of a cell map.
-const cellMap = new CellMap();
 
 module.exports = CrosswordDOM;
