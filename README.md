@@ -99,3 +99,4 @@ This project is currently a work in progress. The overall design goals are:
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
+- [ ] feat: add hyphens to separate words
