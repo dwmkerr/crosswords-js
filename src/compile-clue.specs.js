@@ -28,7 +28,22 @@ describe('compileClue', () => {
   it('should compile the number and answer lengths of a clue string', () => {
     const clueModel = compileClue('3. Red or green fruit (5)');
     expect(clueModel.number).to.eql(3);
-    // expect(clueModel.clue).to.eql('Red or green fruit ');
-    expect(clueModel.length).to.eql([5]);
+    expect(clueModel.clue).to.eql('Red or green fruit ');
+    expect(clueModel.totalLength).to.eql(5);
+    expect(clueModel.answerStructure).to.eql([{ length: 5, terminator: '' }]);
+    expect(clueModel.answerStructureText).to.eql('(5)');
+  });
+
+  it('should compile the answer structure', () => {
+    const clueModel = compileClue('9. Clue (5,3-4)');
+    expect(clueModel.number).to.eql(9);
+    expect(clueModel.clue).to.eql('Clue ');
+    expect(clueModel.totalLength).to.eql(12);
+    expect(clueModel.answerStructure).to.eql([
+      { length: 5, terminator: ',' },
+      { length: 3, terminator: '-' },
+      { length: 4, terminator: '' },
+    ]);
+    expect(clueModel.answerStructureText).to.eql('(5,3-4)');
   });
 });

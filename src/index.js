@@ -7,3 +7,5 @@ window.CrosswordsJS = {
   compileCrossword,
   CrosswordDOM,
 };
+
+module.exports = window.CrosswordsJS;

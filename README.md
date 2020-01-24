@@ -18,7 +18,7 @@ See it in action at [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io
 
 <!-- vim-markdown-toc GFM -->
 
-* [Usage](#usage)
+* [Quickstart](#quickstart)
     * [Coding](#coding)
     * [Keyboard Functionality](#keyboard-functionality)
 * [Design Goals](#design-goals)
@@ -26,7 +26,7 @@ See it in action at [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io
 
 <!-- vim-markdown-toc -->
 
-## Usage
+## Quickstart
 
 Install:
 
@@ -63,16 +63,16 @@ To create a crossword, you start with a _Crossword Definition_, which is a simpl
 This definition needs to be compiled into a _Crossword Model_. The model is a two dimensional array of cells. This model is used as the input to create the DOM. Compiling the model validates it, making sure that there are no incongruities in the structure (such as overlapping clues, clues which don't fit in the bounds and so on):
 
 ```
-const compileCrossword = require('crosswords-js');
+const CrosswordsJS = require('crosswords-js');
 
 const crosswordDefintion = require('./my-crossword.json');
-const crosswordModel = compileCrossword(crosswordDefinition);
+const crosswordModel = CrosswordsJS.compileCrossword(crosswordDefinition);
 ```
 
 The model can be used to build the DOM for a crossword:
 
 ```js
-var crosswordDom = new buildCrosswordDOM(crosswordModel, document.body);
+var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, document.body);
 ```
 
 ### Coding
@@ -123,6 +123,5 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
 - [ ] feat: add hyphens to separate words - requires a change to the model to support commas vs hyphens between segments of thee answer
 - [ ] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
-- todo: at the moment we only support splitting answers with commas
 - todo: document the clue structure
 - todo: validate the clue segments properly

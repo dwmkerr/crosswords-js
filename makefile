@@ -5,7 +5,6 @@ build:
 
 # Serve the sample site locally for testing.
 serve:
-	npm i
 	./node_modules/.bin/webpack-dev-server
 
 # Build the static site.

@@ -30,7 +30,6 @@ describe('model generation', () => {
 
     //  The following elements are parsed from the clue text.
     expect(modelClue.number).to.eql(1);
-    expect(modelClue.length).to.eql([8, 5]);
     expect(modelClue.clue).to.eql('Conspicuous influence exerted by active troops ');
   });
 

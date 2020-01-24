@@ -2,6 +2,13 @@
 //  answer structure.
 const clueRegex = new RegExp(/^(\d+).[\s]*(.*)[\s]*\(([\d,-]+)\)$/);
 
+/**
+ * compileClue - create a clue model from a clue defintion
+ *
+ * @param clueDefinition - a string which defines the clue, in the format:
+ *   "<Number>. <Clue> (<Answer Structure>)"
+ * @returns - the clue model for the given defintion
+ */
 function compileClue(clueDefinition) {
   if (!clueDefinition) {
     throw new Error('\'clue\' is required');
@@ -13,19 +20,30 @@ function compileClue(clueDefinition) {
   }
 
   //  Get the clue components.
-  const [_, numberText, clue, answerStructure] = clueRegex.exec(clueDefinition);
+  const [, numberText, clue, answerText] = clueRegex.exec(clueDefinition);
   const number = parseInt(numberText, 10);
 
-  //  Break the answer string into an array of answer segment lengths.
-  const length = answerStructure.replace('-', ',').split(',').map((l) => parseInt(l, 10));
+  //  Now we can start to break up the answer segments.
+  const answerStructure = [];
+  const answerSegmentRegex = new RegExp(/([\d]+)([,-]?)(.*)/);
+  let remainingAnswerStructure = answerText;
+  while (answerSegmentRegex.test(remainingAnswerStructure)) {
+    const [, length, terminator, rest] = answerSegmentRegex.exec(remainingAnswerStructure);
+    answerStructure.push({ length: parseInt(length, 10), terminator });
+    remainingAnswerStructure = rest;
+  }
 
   //  Calculate the total length of the answer.
-  const totalLength = length.reduce((current, l) => current + l, 0);
+  const totalLength = answerStructure.reduce((current, as) => current + as.length, 0);
+
+  //  Also create the answer structure as text.
+  const answerStructureText = `(${answerStructure.map((as) => `${as.length}${as.terminator}`).join('')})`;
 
   return {
     number,
     clue,
-    length,
+    answerStructure,
+    answerStructureText,
     totalLength,
   };
 }
