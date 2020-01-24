@@ -38,6 +38,29 @@
         z-index: 1;
       }
 
+      .cw-across-terminator {
+        position: absolute;
+        font-size: 19px;
+        font-weight: 'bold';
+        width: 10px;
+        height: 10px;
+        right: -6px;
+        top: 0px;
+        z-index: 1;
+      }
+
+      .cw-down-terminator {
+        position: absolute;
+        transform-origin: top left;
+        transform: rotate(-90deg);
+        font-size: 19px;
+        font-weight: 'bold';
+        width: 10px;
+        height: 10px;
+        bottom: -14px;
+        z-index: 1;
+      }
+ 
       input { 
         font-family: sans-serif;
         font-variant: small-caps;
@@ -59,6 +82,13 @@
       border-right: 1px solid black;
     }
 
+    .cw-across-word-separator {
+      border-right: 2px solid black;
+    }
+
+    .cw-down-word-separator {
+      border-bottom: 2px solid black;
+    }
 
     &:last-child {
       .cwcell {

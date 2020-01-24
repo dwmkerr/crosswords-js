@@ -18,7 +18,7 @@ See it in action at [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io
 
 <!-- vim-markdown-toc GFM -->
 
-* [Usage](#usage)
+* [Quickstart](#quickstart)
     * [Coding](#coding)
     * [Keyboard Functionality](#keyboard-functionality)
 * [Design Goals](#design-goals)
@@ -26,7 +26,7 @@ See it in action at [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io
 
 <!-- vim-markdown-toc -->
 
-## Usage
+## Quickstart
 
 Install:
 
@@ -41,17 +41,38 @@ Include the JavaScript and CSS:
 <script src="node_modules/crosswords-js/dist/crosswords.js"></script>
 ```
 
-The public API is exposed on a module named `CrosswordsJS`. There are two classes for working with crosswords. The first creates a `Crossword` object from a [Crossword Definition](docs/crossworddefinition.md).
+To create a crossword, you start with a _Crossword Definition_, which is a simple representation of a crossword which looks something like this:
 
 ```js
-var crossword = new CrosswordsJS.Crossword(definition);
+{
+  "width": 15,
+  "height": 15,
+  "acrossClues": [
+    {
+      "x": 2, "y": 1,
+      "clue": "1. Conspicuous influence exerted by active troops (8,5)"
+    },
+    {
+      "x": 1, "y": 3,
+      "clue": "10. A coy sort of miss pointlessly promoting lawlessness (9)"
+    }
+  ]
+}
 ```
 
-The crossword returned is fully validated and has a model which contains cells.
-This object can be used to build the actual DOM for a crossword:
+This definition needs to be compiled into a _Crossword Model_. The model is a two dimensional array of cells. This model is used as the input to create the DOM. Compiling the model validates it, making sure that there are no incongruities in the structure (such as overlapping clues, clues which don't fit in the bounds and so on):
+
+```
+const CrosswordsJS = require('crosswords-js');
+
+const crosswordDefintion = require('./my-crossword.json');
+const crosswordModel = CrosswordsJS.compileCrossword(crosswordDefinition);
+```
+
+The model can be used to build the DOM for a crossword:
 
 ```js
-var crosswordDom = new CrosswordsJS.CrosswordDOM(crossword, document.body);
+var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, document.body);
 ```
 
 ### Coding
@@ -99,3 +120,8 @@ This project is currently a work in progress. The overall design goals are:
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
+- [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
+- [ ] feat: add hyphens to separate words - requires a change to the model to support commas vs hyphens between segments of thee answer
+- [ ] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
+- todo: document the clue structure
+- todo: validate the clue segments properly

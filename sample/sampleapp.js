@@ -11,8 +11,8 @@ sampleapp.controller('MainController', function($scope, $http) {
     $scope.info = crosswordDefinition.info;
 
     //  Create the crossword model.
-    crossword = new CrosswordsJS.Crossword(crosswordDefinition);
-    crosswordDom = new CrosswordsJS.CrosswordDOM(crossword, document.getElementById('crossword1'));
+    crossword = CrosswordsJS.compileCrossword(crosswordDefinition);
+    crosswordDom = new CrosswordsJS.CrosswordDOM(document, crossword, document.getElementById('crossword1'));
 
     $scope.acrossClues = crossword.acrossClues;
     $scope.downClues = crossword.downClues;

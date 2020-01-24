@@ -1,66 +1,21 @@
-//  Lightweight helper functions.
-function removeClass(element, className) {
-  const expression = new RegExp(`(?:^|\\s)${className}(?!\\S)`, 'g');
-  element.className = element.className.replace(expression, '');
+const CellMap = require('./cell-map.js');
+const { removeClass, addClass } = require('./helpers');
+
+//  Create a single global instance of a cell map.
+const cellMap = new CellMap();
+
+//  Find the segment of an answer a specific letter is in.
+function getAnswerSegment(answerStructure, letterIndex) {
+  let remainingIndex = letterIndex;
+  for (let i = 0; i < answerStructure.length; i++) {
+    if (remainingIndex <= answerStructure[i].length) {
+      return [answerStructure[i], remainingIndex];
+    }
+    remainingIndex -= answerStructure[i].length;
+  }
 }
-function addClass(element, className) {
-  element.className += ` ${className}`;
-}
 
-//  Internally used map of Crossword model data to DOM elements.
-function CellMap() {
-  this.map = [];
-}
-
-//  Adds a Cell <-> Cell Element mapping.
-CellMap.prototype.add = function (cell, cellElement) {
-  this.map.push({
-    cell,
-    cellElement,
-  });
-};
-
-//  Gets the DOM element for a cell.
-CellMap.prototype.getCellElement = function (cell) {
-  for (let i = 0; i < this.map.length; i++) {
-    if (this.map[i].cell === cell) {
-      return this.map[i].cellElement;
-    }
-  }
-  return null;
-};
-
-//  Gets the cell for a DOM element.
-CellMap.prototype.getCell = function (cellElement) {
-  for (let i = 0; i < this.map.length; i++) {
-    if (this.map[i].cellElement === cellElement) {
-      return this.map[i].cell;
-    }
-  }
-  return null;
-};
-
-
-//  Removes entries for a crossword.
-CellMap.prototype.removeCrosswordCells = function removeCrosswordCells(crossword) {
-  for (let i = 0; i < this.map.length; i++) {
-    if (this.map[i].cell.crossword === crossword) {
-      this.map.splice(i, 1);
-    }
-  }
-};
-
-const getCellElementData = function getCellElementData(cellElement) {
-  for (let i = 0; i < cellMap.length; i++) {
-    if (cellMap[i].cellElement === cellElement) {
-      return cellMap[i];
-    }
-  }
-  return null;
-};
-
-//  Creates the DOM representation of a Crossword.
-function CrosswordDOM(crossword, parentElement) {
+function CrosswordDOM(document, crossword, parentElement) {
   this.crossword = crossword;
   this.parentElement = parentElement;
 
@@ -78,7 +33,7 @@ function CrosswordDOM(crossword, parentElement) {
       const cell = crossword.cells[x][y];
 
       //  Build the cell element and add it to the row.
-      const cellElement = this._createCellDOM(cell);
+      const cellElement = this._createCellDOM(document, cell);
       row.appendChild(cellElement);
 
       //  Update the map of cells
@@ -121,7 +76,7 @@ CrosswordDOM.prototype._stateChange = function _stateChange(message, data) {
 };
 
 //  Creates DOM for a cell.
-CrosswordDOM.prototype._createCellDOM = function _createCellDOM(cell) {
+CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) {
   const self = this;
   const cellElement = document.createElement('div');
   cellElement.className = 'cwcell';
@@ -148,6 +103,50 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(cell) {
     clueLabel.innerHTML = cell.clueLabel;
     cellElement.appendChild(clueLabel);
   }
+
+  //  Get some of the variables we will need to quickly check on word separators.
+  const {
+    acrossClue,
+    acrossClueLetterIndex,
+    downClue,
+    downClueLetterIndex,
+  } = cell;
+
+  //  Check to see whether we need to add an across clue answer segment terminator.
+  if (cell.acrossClue) {
+    const [segment, index] = getAnswerSegment(acrossClue.answerStructure, acrossClueLetterIndex);
+    if (index === (segment.length - 1) && segment.terminator !== '') {
+      //  If the terminator is a normal word terminator, we just need to add a
+      //  class to the cell.
+      if (segment.terminator === ',') {
+        cellElement.className += ' cw-across-word-separator';
+      } else {
+        const acrossTerminator = document.createElement('div');
+        acrossTerminator.className = 'cw-across-terminator';
+        acrossTerminator.innerHTML = segment.terminator.replace(',', '|');
+        cellElement.appendChild(acrossTerminator);
+      }
+    }
+  }
+
+  //  Now apply the same logic for the down clues. We might be able to dedupe
+  //  this with the above a bit.
+  if (cell.downClue) {
+    const [segment, index] = getAnswerSegment(downClue.answerStructure, downClueLetterIndex);
+    if (index === (segment.length - 1) && segment.terminator !== '') {
+      //  If the terminator is a normal word terminator, we just need to add a
+      //  class to the cell.
+      if (segment.terminator === ',') {
+        cellElement.className += ' cw-down-word-separator';
+      } else {
+        const acrossTerminator = document.createElement('div');
+        acrossTerminator.className = 'cw-down-terminator';
+        acrossTerminator.innerHTML = segment.terminator.replace(',', '|');
+        cellElement.appendChild(acrossTerminator);
+      }
+    }
+  }
+
 
   //  Listen for focus events.
   inputElement.addEventListener('focus', (event) => {
@@ -380,8 +379,5 @@ CrosswordDOM.prototype._updateDOM = function _updateDOM() {
     }
   }
 };
-
-//  Create a single global instance of a cell map.
-var cellMap = new CellMap();
 
 module.exports = CrosswordDOM;

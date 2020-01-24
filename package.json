@@ -25,8 +25,9 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "test": "nyc mocha ./src/{,**/}*.specs.js",
-    "test:debug": "mocha -w ./src/{,**/}*.specs.js",
+    "test": "mocha ./src/{,**/}*.specs.js",
+    "test:cov": "nyc mocha ./src/{,**/}*.specs.js",
+    "test:debug": "mocha --inspect-brk -w ./src/{,**/}*.specs.js",
     "release": "standard-version"
   },
   "keywords": [
@@ -47,6 +48,13 @@
   },
   "homepage": "https://github.com/dwmkerr/crosswords-js#readme",
   "nyc": {
+    "all": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "src/**/*.specs.js"
+    ],
     "reporter": [
       "text",
       "html",
