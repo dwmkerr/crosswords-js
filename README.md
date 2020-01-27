@@ -119,9 +119,12 @@ This project is currently a work in progress. The overall design goals are:
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
+- [ ] feat(accessibility): add the facility to scale the crossword
+      fix the border on word separators, frags the grid
+      make font sizes flex (svg?)
+- [ ] feat(accessibility): get screenreader requirements
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
-- [ ] feat: add hyphens to separate words - requires a change to the model to support commas vs hyphens between segments of thee answer
 - [ ] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - todo: document the clue structure
-- todo: validate the clue segments properly
+- [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper

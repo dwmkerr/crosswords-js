@@ -31,6 +31,9 @@
     .selectedClue {
       font-weight: bold;
     }
+    #crossword1 {
+      max-width: 640px;
+    }
     </style>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -64,11 +67,9 @@
       <h3>{{info.title}}</h3>
       <h4>Set by {{info.setter.title}}</h4>
       <p>Originally from <a href="{{info.source}}">{{info.source}}</a>.</p>
+      <p>{{currentClue.number}}. {{currentClue.clue}} {{clue.answerStructureText}}</td>
+      <div id="crossword1"></div>
       <table>
-        <tr>
-          <td width="50%"><div id="crossword1"></div></td>
-          <td width="50%">{{currentClue.number}}. {{currentClue.clue}}</td>
-        </tr>
         <tr>
           <td>
             <p><strong>Across</strong></p>

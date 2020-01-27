@@ -1,5 +1,3 @@
-@cellSize: 28px;
-
 .crossword {
 
   display: inline-block;        
@@ -11,10 +9,10 @@
 
     .cwcell {
       position: relative;
-      width: @cellSize;
-      height: @cellSize;
       background: black;
 
+      // All cells are the same size.
+      flex: 1;
 
       border-top: 1px solid black;
       border-left: 1px solid black;
@@ -30,7 +28,7 @@
 
       .cwcluelabel {
         position: absolute;
-        font-size: 9px;
+        font-size: 0.5em;
         width: 10px;
         height: 10px;
         left: 2px;
@@ -64,7 +62,7 @@
       input { 
         font-family: sans-serif;
         font-variant: small-caps;
-        font-size: 0.9em;
+        font-size: 1em;
         font-weight: bold;
         text-align: center;
         vertical-align: middle;
@@ -76,6 +74,15 @@
           background: #E1E1FF;
         }
       }
+    }
+
+    //  This CSS hack ensures our variable-width cells have the same height
+    //  as their width - i.e. they stay square!
+    .cwcell:after {
+        content: "";
+        float:left;
+        display: block;
+        padding-top: 100%;
     }
 
     .cwcell:last-child {
@@ -100,5 +107,4 @@
   .clue {
     background: #ff0000;
   }
-
 }
