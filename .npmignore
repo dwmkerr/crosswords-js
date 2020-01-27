@@ -1,0 +1,9 @@
+.circlci/
+.nyc_output/
+.github/
+artifacts/
+docs/
+sample/
+src/
+*.*
+.*

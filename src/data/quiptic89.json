@@ -1,0 +1,130 @@
+{
+  "info": {
+    "source": "https://www.theguardian.com/crosswords/quiptic/89",
+    "title": "Quiptic crossword No 89",
+    "setter": {
+      "title": "Moley",
+      "url": "https://www.theguardian.com/profile/moley"
+    },
+    "date": "2017-07-30"
+  },
+  "width": 15,
+  "height": 15,
+  "acrossClues": [
+    {
+      "x": 2, "y": 1,
+      "clue": "1. Conspicuous influence exerted by active troops (8,5)"
+    },
+    {
+      "x": 1, "y": 3,
+      "clue": "10. A coy sort of miss pointlessly promoting lawlessness (9)"
+    },
+    {
+      "x": 11, "y": 3,
+      "clue": "11. Colour for cockney isn't soft originally (5)"
+    },
+    {
+      "x": 1, "y": 5,
+      "clue": "12. Put to rest in Tintern Abbey (5)",
+      "answer": "inter"
+    },
+    {
+      "x": 7, "y": 5,
+      "clue": "13. Suffering this, I left with the hall spinning (3-6)"
+    },
+    {
+      "x": 1, "y": 7,
+      "clue": "14. Publicity about North American student describing a gland (7)"
+    },
+    {
+      "x": 9, "y": 7,
+      "clue": "16. Artist upset class of rogues (7)"
+    },
+    {
+      "x": 1, "y": 9,
+      "clue": "18. Wrest butane, for example, from riot controller? (4-3)"
+    },
+    {
+      "x": 9, "y": 9,
+      "clue": "20. Firm to get under way with a flower show (7)"
+    },
+    {
+      "x": 1, "y": 11,
+      "clue": "21. Visibility is less, but including a prospect of being maintained (9)"
+    },
+    {
+      "x": 11, "y": 11,
+      "clue": "23. Ease pressure and put the Spanish back (5)"
+    },
+    {
+      "x": 1, "y": 13,
+      "clue": "24. Stumble? Third fielder? Rubbish! (5)"
+    },
+    {
+      "x": 7, "y": 13,
+      "clue": "25. Silly old stooge, one of a pair, in baggy trousers (9)"
+    },
+    {
+      "x": 2, "y": 15,
+      "clue": "26. Test, touch each composition and get to the point (3,2,3,5)"
+    }
+  ],
+  "downClues": [
+    {
+      "x": 3, "y": 1,
+      "clue": "2. Vic left the Spice Girl after tart turned up in restaurant (9)"
+    },
+    {
+      "x": 5, "y": 1,
+      "clue": "3. Provoke fashionable hound (5)"
+    },
+    {
+      "x": 7, "y": 1,
+      "clue": "4. First capital? (7)"
+    },
+    {
+      "x": 9, "y": 1,
+      "clue": "5. One speculating how to get better (7)"
+    },
+    {
+      "x": 11, "y": 1,
+      "clue": "6. Work with the media or a slave-driver (9)"
+    },
+    {
+      "x": 13, "y": 1,
+      "clue": "7. Cool, cool beginner on the up and up (5)"
+    },
+    {
+      "x": 1, "y": 2,
+      "clue": "8. Deadly kind of broadcasting? (13)"
+    },
+    {
+      "x": 15, "y": 2,
+      "clue": "9. The point where the action is (2,3,5,3)"
+    },
+    {
+      "x": 5, "y": 7,
+      "clue": "15. Indifferent to broken egg in Lent (9)"
+    },
+    {
+      "x": 13, "y": 7,
+      "clue": "17. Awful insult a boy mostly suffered when washing (9)"
+    },
+    {
+      "x": 7, "y": 9,
+      "clue": "19. Clipping trim animal (7)"
+    },
+    {
+      "x": 9, "y": 9,
+      "clue": "20. Money in cane container for hot spice (7)"
+    },
+    {
+      "x": 3, "y": 11,
+      "clue": "22. A French god's valediction (5)"
+    },
+    {
+      "x": 11, "y": 11,
+      "clue": "23. Tether student on drug to a tree (5)"
+    }
+  ]
+}
