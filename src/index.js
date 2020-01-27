@@ -3,9 +3,14 @@ const CrosswordDOM = require('./crossworddom');
 require('./crosswords.less');
 
 //  Define our public API.
-window.CrosswordsJS = {
+const CrosswordsJS = {
   compileCrossword,
   CrosswordDOM,
 };
 
-module.exports = window.CrosswordsJS;
+//  If we are in the browser, add the API to the global scope.
+if (typeof window !== 'undefined') {
+  window.CrosswordsJS = CrosswordsJS;
+}
+
+module.exports = CrosswordsJS;

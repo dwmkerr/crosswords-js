@@ -15,7 +15,8 @@ function getAnswerSegment(answerStructure, letterIndex) {
   }
 }
 
-function CrosswordDOM(document, crossword, parentElement) {
+function CrosswordDOM(window, crossword, parentElement) {
+  const { document } = window;
   this.crossword = crossword;
   this.parentElement = parentElement;
 
@@ -41,7 +42,24 @@ function CrosswordDOM(document, crossword, parentElement) {
     }
   }
 
+  //  For a given crossword object, this function sets the appropriate font
+  //  size based on the current crossword size.
+  const updateCrosswordFontSize = (crosswordContainer) => {
+    //  Get the width of a cell (first child of first row).
+    const cellWidth = crosswordContainer.children[0].children[0].clientWidth;
+    crosswordContainer.style.fontSize = `${cellWidth * 0.6}px`;
+  };
+
+  //  Update the fontsize when the window changes size, add the crossword, set
+  //  the correct fontsize right away.
+  window.addEventListener('resize', () => updateCrosswordFontSize(container));
   parentElement.appendChild(container);
+  updateCrosswordFontSize(container);
+
+  //  Add a helper function to allow the font to be resized programmatically,
+  //  useful if something else changes the size of the crossword.
+  this.updateFontSize = () => updateCrosswordFontSize(container);
+
   this.crosswordElement = container;
 }
 
