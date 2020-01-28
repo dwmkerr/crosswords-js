@@ -10,6 +10,8 @@
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- PT Serif webfont. -->
+    <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,700i&display=swap" rel="stylesheet">
     <script src="vendor/angular/angular.js"></script>
     <script src="sampleapp.js"></script>
 
@@ -19,7 +21,15 @@
     
     <style>
     body {
-      padding-top: 50px;
+      padding-top: 20px;
+    }
+    h1 {
+      font-family: 'PT Serif', serif;
+      font-weight: 700;
+      font-style: italic;
+    }
+    h2, h3, h4, h5, h6, p {
+      font-family: 'PT Serif', serif;
     }
     .starter-template {
       padding: 40px 15px;
@@ -43,27 +53,11 @@
   </head>
 
   <body data-spy="scroll" data-target="#mainNav" ng-controller="MainController">
-
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Crosswords.js Samples</a>
-        </div>
-        <div id="mainNav" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="https://github.com/dwmkerr/crosswords-js">GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
     <div class="container">
+      <h1>Crosswords.js</h1>
+      <p>Simple, fast, framework-free crosswords for the web.</p>
+      <p>Find out more on <a href="https://github.com/dwmkerr/crosswords-js">github.com/dwmkerr/crosswords-js</a></p>
+      <hr />
       <h3>{{info.title}}</h3>
       <h4>Set by {{info.setter.title}}</h4>
       <p>Originally from <a href="{{info.source}}">{{info.source}}</a>.</p>
