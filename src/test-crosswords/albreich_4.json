@@ -1,12 +1,11 @@
 {
   "info": {
-    "source": "https://www.theguardian.com/crosswords/quiptic/89",
-    "title": "Quiptic crossword No 89",
+    "source": "http://www.alberichcrosswords.com/pages/id4.html",
+    "title": "Alberich Crosswords - Crossword 2",
     "setter": {
-      "title": "Moley",
-      "url": "https://www.theguardian.com/profile/moley"
-    },
-    "date": "2017-07-30"
+      "title": "Alberich",
+      "url": "http://www.alberichcrosswords.com/index.html"
+    }
   },
   "width": 15,
   "height": 15,
@@ -14,7 +13,7 @@
     { "x": 1, "y": 1,
       "clue": "1. Rush around in old car, to find escaped criminal in Oz (10)"
     }, {
-      "x": 11, "y": 1,
+      "x": 12, "y": 1,
       "clue": "7. A disease singular to sponge (4)"
     }, {
       "x": 1, "y": 3,
@@ -29,7 +28,7 @@
       "x": 8, "y": 5,
       "clue": "12. I am unpretentious? No (8)"
     }, {
-      "x": 4, "y": 7,
+      "x": 1, "y": 7,
       "clue": "13. Clothe with part of a corset (4)"
     }, {
       "x": 6, "y": 7,
@@ -38,13 +37,13 @@
       "x": 1, "y": 9,
       "clue": "18. Monster horribly present on the waves (3,7)"
     }, {
-      "x": 11, "y": 9,
+      "x": 12, "y": 9,
       "clue": "20. Who should really have written _Diary of a Nobody_? (4)"
     }, {
       "x": 1, "y": 11,
-      "clue": "21. See 4"
+      "clue": "21. See 4 (3,5)"
     }, {
-      "x": 19, "y": 11,
+      "x": 10, "y": 11,
       "clue": "24. Enjoy the flavour (6)"
     }, {
       "x": 1, "y": 13,
@@ -56,7 +55,7 @@
       "x": 1, "y": 15,
       "clue": "28. Scolded infant without a trace of leniency (4)"
     }, {
-      "x": 1, "y": 15,
+      "x": 6, "y": 15,
       "clue": "29. 4,21's Mount is irregular cube next to a generation symbol (missing centrepiece) (10)"
     }
   ],
@@ -68,8 +67,8 @@
       "x": 4, "y": 1,
       "clue": "3. Told of journey to university to find poem (5)"
     }, {
-      "x": 6, "y": 1, "x2": 1, "y2": 11,
-      "clue": "4,21. The king of 7, this general axed threat strategically (9,3,5)"
+      "x": 6, "y": 1,
+      "clue": "4,21. The king of 7, this general axed threat strategically (9)"
     }, {
       "x": 8, "y": 1,
       "clue": "5. Not,we hear, a problem for 4,21 (7)"
@@ -107,3 +106,4 @@
     }
   ]
 }
+
