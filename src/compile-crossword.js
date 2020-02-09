@@ -17,6 +17,17 @@ function buildCellArray2D(crosswordModel) {
   return array;
 }
 
+//  Find the segment of an answer a specific letter is in.
+function getAnswerSegment(answerStructure, letterIndex) {
+  let remainingIndex = letterIndex;
+  for (let i = 0; i < answerStructure.length; i++) {
+    if (remainingIndex <= answerStructure[i].length) {
+      return [answerStructure[i], remainingIndex];
+    }
+    remainingIndex -= answerStructure[i].length;
+  }
+}
+
 //  The crossword class. When a crossword is built from a definition
 //  and options, this is the object which is returned.
 function compileCrossword(crosswordDefinition) {
@@ -61,6 +72,7 @@ function compileCrossword(crosswordDefinition) {
     clueModel.y = clueDefinition.y - 1;
     clueModel.across = across;
     clueModel.cells = [];
+    clueModel.clueLabel = `${clueModel.number}.`;
     model[across ? 'acrossClues' : 'downClues'].push(clueModel);
 
     //  The clue position must be in the bounds.
@@ -80,14 +92,19 @@ function compileCrossword(crosswordDefinition) {
     //  We can now mark the cells as light. If the clue has
     //  an answer (which is optional), we can validate it
     //  is coherent.
-    let { x } = clueModel;
-    let { y } = clueModel;
+    let { x, y } = clueModel;
     for (let letter = 0; letter < clueModel.totalLength; letter++) {
       const cell = model.cells[x][y];
       cell.light = true;
       cell[across ? 'acrossClue' : 'downClue'] = clueModel;
       cell[across ? 'acrossClueLetterIndex' : 'downClueLetterIndex'] = letter;
       clueModel.cells.push(cell);
+
+      //  Check if we need to add an answer terminator.
+      const [segment, index] = getAnswerSegment(clueModel.answerStructure, letter);
+      if (index === (segment.length - 1) && segment.terminator !== '') {
+        cell[clueModel.across ? 'acrossTerminator' : 'downTerminator'] = segment.terminator;
+      }
 
       //  If the clue has an answer we set it in the cell...
       if (clueModel.answer) {
@@ -112,6 +129,53 @@ function compileCrossword(crosswordDefinition) {
       }
     }
   }
+
+  //  Now that we have constructed the full model, we will connect the non-linear
+  //  clues.
+  const allClues = model.acrossClues.concat(model.downClues);
+  allClues.forEach((clue) => {
+    //  Skip clues without a connected clue.
+    if (!clue.connectedClueNumbers) return;
+
+    //  Find the connected clues.
+    clue.connectedClues = clue.connectedClueNumbers.map((connectedClue) => {
+      if (connectedClue.direction === 'across') {
+        return model.acrossClues.find((ac) => ac.number === connectedClue.number);
+      }
+      if (connectedClue.direction === 'down') {
+        return model.downClues.find((ac) => ac.number === connectedClue.number);
+      }
+      return model.acrossClues.find((ac) => ac.number === connectedClue.number)
+        || model.downClues.find((ac) => ac.number === connectedClue.number);
+    });
+
+    //  Rebuild the answer structure text.
+    clue.answerStructureText = '('
+      + [clue.answerStructureText].concat(clue.connectedClues
+        .map((cc) => cc.answerStructureText)).join(',').replace(/[()]/g, '')
+      + ')';
+
+    //  Each clue should know its parent 'master clue' as well as the next and
+    //  previous clue segments.
+    let clueSegmentIndex = 0;
+    const clueSegments = [clue].concat(clue.connectedClues);
+    clueSegments.forEach((cs) => {
+      if (clueSegmentIndex > 0) cs.previousClueSegment = clueSegments[clueSegmentIndex - 1];
+      if (clueSegmentIndex < (clueSegments.length - 1)) cs.nextClueSegment = clueSegments[clueSegmentIndex + 1];
+      cs.parentClue = clueSegments[0];
+      clueSegmentIndex++;
+    });
+
+    //  Create the master clue label.
+    clue.clueLabel = `${[clue.number].concat(clue.connectedClues.map((cc) => cc.number)).join(',')}.`;
+
+    //  The connected clues need no answer structure, an indicator they are
+    //  connected clues and a back link to the master clue.
+    clue.connectedClues.forEach((cc) => {
+      cc.answerStructureText = null; // we just show the answer structure for the first clue
+      cc.isConnectedClue = true; // makes it easier to render these clues differently
+    });
+  });
 
   return model;
 }

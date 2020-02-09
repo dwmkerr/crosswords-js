@@ -46,4 +46,21 @@ describe('compileClue', () => {
     ]);
     expect(clueModel.answerStructureText).to.eql('(5,3-4)');
   });
+
+  it('should compile the connected clue numbers', () => {
+    const clueModel = compileClue('9,3a,4. Clue (5,3-4)');
+    expect(clueModel.number).to.eql(9);
+    expect(clueModel.clue).to.eql('Clue ');
+    expect(clueModel.totalLength).to.eql(12);
+    expect(clueModel.answerStructure).to.eql([
+      { length: 5, terminator: ',' },
+      { length: 3, terminator: '-' },
+      { length: 4, terminator: '' },
+    ]);
+    expect(clueModel.answerStructureText).to.eql('(5,3-4)');
+    expect(clueModel.connectedClueNumbers).to.eql([
+      { number: 3, direction: 'across' },
+      { number: 4, direction: null },
+    ]);
+  });
 });

@@ -22,11 +22,14 @@
     <style>
     body {
       padding-top: 20px;
+      font-size: 20px; /* the only pixels we will use, the rest will be in ems */
     }
+    
     h1 {
       font-family: 'PT Serif', serif;
       font-weight: 700;
       font-style: italic;
+      font-size: 3em;
     }
     h2, h3, h4, h5, h6, p {
       font-family: 'PT Serif', serif;
@@ -39,6 +42,7 @@
       padding: 40px 15px;
     }
     .selectedClue {
+      background-color: #fff7b2;
       font-weight: bold;
     }
     #crossword1 {
@@ -58,20 +62,24 @@
       <p>Simple, fast, framework-free crosswords for the web.</p>
       <p>Find out more on <a href="https://github.com/dwmkerr/crosswords-js">github.com/dwmkerr/crosswords-js</a></p>
       <hr />
-      <h3>{{info.title}}</h3>
-      <h4>Set by {{info.setter.title}}</h4>
+      <h3>{{info.title}} <small><em>Set by {{info.setter.title}}</em></small></h3>
+      <h4></h4>
       <p>Originally from <a href="{{info.source}}">{{info.source}}</a>.</p>
-      <p>{{currentClue.number}}. {{currentClue.clue}} {{clue.answerStructureText}}</td>
+      <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clue}} {{currentClue.answerStructureText}}</td>
       <div id="crossword1"></div>
       <table>
         <tr>
           <td>
             <p><strong>Across</strong></p>
-            <p><span ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.number}}. {{clue.clue}} {{clue.answerStructureText}}<br /></span></p>
+            <div ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
+              <p>{{clue.clueLabel}} {{clue.clue}} {{clue.answerStructureText}}</p>
+            </div>
           </td>
           <td>
             <p><strong>Down</strong></p>
-            <p><span ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isSelectedClue(clue)}">{{clue.number}}. {{clue.clue}} {{clue.answerStructureText}}<br /></span></p> 
+            <div ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
+              <p>{{clue.clueLabel}} {{clue.clue}} {{clue.answerStructureText}}</p>
+            </div>
           </td>
         </tr>
       </table>

@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const compileCrossword = require('./compile-crossword');
-const quiptic89 = require('./data/quiptic89.json');
+const quiptic89 = require('./test-crosswords/quiptic89.json');
+const albreich4 = require('./test-crosswords/albreich_4.json');
 
 describe('model generation', () => {
   it('should fail if no definition is provided', () => {
@@ -108,5 +109,24 @@ describe('model generation', () => {
     };
 
     expect(() => { compileCrossword(crosswordDefinition); }).to.throw('Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer.');
+  });
+
+  it('should correctly construct non-linear clues', () => {
+    //  Non-linear clues are clues which have an answer that does fit in a
+    //  single contiguous block, but instead is split into multiple sections.
+    const crossword = compileCrossword(albreich4);
+
+    //  Get the two clues which make up the single non-linear clue.
+    const clue4down = crossword.downClues.find((dc) => dc.number === 4);
+    const clue21across = crossword.acrossClues.find((ac) => ac.number === 21);
+
+    //  Check we've found the clues.
+    expect(clue4down).not.to.equal(null);
+    expect(clue21across).not.to.equal(null);
+
+    //  Make sure the connected clues are set.
+    expect(clue4down.connectedClues).to.eql([clue21across]);
+    expect(clue4down.answerStructureText).to.eql('(9,3,5)');
+    expect(clue4down.clueLabel).to.eql('4,21.');
   });
 });

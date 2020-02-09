@@ -1,19 +1,13 @@
 const CellMap = require('./cell-map.js');
 const { removeClass, addClass } = require('./helpers');
 
+//  Last element of an array.
+function last(arr) {
+  return arr.length === 0 ? arr[0] : arr[arr.length - 1];
+}
+
 //  Create a single global instance of a cell map.
 const cellMap = new CellMap();
-
-//  Find the segment of an answer a specific letter is in.
-function getAnswerSegment(answerStructure, letterIndex) {
-  let remainingIndex = letterIndex;
-  for (let i = 0; i < answerStructure.length; i++) {
-    if (remainingIndex <= answerStructure[i].length) {
-      return [answerStructure[i], remainingIndex];
-    }
-    remainingIndex -= answerStructure[i].length;
-  }
-}
 
 function CrosswordDOM(window, crossword, parentElement) {
   const { document } = window;
@@ -73,6 +67,7 @@ CrosswordDOM.prototype.selectClue = function selectClue(clue) {
 
 //  Completely cleans up the crossword.
 CrosswordDOM.prototype.destroy = function destroy() {
+  //  TODO: we should also clean up the resize listener.
   //  Clear the map, DOM and state change handler.
   cellMap.removeCrosswordCells(this.crossword);
   this.parentElement.removeChild(this.crosswordElement);
@@ -81,6 +76,8 @@ CrosswordDOM.prototype.destroy = function destroy() {
 
 //  Sends a state change message.
 CrosswordDOM.prototype._stateChange = function _stateChange(message, data) {
+  //  TODO: we could probably inherit from EventEmitter as a more standard way
+  //  to implement this functionality.
   const eventHandler = this.onStateChanged;
   if (!eventHandler) {
     return;
@@ -122,49 +119,22 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
     cellElement.appendChild(clueLabel);
   }
 
-  //  Get some of the variables we will need to quickly check on word separators.
-  const {
-    acrossClue,
-    acrossClueLetterIndex,
-    downClue,
-    downClueLetterIndex,
-  } = cell;
-
   //  Check to see whether we need to add an across clue answer segment terminator.
-  if (cell.acrossClue) {
-    const [segment, index] = getAnswerSegment(acrossClue.answerStructure, acrossClueLetterIndex);
-    if (index === (segment.length - 1) && segment.terminator !== '') {
-      //  If the terminator is a normal word terminator, we just need to add a
-      //  class to the cell.
-      if (segment.terminator === ',') {
-        cellElement.className += ' cw-across-word-separator';
-      } else {
-        const acrossTerminator = document.createElement('div');
-        acrossTerminator.className = 'cw-across-terminator';
-        acrossTerminator.innerHTML = segment.terminator.replace(',', '|');
-        cellElement.appendChild(acrossTerminator);
-      }
-    }
+  if (cell.acrossTerminator === ',') {
+    cellElement.className += ' cw-across-word-separator';
+  } else if (cell.acrossTerminator === '-') {
+    const acrossTerminator = document.createElement('div');
+    acrossTerminator.className = 'cw-across-terminator';
+    acrossTerminator.innerHTML = '|';
+    cellElement.appendChild(acrossTerminator);
+  } else if (cell.downTerminator === ',') {
+    cellElement.className += ' cw-down-word-separator';
+  } else if (cell.downTerminator === '-') {
+    const acrossTerminator = document.createElement('div');
+    acrossTerminator.className = 'cw-down-terminator';
+    acrossTerminator.innerHTML = '|';
+    cellElement.appendChild(acrossTerminator);
   }
-
-  //  Now apply the same logic for the down clues. We might be able to dedupe
-  //  this with the above a bit.
-  if (cell.downClue) {
-    const [segment, index] = getAnswerSegment(downClue.answerStructure, downClueLetterIndex);
-    if (index === (segment.length - 1) && segment.terminator !== '') {
-      //  If the terminator is a normal word terminator, we just need to add a
-      //  class to the cell.
-      if (segment.terminator === ',') {
-        cellElement.className += ' cw-down-word-separator';
-      } else {
-        const acrossTerminator = document.createElement('div');
-        acrossTerminator.className = 'cw-down-terminator';
-        acrossTerminator.innerHTML = segment.terminator.replace(',', '|');
-        cellElement.appendChild(acrossTerminator);
-      }
-    }
-  }
-
 
   //  Listen for focus events.
   inputElement.addEventListener('focus', (event) => {
@@ -187,9 +157,16 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
     if ((across && !down) || (!across && down)) {
       self.currentClue = across || down;
     } else {
-      //  We've got across AND down. Prefer across, unless we've on the
-      //  first letter of a down clue only
-      self.currentClue = cell.downClueLetterIndex === 0 && cell.acrossClueLetterIndex !== 0 ? down : across;
+      //  We've got across AND down. If we are moving between clue segments,
+      //  prefer to choose the next/previous segment...
+      if (across && self.currentClue && (across === self.currentClue.previousClueSegment || across === self.nextClueSegment)) {
+        self.currentClue = across;
+      } else if (self.currentClue && (down === self.currentClue.previousClueSegment || down === self.nextClueSegment)) {
+        self.currentClue = down;
+      } else {
+        //  ...otherwise, Prefer across, unless we've on the first letter of a down clue only
+        self.currentClue = cell.downClueLetterIndex === 0 && cell.acrossClueLetterIndex !== 0 ? down : across;
+      }
     }
 
     //  Update the DOM, inform of state change.
@@ -211,6 +188,12 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
       const previousIndex = currentIndex - 1;
       if (previousIndex >= 0) {
         self.currentClue.cells[previousIndex].cellElement.querySelector('input').focus();
+      }
+
+      //  If the current index is zero, we might need to go to the previous clue
+      //  segment (for a non-linear clue).
+      if (currentIndex === 0 && self.currentClue.previousClueSegment) {
+        last(self.currentClue.previousClueSegment.cells).cellElement.querySelector('input').focus();
       }
     } else if (event.keyCode === 9) { // tab
       //  We don't want default behaviour.
@@ -291,7 +274,7 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
       while (sourceNormalised.length <= index) sourceNormalised += ' ';
       const seek = Math.max(index, sourceNormalised.length);
       for (let i = 0; i < seek; i++) {
-        result += i == index ? newLetter : sourceNormalised[i];
+        result += i === index ? newLetter : sourceNormalised[i];
       }
       return result;
     }
@@ -307,17 +290,20 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
     if (nextIndex < clue.cells.length) {
       clue.cells[nextIndex].cellElement.querySelector('input').focus();
     }
+
+    //  If we are at the end of the clue and we have a next segment, select it.
+    if (nextIndex === clue.cells.length && clue.nextClueSegment) {
+      clue.nextClueSegment.cells[0].cellElement.querySelector('input').focus();
+    }
   });
 
   //  Listen for keyup events.
   cellElement.addEventListener('keyup', (event) => {
     switch (event.keyCode) {
       case 37: // left
-
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
-        var { x } = cell;
-        var { y } = cell;
+        var { x, y } = cell;
 
         //  If we can go left, go left.
         if (cell.x > 0 && cell.crossword.cells[x - 1][y].light === true) {
@@ -328,8 +314,7 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
       case 38: // up
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
-        var { x } = cell;
-        var { y } = cell;
+        var { x, y } = cell;
 
         //  If we can go up, go up.
         if (cell.y > 0 && cell.crossword.cells[x][y - 1].light === true) {
@@ -341,8 +326,7 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
         var { width } = cell.crossword;
-        var { x } = cell;
-        var { y } = cell;
+        var { x, y } = cell;
 
         //  If we can go right, go right.
         if (cell.x + 1 < width && cell.crossword.cells[x + 1][y].light === true) {
@@ -354,8 +338,7 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
         var cellElement = event.target.parentNode;
         var cell = cellMap.getCell(cellElement);
         var { height } = cell.crossword;
-        var { x } = cell;
-        var { y } = cell;
+        var { x, y } = cell;
 
         //  If we can go down, go down.
         if (cell.y + 1 < height && cell.crossword.cells[x][y + 1].light === true) {
@@ -367,8 +350,8 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
         //  todo
         break;
 
-      default: // anything else...
-        //  todo
+      //  No action needed for any other keys.
+      default:
         break;
     }
   });
@@ -383,19 +366,23 @@ CrosswordDOM.prototype._updateDOM = function _updateDOM() {
   const activeClue = this.currentClue;
   const { crossword } = this;
 
-  //  Deactivate all cells, except those which match the clue.
-  for (let x = 0; x < crossword.cells.length; x++) {
-    for (let y = 0; y < crossword.cells[x].length; y++) {
-      const cell = crossword.cells[x][y];
-      if (cell.light === true) {
-        if ((cell.acrossClue === activeClue) || (cell.downClue === activeClue)) {
-          addClass(cellMap.getCellElement(cell).querySelector('input'), 'active');
-        } else {
-          removeClass(cellMap.getCellElement(cell).querySelector('input'), 'active');
-        }
-      }
-    }
-  }
+  //  Clear all clue cells.
+  crossword.cells.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell.light) removeClass(cellMap.getCellElement(cell).querySelector('input'), 'active');
+    });
+  });
+
+  //  Highlight the clue cells. 'parentClue' is set if this is the later part of
+  //  a non-linear clue.
+  const clues = activeClue.parentClue
+    ? [activeClue.parentClue].concat(activeClue.parentClue.connectedClues)
+    : [activeClue];
+  clues.forEach((clue) => {
+    clue.cells.forEach((cell) => {
+      addClass(cellMap.getCellElement(cell).querySelector('input'), 'active');
+    });
+  });
 };
 
 module.exports = CrosswordDOM;
