@@ -121,14 +121,14 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
 
   //  Check to see whether we need to add an across clue answer segment terminator.
   if (cell.acrossTerminator === ',') {
-    cellElement.className += ' cw-across-word-separator';
+    inputElement.className += ' cw-across-word-separator';
   } else if (cell.acrossTerminator === '-') {
     const acrossTerminator = document.createElement('div');
     acrossTerminator.className = 'cw-across-terminator';
     acrossTerminator.innerHTML = '|';
     cellElement.appendChild(acrossTerminator);
   } else if (cell.downTerminator === ',') {
-    cellElement.className += ' cw-down-word-separator';
+    inputElement.className += ' cw-down-word-separator';
   } else if (cell.downTerminator === '-') {
     const acrossTerminator = document.createElement('div');
     acrossTerminator.className = 'cw-down-terminator';

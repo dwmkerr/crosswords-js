@@ -135,7 +135,7 @@ This is a little fiddly. I have tried to ensure the syntax is as close to what a
 
 Note that the _answer structure_ (which would be `(9,3,5)` in a linear clue) has separated. However, the crossword will render the full answer structure for the first clue (and nothing for the others).
 
-An example of a crossword with many non-linear clues is at: https://www.theguardian.com/crosswords/cryptic/28038
+An example of a crossword with many non-linear clues is at: https://www.theguardian.com/crosswords/cryptic/28038 - I have used this crossword for testing (but not included the definition in the codebase as I don't have permissions to distribute it).
 
 ## Design Goals
 
@@ -149,7 +149,7 @@ This project is currently a work in progress. The overall design goals are:
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
-- [ ] fix: the border on word separators slightly offsets the rendering of the grid
+- [x] fix: the border on word separators slightly offsets the rendering of the grid
 - [ ] feat(accessibility): get screenreader requirements
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
