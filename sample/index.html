@@ -30,15 +30,15 @@
       font-style: italic;
       font-size: 3em;
     }
-    h2, h3, h4, h5, h6, p {
+    h2, h3, h4, h5, h6 {
       font-family: 'PT Serif', serif;
     }
-    .starter-template {
-      padding: 40px 15px;
-      text-align: center;
+    p {
+      font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Lucida Grande', sans-serif;
     }
-    .sample {
-      padding: 40px 15px;
+    .small {
+      font-size: 0.9em;
+      color: #bebebe;
     }
     .selectedClue {
       background-color: #fff7b2;
@@ -63,7 +63,8 @@
       <hr />
       <h3>{{info.title}} <small><em>Set by {{info.setter.title}}</em></small></h3>
       <h4></h4>
-      <p>Originally from <a href="{{info.source}}">{{info.source}}</a>.</p>
+      <p class="small">Original source: <a href="{{info.source}}">{{info.source}}</a>.</p>
+      <hr />
       <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clue}} {{currentClue.answerStructureText}}</td>
       <div id="crossword1"></div>
       <table>
