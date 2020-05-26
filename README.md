@@ -18,9 +18,9 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 <!-- vim-markdown-toc GFM -->
 
 * [Quickstart](#quickstart)
-    * [Coding](#coding)
-    * [Keyboard Functionality](#keyboard-functionality)
-    * [Crossword Definition Tips](#crossword-definition-tips)
+* [Developer Guide](#developer-guide)
+* [Keyboard Functionality](#keyboard-functionality)
+* [Crossword Definition Tips](#crossword-definition-tips)
 * [Design Goals](#design-goals)
 * [TODO](#todo)
 
@@ -82,7 +82,7 @@ The model can be used to build the DOM for a crossword:
 var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, document.body);
 ```
 
-### Coding
+## Developer Guide
 
 Ensure you are using Node LTS. I recommend using [Node Version Manager](https://github.com/nvm-sh/nvm) for this:
 
@@ -105,7 +105,7 @@ Run the tests with:
 npm test
 ```
 
-### Keyboard Functionality
+## Keyboard Functionality
 
 - Left/Right/Up/Down: Move (if possible) to the cell in the direction specified.
 - Space: Move to the next cell in the focused clue, if one exists.
@@ -114,7 +114,7 @@ npm test
 - A-Z: Enter the character. Not locale aware!
 - Enter: Switch between across and down.
 
-### Crossword Definition Tips
+## Crossword Definition Tips
 
 **How do I create a clue which spans multiple parts of a crossword?**
 
@@ -143,7 +143,7 @@ This project is currently a work in progress. The overall design goals are:
 
 1. This should be _agnostic_ to the type of crossword. It shouldn't depend on any proprietary formats or structures used by specific publications.
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
-3. This project should be _simple to us_, without requiring a lot of third party dependencies or knowledge.
+3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
 
 ## TODO
 
