@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="sampleapp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Dave Kerr">
+    <title>CrosswordJS Sample</title>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- PT Serif webfont. -->
+    <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,700i&display=swap" rel="stylesheet">
+    <script src="vendor/angular/angular.js"></script>
+    <script src="sampleapp.js"></script>
+
+    <!-- Rock out some crosswords.js -->
+    <link href="crosswords.css" rel="stylesheet">
+    <script src="crosswords.js"></script>
+    
+    <style>
+    body {
+      font-size: 20px; /* the only pixels we will use, the rest will be in ems */
+    }
+    
+    h1 {
+      font-family: 'PT Serif', serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 3em;
+    }
+    h2, h3, h4, h5, h6 {
+      font-family: 'PT Serif', serif;
+    }
+    p {
+      font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Lucida Grande', sans-serif;
+    }
+    .small {
+      font-size: 0.9em;
+      color: #bebebe;
+    }
+    .selectedClue {
+      background-color: #fff7b2;
+      font-weight: bold;
+    }
+    #crossword1 {
+      max-width: 640px;
+    }
+    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body data-spy="scroll" data-target="#mainNav" ng-controller="MainController">
+    <div class="container">
+      <h1>Crosswords.js</h1>
+      <p>Simple, fast, framework-free crosswords for the web.</p>
+      <p>Find out more on <a href="https://github.com/dwmkerr/crosswords-js">github.com/dwmkerr/crosswords-js</a></p>
+      <hr />
+      <h3>{{info.title}} <small><em>Set by {{info.setter.title}}</em></small></h3>
+      <h4></h4>
+      <p class="small">Original source: <a href="{{info.source}}">{{info.source}}</a>.</p>
+      <hr />
+      <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clue}} {{currentClue.answerStructureText}}</td>
+      <div id="crossword1"></div>
+      <table>
+        <tr>
+          <td>
+            <p><strong>Across</strong></p>
+            <div ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
+              <p>{{clue.clueLabel}} {{clue.clue}} {{clue.answerStructureText}}</p>
+            </div>
+          </td>
+          <td>
+            <p><strong>Down</strong></p>
+            <div ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
+              <p>{{clue.clueLabel}} {{clue.clue}} {{clue.answerStructureText}}</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

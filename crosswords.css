@@ -1,0 +1,86 @@
+.crossword {
+  display: inline-block;
+}
+.crossword .cwrow {
+  display: flex;
+  flex-direction: row;
+}
+.crossword .cwrow .cwcell {
+  position: relative;
+  background: black;
+  flex: 1;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+}
+.crossword .cwrow .cwcell.light {
+  background: white;
+}
+.crossword .cwrow .cwcell.light input:focus {
+  outline: none;
+}
+.crossword .cwrow .cwcell .cwcluelabel {
+  position: absolute;
+  font-size: 0.5em;
+  width: 10px;
+  height: 10px;
+  left: 2px;
+  top: 0px;
+  z-index: 1;
+}
+.crossword .cwrow .cwcell .cw-across-terminator {
+  position: absolute;
+  font-size: 19px;
+  font-weight: 'bold';
+  width: 10px;
+  height: 10px;
+  right: -6px;
+  top: 0px;
+  z-index: 1;
+}
+.crossword .cwrow .cwcell .cw-down-terminator {
+  position: absolute;
+  transform-origin: top left;
+  transform: rotate(-90deg);
+  font-size: 19px;
+  font-weight: 'bold';
+  width: 10px;
+  height: 10px;
+  bottom: -14px;
+  z-index: 1;
+}
+.crossword .cwrow .cwcell input {
+  font-family: sans-serif;
+  font-variant: small-caps;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+.crossword .cwrow .cwcell input.active {
+  background: #E1E1FF;
+}
+.crossword .cwrow .cwcell:after {
+  content: "";
+  float: left;
+  display: block;
+  padding-top: 100%;
+}
+.crossword .cwrow .cwcell:last-child {
+  border-right: 1px solid black;
+}
+.crossword .cwrow .cw-across-word-separator {
+  border-right: 2px solid black;
+}
+.crossword .cwrow .cw-down-word-separator {
+  border-bottom: 2px solid black;
+}
+.crossword .cwrow:last-child .cwcell {
+  border-bottom: 1px solid black;
+}
+.crossword .clue {
+  background: #ff0000;
+}
+
