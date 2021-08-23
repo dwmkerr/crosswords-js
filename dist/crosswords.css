@@ -60,7 +60,7 @@
   width: 100%;
 }
 .crossword .cwrow .cwcell input.active {
-  background: #E1E1FF;
+  background: #FFF7B2;
 }
 .crossword .cwrow .cwcell:after {
   content: "";
@@ -72,10 +72,10 @@
   border-right: 1px solid black;
 }
 .crossword .cwrow .cw-across-word-separator {
-  border-right: 2px solid black;
+  box-shadow: inset -2px 0px 0px 0px black;
 }
 .crossword .cwrow .cw-down-word-separator {
-  border-bottom: 2px solid black;
+  box-shadow: inset 0px -2px 0px 0px black;
 }
 .crossword .cwrow:last-child .cwcell {
   border-bottom: 1px solid black;

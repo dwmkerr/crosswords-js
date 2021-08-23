@@ -26,6 +26,7 @@
   },
   "scripts": {
     "lint": "eslint src",
+    "start": "webpack-dev-server",
     "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
     "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
     "test:debug": "mocha --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.js",
