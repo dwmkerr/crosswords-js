@@ -8,10 +8,13 @@ module.exports = (env, argv) => {
     entry: './src/index.js',
 
     devServer: {
-      contentBase: path.join(__dirname, 'sample'),
+      static: {
+        directory: path.join(__dirname, 'sample')
+      },
       compress: true,
     },
 
+    mode: 'development',
 
     module: {
       rules: [
