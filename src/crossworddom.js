@@ -6,14 +6,26 @@ function last(arr) {
   return arr.length === 0 ? arr[0] : arr[arr.length - 1];
 }
 
+//  For a given crossword object, this function sets the appropriate font
+//  size based on the current crossword size.
+const updateCrosswordFontSize = (crosswordContainer) => {
+  //  Get the width of a cell (first child of first row).
+  const cellWidth = crosswordContainer.children[0].children[0].clientWidth;
+  crosswordContainer.style.fontSize = `${cellWidth * 0.6}px`;
+};
+
 //  Create a single global instance of a cell map.
-const cellMap = new CellMap();
+// const cellMap = new CellMap();
 
 class CrosswordDOM {
+  #cellMap;
+
   constructor(window, crossword, parentElement) {
     const { document } = window;
     this.crossword = crossword;
     this.parentElement = parentElement;
+
+    this.#cellMap = new CellMap();
 
     //  Now build the DOM for the crossword.
     const container = document.createElement('div');
@@ -33,17 +45,9 @@ class CrosswordDOM {
         row.appendChild(cellElement);
 
         //  Update the map of cells
-        cellMap.add(cell, cellElement);
-      }
-    }
-
-    //  For a given crossword object, this function sets the appropriate font
-    //  size based on the current crossword size.
-    const updateCrosswordFontSize = (crosswordContainer) => {
-      //  Get the width of a cell (first child of first row).
-      const cellWidth = crosswordContainer.children[0].children[0].clientWidth;
-      crosswordContainer.style.fontSize = `${cellWidth * 0.6}px`;
-    };
+        this.#cellMap.add(cell, cellElement);
+      }  
+    }  
 
     //  Update the fontsize when the window changes size, add the crossword, set
     //  the correct fontsize right away.
@@ -61,14 +65,14 @@ class CrosswordDOM {
   selectClue(clue) {
     this.currentClue = clue;
     this.#updateDOM();
-    cellMap.getCellElement(clue.cells[0]).focus();
+    this.#cellMap.getCellElement(clue.cells[0]).focus();
     this.#stateChange('clueSelected');
   }
   //  Completely cleans up the crossword.
   destroy() {
     //  TODO: we should also clean up the resize listener.
     //  Clear the map, DOM and state change handler.
-    cellMap.removeCrosswordCells(this.crossword);
+    this.#cellMap.removeCrosswordCells(this.crossword);
     this.parentElement.removeChild(this.crosswordElement);
     this.onStateChanged = null;
   }
@@ -138,7 +142,7 @@ class CrosswordDOM {
     inputElement.addEventListener('focus', (event) => {
       //  Get the cell data.
       const eventCellElement = event.target.parentNode;
-      const eventCell = cellMap.getCell(eventCellElement);
+      const eventCell = self.#cellMap.getCell(eventCellElement);
       const across = eventCell.acrossClue;
       const down = eventCell.downClue;
 
@@ -179,7 +183,7 @@ class CrosswordDOM {
     cellElement.addEventListener('keydown', (event) => {
       //  Get the cell element and cell data.
       const eventCellElement = event.target.parentNode;
-      const eventCell = cellMap.getCell(eventCellElement);
+      const eventCell = self.#cellMap.getCell(eventCellElement);
       const { crossword } = eventCell;
       const clue = self.currentClue;
 
@@ -225,7 +229,7 @@ class CrosswordDOM {
             //  Select the new clue.
             self.currentClue = newClue;
             self.#updateDOM();
-            cellMap.getCellElement(newClue.cells[0]).querySelector('input').focus();
+            self.#cellMap.getCellElement(newClue.cells[0]).querySelector('input').focus();
             break;
           }
         }
@@ -259,7 +263,7 @@ class CrosswordDOM {
 
       //  Get cell data.
       const eventCellElement = event.target.parentNode;
-      const eventCell = cellMap.getCell(eventCellElement);
+      const eventCell = self.#cellMap.getCell(eventCellElement);
       const clue = self.currentClue;
 
       //  Sets the letter of a string.
@@ -309,7 +313,7 @@ class CrosswordDOM {
     //  Listen for keyup events.
     cellElement.addEventListener('keyup', (event) => {
       const eventCellElement = event.target.parentNode;
-      const eventCell = cellMap.getCell(eventCellElement);
+      const eventCell = self.#cellMap.getCell(eventCellElement);
       const { width, height } = eventCell.crossword;
       const { x, y } = eventCell;
 
@@ -318,28 +322,28 @@ class CrosswordDOM {
           //  If we can go left, go left.
           if (eventCell.x > 0 && eventCell.crossword.cells[x - 1][y].light === true) {
             //  TODO: optimise with children[0]?
-            cellMap.getCellElement(eventCell.crossword.cells[x - 1][y]).querySelector('input').focus();
+            self.#cellMap.getCellElement(eventCell.crossword.cells[x - 1][y]).querySelector('input').focus();
           }
           break;
         case 38: // up
           //  If we can go up, go up.
           if (eventCell.y > 0 && eventCell.crossword.cells[x][y - 1].light === true) {
             //  TODO: optimise with children[0]?
-            cellMap.getCellElement(eventCell.crossword.cells[x][y - 1]).querySelector('input').focus();
+            self.#cellMap.getCellElement(eventCell.crossword.cells[x][y - 1]).querySelector('input').focus();
           }
           break;
         case 39: // right
           //  If we can go right, go right.
           if (eventCell.x + 1 < width && eventCell.crossword.cells[x + 1][y].light === true) {
             //  TODO: optimise with children[0]?
-            cellMap.getCellElement(eventCell.crossword.cells[x + 1][y]).querySelector('input').focus();
+            self.#cellMap.getCellElement(eventCell.crossword.cells[x + 1][y]).querySelector('input').focus();
           }
           break;
         case 40: // down
           //  If we can go down, go down.
           if (eventCell.y + 1 < height && eventCell.crossword.cells[x][y + 1].light === true) {
             //  TODO: optimise with children[0]?
-            cellMap.getCellElement(eventCell.crossword.cells[x][y + 1]).querySelector('input').focus();
+            self.#cellMap.getCellElement(eventCell.crossword.cells[x][y + 1]).querySelector('input').focus();
           }
           break;
         case 9: // tab
@@ -360,12 +364,13 @@ class CrosswordDOM {
     //  TODO: pick a name - active, current or selected.
     const activeClue = this.currentClue;
     const { crossword } = this;
+    const self = this;
 
     //  Clear all clue cells.
     crossword.cells.forEach((row) => {
       row.forEach((cell) => {
         if (cell.light)
-          removeClass(cellMap.getCellElement(cell).querySelector('input'), 'active');
+          removeClass(self.#cellMap.getCellElement(cell).querySelector('input'), 'active');
       });
     });
 
@@ -376,7 +381,7 @@ class CrosswordDOM {
       : [activeClue];
     clues.forEach((clue) => {
       clue.cells.forEach((cell) => {
-        addClass(cellMap.getCellElement(cell).querySelector('input'), 'active');
+        addClass(self.#cellMap.getCellElement(cell).querySelector('input'), 'active');
       });
     });
   }
