@@ -1,4 +1,4 @@
-const CellMap = require('./cell-map.js');
+const CellMap = require('./cell-map');
 const { removeClass, addClass } = require('./helpers');
 
 //  Last element of an array.
@@ -19,12 +19,12 @@ function CrosswordDOM(window, crossword, parentElement) {
   container.className = 'crossword';
 
   //  Create each cell.
-  for (let y = 0; y < crossword.height; y++) {
+  for (let y = 0; y < crossword.height; y += 1) {
     const row = document.createElement('div');
     row.className = 'cwrow';
     container.appendChild(row);
 
-    for (let x = 0; x < crossword.width; x++) {
+    for (let x = 0; x < crossword.width; x += 1) {
       const cell = crossword.cells[x][y];
 
       //  Build the cell element and add it to the row.
@@ -139,11 +139,10 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
   //  Listen for focus events.
   inputElement.addEventListener('focus', (event) => {
     //  Get the cell data.
-    const cellElement = event.target.parentNode;
-    const cell = cellMap.getCell(cellElement);
-    const { crossword } = cell;
-    const across = cell.acrossClue;
-    const down = cell.downClue;
+    const eventCellElement = event.target.parentNode;
+    const eventCell = cellMap.getCell(eventCellElement);
+    const across = eventCell.acrossClue;
+    const down = eventCell.downClue;
 
     //  If we have clicked somewhere which is part of the current clue, we
     //  will not need to change it (we won't toggle either).
@@ -156,17 +155,21 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
     //  If we have an across clue XOR a down clue, pick the one we have.
     if ((across && !down) || (!across && down)) {
       self.currentClue = across || down;
-    } else {
-      //  We've got across AND down. If we are moving between clue segments,
+    } else if (across && self.currentClue
+      && (across === self.currentClue.previousClueSegment || across === self.nextClueSegment)) {
+      //  We've got across. If we are moving between clue segments,
       //  prefer to choose the next/previous segment...
-      if (across && self.currentClue && (across === self.currentClue.previousClueSegment || across === self.nextClueSegment)) {
-        self.currentClue = across;
-      } else if (self.currentClue && (down === self.currentClue.previousClueSegment || down === self.nextClueSegment)) {
-        self.currentClue = down;
-      } else {
-        //  ...otherwise, Prefer across, unless we've on the first letter of a down clue only
-        self.currentClue = cell.downClueLetterIndex === 0 && cell.acrossClueLetterIndex !== 0 ? down : across;
-      }
+      self.currentClue = across;
+    } else if (self.currentClue
+      && (down === self.currentClue.previousClueSegment || down === self.nextClueSegment)) {
+      //  We've got down. If we are moving between clue segments,
+      //  prefer to choose the next/previous segment...
+      self.currentClue = down;
+    } else {
+      //  ...otherwise, Prefer across, unless we're on the first letter of a down clue only
+      self.currentClue = (
+        eventCell.downClueLetterIndex === 0 && eventCell.acrossClueLetterIndex !== 0
+      ) ? down : across;
     }
 
     //  Update the DOM, inform of state change.
@@ -176,15 +179,20 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
 
   //  Listen for keydown events.
   cellElement.addEventListener('keydown', (event) => {
+    //  Get the cell element and cell data.
+    const eventCellElement = event.target.parentNode;
+    const eventCell = cellMap.getCell(eventCellElement);
+    const { crossword } = eventCell;
+    const clue = self.currentClue;
+
     if (event.keyCode === 8) { // backspace
       //  Blat the contents of the cell. No need to process the backspace.
       event.preventDefault();
       event.target.value = '';
 
       //  Try and move to the previous cell of the clue.
-      var cellElement = event.target.parentNode;
-      var cell = cellMap.getCell(cellElement);
-      const currentIndex = cell.acrossClue === self.currentClue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
+      const currentIndex = (eventCell.acrossClue === self.currentClue)
+        ? eventCell.acrossClueLetterIndex : eventCell.downClueLetterIndex;
       const previousIndex = currentIndex - 1;
       if (previousIndex >= 0) {
         self.currentClue.cells[previousIndex].cellElement.querySelector('input').focus();
@@ -199,22 +207,17 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
       //  We don't want default behaviour.
       event.preventDefault();
 
-      //  Get the cell element and cell data.
-      var cellElement = event.target.parentNode;
-      var cell = cellMap.getCell(cellElement);
-      var { crossword } = cell;
-      const clue = self.currentClue;
-
       //  Get the next clue.
       const searchClues = clue.across ? crossword.acrossClues : crossword.downClues;
-      for (let i = 0; i < searchClues.length; i++) {
+      for (let i = 0; i < searchClues.length; i += 1) {
         if (clue === searchClues[i]) {
           let newClue = null;
           if (event.shiftKey) {
             if (i > 0) {
               newClue = searchClues[i - 1];
             } else {
-              newClue = clue.across ? crossword.downClues[crossword.downClues.length - 1] : crossword.acrossClues[crossword.acrossClues.length - 1];
+              newClue = clue.across ? crossword.downClues[crossword.downClues.length - 1]
+                : crossword.acrossClues[crossword.acrossClues.length - 1];
             }
           } else if (i < (searchClues.length - 1)) {
             newClue = searchClues[i + 1];
@@ -232,15 +235,11 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
       //  We don't want default behaviour.
       event.preventDefault();
 
-      //  Get the cell element and cell data.
-      var cellElement = event.target.parentNode;
-      var cell = cellMap.getCell(cellElement);
-      var { crossword } = cell;
-
-      //  If we are in a cell with an across clue AND down clue, swap the
+      //  If we are in a eventCell with an across clue AND down clue, swap the
       //  selected one.
-      if (cell.acrossClue && cell.downClue) {
-        self.currentClue = cell.acrossClue === self.currentClue ? cell.downClue : cell.acrossClue;
+      if (eventCell.acrossClue && eventCell.downClue) {
+        self.currentClue = (eventCell.acrossClue === self.currentClue)
+          ? eventCell.downClue : eventCell.acrossClue;
         self._updateDOM();
       }
     }
@@ -262,9 +261,8 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
     event.target.value = '';
 
     //  Get cell data.
-    const cellElement = event.target.parentNode;
-    const cell = cellMap.getCell(cellElement);
-    const { crossword } = cell;
+    const eventCellElement = event.target.parentNode;
+    const eventCell = cellMap.getCell(eventCellElement);
     const clue = self.currentClue;
 
     //  Sets the letter of a string.
@@ -273,19 +271,32 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
       let result = '';
       while (sourceNormalised.length <= index) sourceNormalised += ' ';
       const seek = Math.max(index, sourceNormalised.length);
-      for (let i = 0; i < seek; i++) {
-        result += i === index ? newLetter : sourceNormalised[i];
+      for (let i = 0; i < seek; i += 1) {
+        result += (i === index) ? newLetter : sourceNormalised[i];
       }
       return result;
     }
 
     //  We need to update the answer.
     const key = String.fromCharCode(event.keyCode);
-    if (cell.acrossClue) cell.acrossClue.answer = setLetter(cell.acrossClue.answer, cell.acrossClueLetterIndex, key);
-    if (cell.downClue) cell.downClue.answer = setLetter(cell.downClue.answer, cell.downClueLetterIndex, key);
+    if (eventCell.acrossClue) {
+      eventCell.acrossClue.answer = setLetter(
+        eventCell.acrossClue.answer,
+        eventCell.acrossClueLetterIndex,
+        key,
+      );
+    }
+    if (eventCell.downClue) {
+      eventCell.downClue.answer = setLetter(
+        eventCell.downClue.answer,
+        eventCell.downClueLetterIndex,
+        key,
+      );
+    }
 
     //  Move to the next cell in the clue.
-    const currentIndex = cell.acrossClue === clue ? cell.acrossClueLetterIndex : cell.downClueLetterIndex;
+    const currentIndex = (eventCell.acrossClue === clue)
+      ? eventCell.acrossClueLetterIndex : eventCell.downClueLetterIndex;
     const nextIndex = currentIndex + 1;
     if (nextIndex < clue.cells.length) {
       clue.cells[nextIndex].cellElement.querySelector('input').focus();
@@ -299,51 +310,38 @@ CrosswordDOM.prototype._createCellDOM = function _createCellDOM(document, cell) 
 
   //  Listen for keyup events.
   cellElement.addEventListener('keyup', (event) => {
+    const eventCellElement = event.target.parentNode;
+    const eventCell = cellMap.getCell(eventCellElement);
+    const { width, height } = eventCell.crossword;
+    const { x, y } = eventCell;
+
     switch (event.keyCode) {
       case 37: // left
-        var cellElement = event.target.parentNode;
-        var cell = cellMap.getCell(cellElement);
-        var { x, y } = cell;
-
         //  If we can go left, go left.
-        if (cell.x > 0 && cell.crossword.cells[x - 1][y].light === true) {
+        if (eventCell.x > 0 && eventCell.crossword.cells[x - 1][y].light === true) {
           //  TODO: optimise with children[0]?
-          cellMap.getCellElement(cell.crossword.cells[x - 1][y]).querySelector('input').focus();
+          cellMap.getCellElement(eventCell.crossword.cells[x - 1][y]).querySelector('input').focus();
         }
         break;
       case 38: // up
-        var cellElement = event.target.parentNode;
-        var cell = cellMap.getCell(cellElement);
-        var { x, y } = cell;
-
         //  If we can go up, go up.
-        if (cell.y > 0 && cell.crossword.cells[x][y - 1].light === true) {
+        if (eventCell.y > 0 && eventCell.crossword.cells[x][y - 1].light === true) {
           //  TODO: optimise with children[0]?
-          cellMap.getCellElement(cell.crossword.cells[x][y - 1]).querySelector('input').focus();
+          cellMap.getCellElement(eventCell.crossword.cells[x][y - 1]).querySelector('input').focus();
         }
         break;
       case 39: // right
-        var cellElement = event.target.parentNode;
-        var cell = cellMap.getCell(cellElement);
-        var { width } = cell.crossword;
-        var { x, y } = cell;
-
         //  If we can go right, go right.
-        if (cell.x + 1 < width && cell.crossword.cells[x + 1][y].light === true) {
+        if (eventCell.x + 1 < width && eventCell.crossword.cells[x + 1][y].light === true) {
           //  TODO: optimise with children[0]?
-          cellMap.getCellElement(cell.crossword.cells[x + 1][y]).querySelector('input').focus();
+          cellMap.getCellElement(eventCell.crossword.cells[x + 1][y]).querySelector('input').focus();
         }
         break;
       case 40: // down
-        var cellElement = event.target.parentNode;
-        var cell = cellMap.getCell(cellElement);
-        var { height } = cell.crossword;
-        var { x, y } = cell;
-
         //  If we can go down, go down.
-        if (cell.y + 1 < height && cell.crossword.cells[x][y + 1].light === true) {
+        if (eventCell.y + 1 < height && eventCell.crossword.cells[x][y + 1].light === true) {
           //  TODO: optimise with children[0]?
-          cellMap.getCellElement(cell.crossword.cells[x][y + 1]).querySelector('input').focus();
+          cellMap.getCellElement(eventCell.crossword.cells[x][y + 1]).querySelector('input').focus();
         }
         break;
       case 9: // tab
