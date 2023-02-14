@@ -1,5 +1,8 @@
-const compileCrossword = require('./compile-crossword');
-const CrosswordDOM = require('./crossworddom');
+import compileCrossword from './compile-crossword.mjs';
+import CrosswordDOM from './crossworddom.mjs';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 require('./crosswords.less');
 
 //  Define our public API.
@@ -13,4 +16,4 @@ if (typeof window !== 'undefined') {
   window.CrosswordsJS = CrosswordsJS;
 }
 
-module.exports = CrosswordsJS;
+export default CrosswordsJS;

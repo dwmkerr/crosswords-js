@@ -8,7 +8,7 @@ function addClass(element, className) {
   element.className += ` ${className}`;
 }
 
-module.exports = {
+export {
   removeClass,
   addClass,
 };

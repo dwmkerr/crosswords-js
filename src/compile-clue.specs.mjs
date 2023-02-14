@@ -1,5 +1,5 @@
-const { expect } = require('chai');
-const compileClue = require('./compile-clue');
+import { expect } from 'chai';
+import compileClue from './compile-clue.mjs';
 
 //  Clues should look like this:
 //    "<Number>. Clue Text (<Answer structure>)"

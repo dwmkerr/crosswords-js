@@ -1,7 +1,16 @@
-const { expect } = require('chai');
-const compileCrossword = require('./compile-crossword');
-const quiptic89 = require('./test-crosswords/quiptic89.json');
+import { expect } from 'chai';
+import compileCrossword from './compile-crossword.mjs';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 const albreich4 = require('./test-crosswords/albreich_4.json');
+const quiptic89 = require('./test-crosswords/quiptic89.json');
+// const quiptic89, {
+//   width as _width,
+//   height as _height,
+//   acrossClues as _acrossClues,
+//   downClues as _downClues,
+// } =require('./test-crosswords/quiptic89.json');
 
 describe('model generation', () => {
   it('should fail if no definition is provided', () => {

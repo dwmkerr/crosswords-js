@@ -1,12 +1,12 @@
-const compileClue = require('./compile-clue');
+import compileClue from './compile-clue.mjs';
 
 function buildCellArray2D(crosswordModel) {
   const x = crosswordModel.width;
   const y = crosswordModel.height;
   const array = new Array(x);
-  for (let i = 0; i < y; i++) {
+  for (let i = 0; i < y; i += 1) {
     array[i] = new Array(y);
-    for (let j = 0; j < y; j++) {
+    for (let j = 0; j < y; j += 1) {
       array[i][j] = {
         crossword: crosswordModel,
         x: i,
@@ -17,15 +17,16 @@ function buildCellArray2D(crosswordModel) {
   return array;
 }
 
-//  Find the segment of an answer a specific letter is in.
+// Find the segment of an answer a specific letter is in.
 function getAnswerSegment(answerStructure, letterIndex) {
   let remainingIndex = letterIndex;
-  for (let i = 0; i < answerStructure.length; i++) {
+  for (let i = 0; i < answerStructure.length; i += 1) {
     if (remainingIndex <= answerStructure[i].length) {
       return [answerStructure[i], remainingIndex];
     }
     remainingIndex -= answerStructure[i].length;
   }
+  return null;
 }
 
 //  The crossword class. When a crossword is built from a definition
@@ -56,7 +57,7 @@ function compileCrossword(crosswordDefinition) {
 
   //  We're going to go through the across clues, then the down clues.
   const clueDefinitions = crosswordDefinition.acrossClues.concat(crosswordDefinition.downClues);
-  for (let c = 0; c < clueDefinitions.length; c++) {
+  for (let c = 0; c < clueDefinitions.length; c += 1) {
     //  Grab the clue and build a flag letting us know if we're across or down.
     const clueDefinition = clueDefinitions[c];
     const across = c < crosswordDefinition.acrossClues.length;
@@ -76,7 +77,8 @@ function compileCrossword(crosswordDefinition) {
     model[across ? 'acrossClues' : 'downClues'].push(clueModel);
 
     //  The clue position must be in the bounds.
-    if (clueModel.x < 0 || clueModel.x >= model.width || clueModel.y < 0 || clueModel.y >= model.height) {
+    if (clueModel.x < 0 || clueModel.x >= model.width
+      || clueModel.y < 0 || clueModel.y >= model.height) {
       throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
     }
 
@@ -93,7 +95,7 @@ function compileCrossword(crosswordDefinition) {
     //  an answer (which is optional), we can validate it
     //  is coherent.
     let { x, y } = clueModel;
-    for (let letter = 0; letter < clueModel.totalLength; letter++) {
+    for (let letter = 0; letter < clueModel.totalLength; letter += 1) {
       const cell = model.cells[x][y];
       cell.light = true;
       cell[across ? 'acrossClue' : 'downClue'] = clueModel;
@@ -123,9 +125,9 @@ function compileCrossword(crosswordDefinition) {
       }
 
       if (across) {
-        x++;
+        x += 1;
       } else {
-        y++;
+        y += 1;
       }
     }
   }
@@ -150,20 +152,26 @@ function compileCrossword(crosswordDefinition) {
     });
 
     //  Rebuild the answer structure text.
-    clue.answerStructureText = '('
-      + [clue.answerStructureText].concat(clue.connectedClues
-        .map((cc) => cc.answerStructureText)).join(',').replace(/[()]/g, '')
-      + ')';
+    clue.answerStructureText = `(${
+      [clue.answerStructureText]
+        .concat(clue.connectedClues.map((cc) => cc.answerStructureText))
+        .join(',')
+        .replace(/[()]/g, '')
+    })`;
 
     //  Each clue should know its parent 'master clue' as well as the next and
     //  previous clue segments.
     let clueSegmentIndex = 0;
     const clueSegments = [clue].concat(clue.connectedClues);
     clueSegments.forEach((cs) => {
-      if (clueSegmentIndex > 0) cs.previousClueSegment = clueSegments[clueSegmentIndex - 1];
-      if (clueSegmentIndex < (clueSegments.length - 1)) cs.nextClueSegment = clueSegments[clueSegmentIndex + 1];
+      if (clueSegmentIndex > 0) {
+        cs.previousClueSegment = clueSegments[clueSegmentIndex - 1];
+      }
+      if (clueSegmentIndex < (clueSegments.length - 1)) {
+        cs.nextClueSegment = clueSegments[clueSegmentIndex + 1];
+      }
       cs.parentClue = clueSegments[0];
-      clueSegmentIndex++;
+      clueSegmentIndex += 1;
     });
 
     //  Create the master clue label.
@@ -180,4 +188,4 @@ function compileCrossword(crosswordDefinition) {
   return model;
 }
 
-module.exports = compileCrossword;
+export default compileCrossword;

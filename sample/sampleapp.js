@@ -5,7 +5,7 @@ sampleapp.controller('MainController', function($scope, $http) {
   var crossword = null;
   var crosswordDom = null;
 
-  //$http.get('crosswords/guardian_quiptic_89.json').success(function(crosswordDefinition) {
+  //$http.get('crosswords/quiptic89.json').success(function(crosswordDefinition) {
   $http.get('crosswords/albreich_4.json').success(function(crosswordDefinition) {
 
     //  Set the crossword info.
