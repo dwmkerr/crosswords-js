@@ -1,11 +1,6 @@
 const CellMap = require('./cell-map');
 const { removeClass, addClass } = require('./helpers');
 
-//  Last element of an array.
-function last(arr) {
-  return arr.length === 0 ? arr[0] : arr[arr.length - 1];
-}
-
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.
 const updateCrosswordFontSize = (crosswordContainer) => {
@@ -203,7 +198,7 @@ class CrosswordDOM {
         //  If the current index is zero, we might need to go to the previous clue
         //  segment (for a non-linear clue).
         if (currentIndex === 0 && self.currentClue.previousClueSegment) {
-          last(self.currentClue.previousClueSegment.cells).cellElement.querySelector('input').focus();
+          self.currentClue.previousClueSegment.cells.at(-1).cellElement.querySelector('input').focus();
         }
       } else if (event.keyCode === 9) { // tab
         //  We don't want default behaviour.
