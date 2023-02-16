@@ -26,7 +26,7 @@ function compileClue(clueDefinition) {
   }
 
   //  Get the clue components.
-  const [, numberText, connectedCluesText, clue, answerText] = clueRegex.exec(clueDefinition);
+  const [, numberText, connectedCluesText, clueText, answerText] = clueRegex.exec(clueDefinition);
   const number = parseInt(numberText, 10);
 
   //  If we have connected clues, break them apart.
@@ -56,7 +56,7 @@ function compileClue(clueDefinition) {
 
   return {
     number,
-    clue,
+    clueText,
     connectedClueNumbers,
     answerStructure,
     answerStructureText,
