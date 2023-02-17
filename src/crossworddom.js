@@ -1,6 +1,9 @@
 const CellMap = require('./cell-map');
 const { removeClass, addClass } = require('./helpers');
 
+const debugging = false;
+trace = (message) => { if (debugging) console.log(message) }
+
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.
 const updateCrosswordFontSize = (crosswordContainer) => {
@@ -176,6 +179,7 @@ class CrosswordDOM {
 
     //  Listen for keydown events.
     cellElement.addEventListener('keydown', (event) => {
+      trace('keydown');
       //  Get the cell element and cell data.
       const eventCellElement = event.target.parentNode;
       const eventCell = self.#cellMap.getCell(eventCellElement);
@@ -186,6 +190,8 @@ class CrosswordDOM {
         //  Blat the contents of the cell. No need to process the backspace.
         event.preventDefault();
         event.target.value = '';
+
+        // TODO: Should we also update the answer - remove the current letter?
 
         //  Try and move to the previous cell of the clue.
         const currentIndex = (eventCell.acrossClue === self.currentClue)
@@ -210,15 +216,20 @@ class CrosswordDOM {
           if (clue === searchClues[i]) {
             let newClue = null;
             if (event.shiftKey) {
+              //// shift-tab selects previous clue
               if (i > 0) {
+                // selects previous clue in same direction if not the first clue
                 newClue = searchClues[i - 1];
               } else {
+                // on first clue, wrap to last clue in other direction 
                 newClue = clue.across ? crossword.downClues[crossword.downClues.length - 1]
                   : crossword.acrossClues[crossword.acrossClues.length - 1];
               }
             } else if (i < (searchClues.length - 1)) {
+              // tab selects next clue in same direction if not the last clue
               newClue = searchClues[i + 1];
             } else {
+              // on last clue, tab wraps to first clue in other direction
               newClue = clue.across ? crossword.downClues[0] : crossword.acrossClues[0];
             }
             //  Select the new clue.
@@ -244,69 +255,75 @@ class CrosswordDOM {
 
     //  Listen for keypress events.
     cellElement.addEventListener('keypress', (event) => {
-      //  We've just pressed a key that generates a char. In all
-      //  cases, we're going to overwrite by blatting the current
-      //  content. If the key is space, we suppress so we don't get
-      //  a space, then we always move to the next cell in the clue.
-      //  No spaces in empty cells.
-      if (event.keyCode === 32) {
-        event.preventDefault();
-      }
-
-      //  Blat current content.
-      event.target.value = '';
-
+      trace('keypress');
+      // We've just pressed a key that generates a char.
+      // Stop default handling for input component
+      event.preventDefault();
+      
       //  Get cell data.
       const eventCellElement = event.target.parentNode;
       const eventCell = self.#cellMap.getCell(eventCellElement);
       const clue = self.currentClue;
 
-      //  Sets the letter of a string.
-      function setLetter(source, index, newLetter) {
-        let sourceNormalised = source === null || source === undefined ? '' : source;
-        let result = '';
-        while (sourceNormalised.length <= index)
+      //  If the key is space, we suppress so we don't get
+      //  a space. No spaces in empty cells.
+      if (event.keyCode !== 32) {
+        
+        //  Sets the letter of a string.
+        function setLetter(source, index, newLetter) {
+          let sourceNormalised = source === null || source === undefined ? '' : source;
+          let result = '';
+          while (sourceNormalised.length <= index)
           sourceNormalised += ' ';
-        const seek = Math.max(index, sourceNormalised.length);
-        for (let i = 0; i < seek; i += 1) {
-          result += (i === index) ? newLetter : sourceNormalised[i];
+          const seek = Math.max(index, sourceNormalised.length);
+          for (let i = 0; i < seek; i += 1) {
+            result += (i === index) ? newLetter : sourceNormalised[i];
+          }
+          return result;
         }
-        return result;
+        
+        //  Override current content with the pressed key character
+        event.target.value = String.fromCharCode(event.keyCode);
+
+        //  We need to update the answer.
+        const key = String.fromCharCode(event.keyCode);
+        if (eventCell.acrossClue) {
+          eventCell.acrossClue.answer = setLetter(
+            eventCell.acrossClue.answer,
+            eventCell.acrossClueLetterIndex,
+            key
+          );
+        }
+        if (eventCell.downClue) {
+          eventCell.downClue.answer = setLetter(
+            eventCell.downClue.answer,
+            eventCell.downClueLetterIndex,
+            key
+          );
+        }
       }
 
-      //  We need to update the answer.
-      const key = String.fromCharCode(event.keyCode);
-      if (eventCell.acrossClue) {
-        eventCell.acrossClue.answer = setLetter(
-          eventCell.acrossClue.answer,
-          eventCell.acrossClueLetterIndex,
-          key
-        );
-      }
-      if (eventCell.downClue) {
-        eventCell.downClue.answer = setLetter(
-          eventCell.downClue.answer,
-          eventCell.downClueLetterIndex,
-          key
-        );
-      }
-
+      trace('Advancing to next cell')
       //  Move to the next cell in the clue.
       const currentIndex = (eventCell.acrossClue === clue)
         ? eventCell.acrossClueLetterIndex : eventCell.downClueLetterIndex;
+      trace(`current cell index: ${currentIndex}`)
       const nextIndex = currentIndex + 1;
       if (nextIndex < clue.cells.length) {
+        trace(`Focussing next cell index: ${nextIndex}`)
         clue.cells[nextIndex].cellElement.querySelector('input').focus();
       }
 
       //  If we are at the end of the clue and we have a next segment, select it.
       if (nextIndex === clue.cells.length && clue.nextClueSegment) {
+        trace(`Focussing next answer segment cell index 0`)
         clue.nextClueSegment.cells[0].cellElement.querySelector('input').focus();
       }
     });
 
     //  Listen for keyup events.
     cellElement.addEventListener('keyup', (event) => {
+      trace('keyup');
       const eventCellElement = event.target.parentNode;
       const eventCell = self.#cellMap.getCell(eventCellElement);
       const { width, height } = eventCell.crossword;
@@ -356,6 +373,7 @@ class CrosswordDOM {
   //  Updates the DOM based on the model, ensuring that the CSS
   //  is correct for the state (i.e. the selected clue).
   #updateDOM() {
+    trace('#updateDOM');
     //  TODO: pick a name - active, current or selected.
     const activeClue = this.currentClue;
     const { crossword } = this;
