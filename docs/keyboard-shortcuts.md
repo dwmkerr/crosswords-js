@@ -9,11 +9,14 @@
 ## Default
 
 - ARROW KEYS: Move (if possible) to the cell in the direction specified.
-- SPACE: Move to the next cell in the focused clue, if one exists.
+- SPACEBAR: Move to the next cell in the focused clue, if one exists.
 - BACKSPACE: Move to the previous cell in the focused clue, if one exists.
 - TAB: Move to the first cell of the next clue, 'wrapping' to the first clue.
   - SHIFT-TAB reverses the direction
-- A-Z: Enter the character. Not locale aware!
+  - *BUG: Selected clue and highlighted clue in clue list does not update with change of clue.*
+- A-Z: Enter the character and advance to next character in clue. Not locale aware!
+  - *BUG: Keys outside range A-Z are not suppressed.* 
+  - *BUG: Shifted letter-keys result in bolded character in cell*
 - ENTER: Switch between across and down.
   - *BUG: Selected clue and highlighted clue in clue list does not update with change of direction.*
 
@@ -21,7 +24,7 @@
 
 - Clue list cannot be selected via the keyboard.
 - No keyboard navigation within the clue list.
-- Arrow key movement is bounded to current clue. Change of direction is possible at crossing clue intersection.
+- Arrow key movement is bounded to current clue - by design? Tab used to navigate *between* clues. Change of direction/clue is possible at crossing clue intersection.
 
 ## [The Age][1] (Melbourne, Australia)
 
