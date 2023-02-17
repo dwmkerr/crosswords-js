@@ -13,13 +13,8 @@
 - BACKSPACE: Move to the previous cell in the focused clue, if one exists.
 - TAB: Move to the first cell of the next clue, 'wrapping' to the first clue.
   - SHIFT-TAB reverses the direction
-  - *BUG: Selected clue and highlighted clue in clue list does not update with change of clue.*
 - A-Z: Enter the character and advance to next character in clue. Not locale aware!
-  - *BUG: Keys outside range A-Z are not suppressed.* 
-  - *BUG: Shifted letter-keys result in bolded character in cell*
 - ENTER: Switch between across and down.
-  - *BUG: Selected clue and highlighted clue in clue list does not update with change of direction.*
-
 ### Problems
 
 - Clue list cannot be selected via the keyboard.

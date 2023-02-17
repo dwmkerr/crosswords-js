@@ -1,8 +1,13 @@
 const CellMap = require('./cell-map');
 const { removeClass, addClass } = require('./helpers');
 
-const debugging = false;
-trace = (message) => { if (debugging) console.log(message) }
+// Configure trace logging
+const tracing = true;
+trace = (message) => { if (tracing) console.log(message) }
+
+// Regular expressions for keypress processing
+const legalCharacters = /^[A-zA-Z]$/
+const advancingCharacters = /^[ A-zA-Z]$/
 
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.
@@ -11,9 +16,6 @@ const updateCrosswordFontSize = (crosswordContainer) => {
   const cellWidth = crosswordContainer.children[0].children[0].clientWidth;
   crosswordContainer.style.fontSize = `${cellWidth * 0.6}px`;
 };
-
-//  Create a single global instance of a cell map.
-// const cellMap = new CellMap();
 
 class CrosswordDOM {
   #cellMap;
@@ -174,6 +176,7 @@ class CrosswordDOM {
 
       //  Update the DOM, inform of state change.
       self.#updateDOM();
+      // Inform listeners of current clue change
       self.#stateChange('clueSelected');
     });
 
@@ -187,11 +190,8 @@ class CrosswordDOM {
       const clue = self.currentClue;
 
       if (event.keyCode === 8) { // backspace
-        //  Blat the contents of the cell. No need to process the backspace.
+        //  We don't want default behaviour.
         event.preventDefault();
-        event.target.value = '';
-
-        // TODO: Should we also update the answer - remove the current letter?
 
         //  Try and move to the previous cell of the clue.
         const currentIndex = (eventCell.acrossClue === self.currentClue)
@@ -236,6 +236,8 @@ class CrosswordDOM {
             self.currentClue = newClue;
             self.#updateDOM();
             self.#cellMap.getCellElement(newClue.cells[0]).querySelector('input').focus();
+            // Inform listeners of current clue change
+            self.#stateChange('clueSelected');
             break;
           }
         }
@@ -249,6 +251,8 @@ class CrosswordDOM {
           self.currentClue = (eventCell.acrossClue === self.currentClue)
             ? eventCell.downClue : eventCell.acrossClue;
           self.#updateDOM();
+          // Inform listeners of current clue change
+          self.#stateChange('clueSelected');
         }
       }
     });
@@ -265,9 +269,11 @@ class CrosswordDOM {
       const eventCell = self.#cellMap.getCell(eventCellElement);
       const clue = self.currentClue;
 
-      //  If the key is space, we suppress so we don't get
-      //  a space. No spaces in empty cells.
-      if (event.keyCode !== 32) {
+      // Exclude processing of all keys outside A-Z
+      const character = String.fromCharCode(event.keyCode).toLowerCase();
+      trace (`character:<${character}>`)
+    
+      if (legalCharacters.test(character)) {
         
         //  Sets the letter of a string.
         function setLetter(source, index, newLetter) {
@@ -282,42 +288,43 @@ class CrosswordDOM {
           return result;
         }
         
-        //  Override current content with the pressed key character
-        event.target.value = String.fromCharCode(event.keyCode);
+        // Override current content with the pressed key character
+        event.target.value = character;
 
         //  We need to update the answer.
-        const key = String.fromCharCode(event.keyCode);
         if (eventCell.acrossClue) {
           eventCell.acrossClue.answer = setLetter(
             eventCell.acrossClue.answer,
             eventCell.acrossClueLetterIndex,
-            key
+            character
           );
         }
         if (eventCell.downClue) {
           eventCell.downClue.answer = setLetter(
             eventCell.downClue.answer,
             eventCell.downClueLetterIndex,
-            key
+            character
           );
         }
       }
 
-      trace('Advancing to next cell')
-      //  Move to the next cell in the clue.
-      const currentIndex = (eventCell.acrossClue === clue)
-        ? eventCell.acrossClueLetterIndex : eventCell.downClueLetterIndex;
-      trace(`current cell index: ${currentIndex}`)
-      const nextIndex = currentIndex + 1;
-      if (nextIndex < clue.cells.length) {
-        trace(`Focussing next cell index: ${nextIndex}`)
-        clue.cells[nextIndex].cellElement.querySelector('input').focus();
-      }
-
-      //  If we are at the end of the clue and we have a next segment, select it.
-      if (nextIndex === clue.cells.length && clue.nextClueSegment) {
-        trace(`Focussing next answer segment cell index 0`)
-        clue.nextClueSegment.cells[0].cellElement.querySelector('input').focus();
+      if (advancingCharacters.test(character)) {
+        trace('Advancing to next cell')
+        //  Move to the next cell in the clue.
+        const currentIndex = (eventCell.acrossClue === clue)
+          ? eventCell.acrossClueLetterIndex : eventCell.downClueLetterIndex;
+        trace(`current cell index: ${currentIndex}`)
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < clue.cells.length) {
+          trace(`Focussing next cell index: ${nextIndex}`)
+          clue.cells[nextIndex].cellElement.querySelector('input').focus();
+        }
+  
+        //  If we are at the end of the clue and we have a next segment, select it.
+        if (nextIndex === clue.cells.length && clue.nextClueSegment) {
+          trace(`Focussing next answer segment cell index 0`)
+          clue.nextClueSegment.cells[0].cellElement.querySelector('input').focus();
+        }
       }
     });
 
