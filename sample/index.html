@@ -65,20 +65,20 @@
       <h4></h4>
       <p class="small">Original source: <a href="{{info.source}}">{{info.source}}</a>.</p>
       <hr />
-      <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clue}} {{currentClue.answerStructureText}}</td>
+      <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clueText}} {{currentClue.answerStructureText}}</td>
       <div id="crossword1"></div>
       <table>
         <tr>
           <td>
             <p><strong>Across</strong></p>
             <div ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
-              <p>{{clue.clueLabel}} {{clue.clue}} {{clue.answerStructureText}}</p>
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.answerStructureText}}</p>
             </div>
           </td>
           <td>
             <p><strong>Down</strong></p>
             <div ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
-              <p>{{clue.clueLabel}} {{clue.clue}} {{clue.answerStructureText}}</p>
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.answerStructureText}}</p>
             </div>
           </td>
         </tr>
