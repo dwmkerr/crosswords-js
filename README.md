@@ -22,6 +22,11 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 * [Keyboard Functionality](#keyboard-functionality)
 * [Crossword Definition Tips](#crossword-definition-tips)
 * [Design Goals](#design-goals)
+* [Build Pipelines](#build-pipelines)
+    * [Pull Request Pipeline](#pull-request-pipeline)
+    * [Release Pipeline](#release-pipeline)
+* [Adding Contributors](#adding-contributors)
+* [Managing Releases](#managing-releases)
 * [Contributors](#contributors)
 * [TODO](#todo)
 
@@ -145,6 +150,59 @@ This project is currently a work in progress. The overall design goals are:
 1. This should be _agnostic_ to the type of crossword. It shouldn't depend on any proprietary formats or structures used by specific publications.
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
+
+## Build Pipelines
+
+There are two pipelines that run for the project:
+
+### Pull Request Pipeline
+
+Whenever a pull request is raised, the [Pull Request Workflow](./.github/workflows/pull-request.yaml) is run. This will:
+
+- Install dependencies
+- Lint
+- Run Tests
+- Upload Coverage
+
+Each stage is run on all recent Node versions, except for the 'upload coverage' stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please](https://github.com/google-github-actions/release-please-action) will open a Release Pull Request. When this request is merged, the [Release Pipeline](#release-pipeline) is run.
+
+### Release Pipeline
+
+When a [Release Please](https://github.com/google-github-actions/release-please-action) pull request is merged to main, the [Release Please Workflow](./.github/workflows/release-please) is run. This will:
+
+- Install dependencies
+- Lint
+- Run Tests
+- Upload Coverage
+- Deploy to NPM if the `NPM_TOKEN` secret is set
+
+Each stage is run on all recent Node versions, except for the 'upload coverage' stage which only runs for the Node.js LTS version.
+
+⚠️ note that the NPM Publish step sets the package to public - don't forget to change this if you have a private module.
+
+## Adding Contributors
+
+To add contributors, use a comment like the below in any pull request:
+
+```
+@all-contributors please add @<username> for docs, code, tests
+```
+
+More detailed documentation is available at:
+
+https://allcontributors.org/docs/en/bot/usage
+
+
+## Managing Releases
+
+When changes to `main` are made, the Release Please stage of the pipeline will work out whether a new release should be generated (by checking if there are user facing changes) and also what the new version number should be (by checking the log of conventional commits). Once this is done, if a release is required, a new pull request is opened that will create the release.
+
+Force a specific release version with this command:
+
+```bash
+version="0.1.0"
+git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${version}"
+```
 
 ## Contributors
 
