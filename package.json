@@ -25,11 +25,14 @@
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "lint": "eslint src",
+    "lint": "eslint *.js src/**/*.js sample/*.js",
+    "lint:fix": "eslint --fix *.js src/**/*.js sample/*.js",
+    "prettier": "prettier --check src/**/*.less *.md docs/**/*.md sample/*.html",
+    "prettier:fix": "prettier --write src/**/*.less *.md docs/**/*.md sample/*.html",
     "start": "webpack-dev-server",
-    "test": "mocha --require esm --require ignore-styles ./src/{,**/}*.specs.mjs",
-    "test:cov": "nyc mocha --require esm --require ignore-styles ./src/{,**/}*.specs.mjs",
-    "test:debug": "mocha --require esm --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.mjs",
+    "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
+    "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
+    "test:debug": "mocha --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.js",
     "release": "standard-version"
   },
   "keywords": [

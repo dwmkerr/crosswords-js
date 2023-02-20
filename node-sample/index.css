@@ -1,0 +1,32 @@
+body {
+  font-size: 20px; /* the only pixels we will use, the rest will be in ems */
+}
+
+h1 {
+  font-family: "PT Serif", serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 3em;
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "PT Serif", serif;
+}
+p {
+  font-family: "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande",
+    sans-serif;
+}
+.small {
+  font-size: 0.9em;
+  color: #bebebe;
+}
+.selectedClue {
+  background-color: #fff7b2;
+  font-weight: bold;
+}
+#crossword1 {
+  max-width: 640px;
+}

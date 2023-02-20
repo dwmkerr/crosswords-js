@@ -1,18 +1,19 @@
 .crossword {
-
   --cell-border: #000000;
   --cell-dark-background: #000000;
   --cell-light-background: #ffffff;
-  
+
   --clue-active-background: #b0b0b0;
   --cell-active-background: #f7f469;
-  
-  --word-separator: var(--cell-border); 
 
-  display: inline-block;        
+  --cell-revealed: green;
+  --cell-incorrect: red;
+
+  --word-separator: var(--cell-border);
+
+  display: inline-block;
 
   .cwrow {
-
     display: flex;
     flex-direction: row;
 
@@ -27,17 +28,18 @@
 
       &.light {
         background: var(--cell-light-background);
+
         input:focus {
           caret-color: transparent;
           background: var(--cell-active-background);
-        }      
+        }
       }
 
       &.dark {
         background: var(--cell-dark-background);
       }
 
-      .cwcluelabel {
+      .cwclue-label {
         position: absolute;
         font-size: 0.5em;
         width: 10px;
@@ -45,6 +47,47 @@
         left: 2px;
         top: 0px;
         z-index: 1;
+      }
+
+      .hidden {
+        visibility: hidden;
+        opacity: 0;
+        // transition: visibility 0s linear 300ms, opacity 300ms;
+      }
+
+      // 0.5em right-triangle in bottom right corner
+      .cwcell-revealed {
+        // click events must pass through to input element
+        pointer-events: none;
+        position: absolute;
+        z-index: 1;
+        width: 0;
+        height: 0;
+        bottom: 0;
+        right: 0;
+        border-left: 0.5em solid transparent;
+        border-bottom: 0.5em solid var(--cell-revealed);
+      }
+
+      // diagonal stripe bottom-left to top-right
+      .cwcell-incorrect {
+        // click events need to pass through to input element
+        pointer-events: none;
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        background-image: linear-gradient(
+          135deg,
+          transparent 45%,
+          var(--cell-incorrect) 47%,
+          var(--cell-incorrect) 53%,
+          transparent 53%
+        );
+        background-repeat: no-repeat;
+        /* To avoid multiple instances */
       }
 
       .cw-across-terminator {
@@ -69,8 +112,8 @@
         bottom: -14px;
         z-index: 1;
       }
- 
-      input { 
+
+      input {
         font-family: sans-serif;
         font-variant: small-caps;
         font-size: 1em;
@@ -90,10 +133,10 @@
     //  This CSS hack ensures our variable-width cells have the same height
     //  as their width - i.e. they stay square!
     .cwcell:after {
-        content: "";
-        float:left;
-        display: block;
-        padding-top: 100%;
+      content: '';
+      float: left;
+      display: block;
+      padding-top: 100%;
     }
 
     .cwcell:last-child {
@@ -114,5 +157,4 @@
       }
     }
   }
-
 }

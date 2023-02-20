@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CrosswordJS Sample</title>
+
+    <!-- PT Serif webfont. -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,700i&display=swap">
+    <!-- Local styles -->
+    <link rel="stylesheet" type="text/css" href="index.css">
+  
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <!-- Rock out some crosswords.js -->
+    <!-- <script src="../src/crosswords.js"></script> -->
+    
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- JQuery entry point. Executes after DOM loaded -->
+    <script>
+      $( document ).ready(function() {
+          console.log( "DOM loaded" );
+      });
+    </script>
+
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Crosswords.js</h1>
+      <p>Simple, fast, framework-free crosswords for the web.</p>
+      <p>Find out more on <a href="https://github.com/dwmkerr/crosswords-js">github.com/dwmkerr/crosswords-js</a></p>
+      <hr />
+      <h3>{{info.title}} <small><em>Set by {{info.setter.title}}</em></small></h3>
+      <h4></h4>
+      <p class="small">Original source: <a href="{{info.source}}">{{info.source}}</a>.</p>
+      <hr />
+      <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clueText}} {{currentClue.answerStructureText}}</td>
+      <div id="crossword1"></div>
+      <table>
+        <tr>
+          <td>
+            <p><strong>Across</strong></p>
+            <div ng-repeat="clue in acrossClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.answerStructureText}}</p>
+            </div>
+          </td>
+          <td>
+            <p><strong>Down</strong></p>
+            <div ng-repeat="clue in downClues" ng-click="selectClue(clue)" ng-class="{selectedClue: isHighlightedClue(clue)}">
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.answerStructureText}}</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
