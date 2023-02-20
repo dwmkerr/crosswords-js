@@ -170,7 +170,7 @@ function compileCrossword(crosswordDefinition) {
       if (clueSegmentIndex < (clueSegments.length - 1)) {
         cs.nextClueSegment = clueSegments[clueSegmentIndex + 1];
       }
-      cs.parentClue = clueSegments[0];
+      [cs.parentClue] = clueSegments;
       clueSegmentIndex += 1;
     });
 
