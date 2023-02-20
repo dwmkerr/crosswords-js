@@ -52,7 +52,7 @@ jobs:
         # For now, allow continue on linting fail.
         continue-on-error: true
       - name: test
-        run: npm test:coverage
+        run: npm test:cov
 
       # Upload the artifacts folder.
       - name: Upload Artifacts
