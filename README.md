@@ -102,7 +102,7 @@ The sample will run at the address [localhost:8080](http://localhost:3000/).
 Run the tests with:
 
 ```sh
-npm test
+make test
 ```
 
 ## Keyboard Functionality
