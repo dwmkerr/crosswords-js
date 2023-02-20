@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.12](https://github.com/dwmkerr/crosswords-js/compare/v0.1.11...v0.1.12) (2023-02-20)
+
+
+### Bug Fixes
+
+* Selected cell advances to "next" cell after keypress. ([5c6ca90](https://github.com/dwmkerr/crosswords-js/commit/5c6ca90e1177ccd48376a309c8217bb194f2ce6d))
+
 ### [0.1.11](https://github.com/dwmkerr/crosswords-js/compare/v0.1.10...v0.1.11) (2020-05-26)
 
 
