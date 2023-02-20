@@ -1,6 +1,8 @@
 # CrosswordsJS
 
-[![CircleCI](https://circleci.com/gh/dwmkerr/crosswords-js.svg?style=shield)](https://circleci.com/gh/dwmkerr/crosswords-js) [![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/crosswords-js.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/crosswords-js)
+[![Release Please](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml/badge.svg)](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml)
+[![NPM Package Version](https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module)](https://www.npmjs.com/package/@dwmkerr/template-nodejs-module)
+[![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/crosswords-js.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/crosswords-js) [![All Contributors](https://img.shields.io/github/all-contributors/dwmkerr/crosswords-js?color=ee8449&style=flat-square)](#contributors)
 
 **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
 
@@ -22,6 +24,12 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 * [Keyboard Functionality](#keyboard-functionality)
 * [Crossword Definition Tips](#crossword-definition-tips)
 * [Design Goals](#design-goals)
+* [Build Pipelines](#build-pipelines)
+    * [Pull Request Pipeline](#pull-request-pipeline)
+    * [Release Pipeline](#release-pipeline)
+* [Adding Contributors](#adding-contributors)
+* [Managing Releases](#managing-releases)
+* [Contributors](#contributors)
 * [TODO](#todo)
 
 <!-- vim-markdown-toc -->
@@ -102,7 +110,7 @@ The sample will run at the address [localhost:8080](http://localhost:3000/).
 Run the tests with:
 
 ```sh
-npm test
+make test
 ```
 
 ## Keyboard Functionality
@@ -145,6 +153,70 @@ This project is currently a work in progress. The overall design goals are:
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
 
+## Build Pipelines
+
+There are two pipelines that run for the project:
+
+### Pull Request Pipeline
+
+Whenever a pull request is raised, the [Pull Request Workflow](./.github/workflows/pull-request.yaml) is run. This will:
+
+- Install dependencies
+- Lint
+- Run Tests
+- Upload Coverage
+
+Each stage is run on all recent Node versions, except for the 'upload coverage' stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please](https://github.com/google-github-actions/release-please-action) will open a Release Pull Request. When this request is merged, the [Release Pipeline](#release-pipeline) is run.
+
+### Release Pipeline
+
+When a [Release Please](https://github.com/google-github-actions/release-please-action) pull request is merged to main, the [Release Please Workflow](./.github/workflows/release-please) is run. This will:
+
+- Install dependencies
+- Lint
+- Run Tests
+- Upload Coverage
+- Deploy to NPM if the `NPM_TOKEN` secret is set
+
+Each stage is run on all recent Node versions, except for the 'upload coverage' stage which only runs for the Node.js LTS version.
+
+⚠️ note that the NPM Publish step sets the package to public - don't forget to change this if you have a private module.
+
+## Adding Contributors
+
+To add contributors, use a comment like the below in any pull request:
+
+```
+@all-contributors please add @<username> for docs, code, tests
+```
+
+More detailed documentation is available at:
+
+https://allcontributors.org/docs/en/bot/usage
+
+
+## Managing Releases
+
+When changes to `main` are made, the Release Please stage of the pipeline will work out whether a new release should be generated (by checking if there are user facing changes) and also what the new version number should be (by checking the log of conventional commits). Once this is done, if a release is required, a new pull request is opened that will create the release.
+
+Force a specific release version with this command:
+
+```bash
+version="0.1.0"
+git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${version}"
+```
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## TODO
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
@@ -159,3 +231,4 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [ ] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
+- [ ] build: enforce linting (current it is allowed to fail)

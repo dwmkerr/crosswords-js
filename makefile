@@ -7,6 +7,11 @@ build:
 serve:
 	./node_modules/.bin/webpack-dev-server
 
+# Execute all tests/linting.
+test:
+	npm run lint
+	npm run test:coverage
+
 # Build the static site.
 build-sample-site:
 	# Cleanup the artifacts folder, create the sample site location.
