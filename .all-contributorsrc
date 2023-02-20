@@ -7,6 +7,17 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "dwmkerr",
+      "name": "Dave Kerr",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1926984?v=4",
+      "profile": "http://www.dwmkerr.com",
+      "contributions": [
+        "doc",
+        "code",
+        "test"
+      ]
+    },
+    {
       "login": "pvspain",
       "name": "Paul Spain",
       "avatar_url": "https://avatars.githubusercontent.com/u/716363?v=4",
@@ -16,7 +27,7 @@
         "code",
         "test"
       ]
-    }
+    },
   ],
   "contributorsPerLine": 7,
   "skipCi": true,
