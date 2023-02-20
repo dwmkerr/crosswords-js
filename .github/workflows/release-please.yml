@@ -98,7 +98,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
-          package-name: template-nodejs
+          package-name: crosswords-js
       
       - name: Checkout
         uses: actions/checkout@v3
