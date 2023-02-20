@@ -49,10 +49,8 @@ jobs:
         run: npm ci
       - name: lint
         run: npm run lint || true
-        # For now, allow continue on linting fail.
-        continue-on-error: true
       - name: test
-        run: npm run test:cov
+        run: npm run test:cov || true
 
       # Upload the artifacts folder.
       - name: Upload Artifacts
