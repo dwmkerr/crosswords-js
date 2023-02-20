@@ -1,6 +1,6 @@
 # CrosswordsJS
 
-[![CircleCI](https://circleci.com/gh/dwmkerr/crosswords-js.svg?style=shield)](https://circleci.com/gh/dwmkerr/crosswords-js) [![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/crosswords-js.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/crosswords-js)
+[![CircleCI](https://circleci.com/gh/dwmkerr/crosswords-js.svg?style=shield)](https://circleci.com/gh/dwmkerr/crosswords-js) [![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/crosswords-js.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/crosswords-js) [![All Contributors](https://img.shields.io/github/all-contributors/dwmkerr/crosswords-js?color=ee8449&style=flat-square)](#contributors)
 
 **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
 
@@ -22,6 +22,7 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 * [Keyboard Functionality](#keyboard-functionality)
 * [Crossword Definition Tips](#crossword-definition-tips)
 * [Design Goals](#design-goals)
+* [Contributors](#contributors)
 * [TODO](#todo)
 
 <!-- vim-markdown-toc -->
@@ -145,6 +146,17 @@ This project is currently a work in progress. The overall design goals are:
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
 
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## TODO
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
@@ -159,3 +171,4 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [ ] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
+- [ ] build: enforce linting (current it is allowed to fail)
