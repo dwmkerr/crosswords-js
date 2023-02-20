@@ -36,7 +36,7 @@ jobs:
       # For now, allow continue on linting fail.
       continue-on-error: true
     - name: test
-      run: npm test:cov
+      run: npm run test:cov
 
     # Upload coverage to codecov.
     - uses: codecov/codecov-action@v3
