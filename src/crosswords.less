@@ -1,5 +1,14 @@
 .crossword {
 
+  --cell-border: #000000;
+  --cell-dark-background: #000000;
+  --cell-light-background: #ffffff;
+  
+  --clue-active-background: #b0b0b0;
+  --cell-active-background: #f7f469;
+  
+  --word-separator: var(--cell-border); 
+
   display: inline-block;        
 
   .cwrow {
@@ -9,21 +18,23 @@
 
     .cwcell {
       position: relative;
-      background: black;
 
       // All cells are the same size.
       flex: 1;
 
-      border-top: 1px solid black;
-      border-left: 1px solid black;
+      border-top: 1px solid var(--cell-border);
+      border-left: 1px solid var(--cell-border);
 
       &.light {
-        background: white;
+        background: var(--cell-light-background);
         input:focus {
-          outline: none;
-        }
+          caret-color: transparent;
+          background: var(--cell-active-background);
+        }      
       }
+
       &.dark {
+        background: var(--cell-dark-background);
       }
 
       .cwcluelabel {
@@ -71,7 +82,7 @@
         width: 100%;
 
         &.active {
-          background: #FFF7B2;
+          background: var(--clue-active-background);
         }
       }
     }
@@ -86,25 +97,22 @@
     }
 
     .cwcell:last-child {
-      border-right: 1px solid black;
+      border-right: 1px solid var(--cell-border);
     }
 
     .cw-across-word-separator {
-      box-shadow: inset -2px 0px 0px 0px black;
+      box-shadow: inset -2px 0px 0px 0px var(--word-separator);
     }
 
     .cw-down-word-separator {
-      box-shadow: inset 0px -2px 0px 0px black;
+      box-shadow: inset 0px -2px 0px 0px var(--word-separator);
     }
 
     &:last-child {
       .cwcell {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid var(--cell-border);
       }
     }
   }
 
-  .clue {
-    background: #ff0000;
-  }
 }

@@ -1,6 +1,6 @@
 //  This is the main regex which rips apart a clue into a number, clue and
 //  answer structure.
-const clueRegex = new RegExp(/^(\d+),?([\dad,]*).[\s]*(.*)[\s]*\(([\d,-]+)\)$/);
+const clueRegex = /^(\d+),?([\dad,]*).[\s]*(.*)[\s]*\(([\d,-]+)\)$/;
 
 function directionFromClueLabel(clueLabel) {
   if (/a$/.test(clueLabel)) return 'across';
@@ -26,7 +26,7 @@ function compileClue(clueDefinition) {
   }
 
   //  Get the clue components.
-  const [, numberText, connectedCluesText, clue, answerText] = clueRegex.exec(clueDefinition);
+  const [, numberText, connectedCluesText, clueText, answerText] = clueRegex.exec(clueDefinition);
   const number = parseInt(numberText, 10);
 
   //  If we have connected clues, break them apart.
@@ -40,7 +40,7 @@ function compileClue(clueDefinition) {
 
   //  Now we can start to break up the answer segments.
   const answerStructure = [];
-  const answerSegmentRegex = new RegExp(/([\d]+)([,-]?)(.*)/);
+  const answerSegmentRegex = /([\d]+)([,-]?)(.*)/;
   let remainingAnswerStructure = answerText;
   while (answerSegmentRegex.test(remainingAnswerStructure)) {
     const [, length, terminator, rest] = answerSegmentRegex.exec(remainingAnswerStructure);
@@ -56,7 +56,7 @@ function compileClue(clueDefinition) {
 
   return {
     number,
-    clue,
+    clueText,
     connectedClueNumbers,
     answerStructure,
     answerStructureText,
