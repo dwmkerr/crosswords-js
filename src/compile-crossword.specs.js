@@ -31,7 +31,7 @@ describe('model generation', () => {
 
     //  The following elements are parsed from the clue text.
     expect(modelClue.number).to.eql(1);
-    expect(modelClue.clue).to.eql('Conspicuous influence exerted by active troops ');
+    expect(modelClue.clueText).to.eql('Conspicuous influence exerted by active troops ');
   });
 
   it('should fail if the bounds of the crossword are invalid', () => {
