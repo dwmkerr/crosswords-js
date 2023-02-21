@@ -1,11 +1,11 @@
 # CrosswordsJS
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-[![Release Please](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml/badge.svg)](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml)
+[![Release Please](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg)](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml)
 [![NPM Package Version](https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module)](https://www.npmjs.com/package/@dwmkerr/template-nodejs-module)
-[![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/crosswords-js.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/crosswords-js) [![All Contributors](https://img.shields.io/github/all-contributors/dwmkerr/crosswords-js?color=ee8449&style=flat-square)](#contributors)
+[![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js)
 
 **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
 
