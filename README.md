@@ -239,9 +239,12 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
+- [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
+- [ ] feat(samples): show how we can check answers
+- [ ] feat(samples): cursor initially on the first clue
 - [x] fix: the border on word separators slightly offsets the rendering of the grid
 - [ ] feat(accessibility): get screenreader requirements
-- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible.
+- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample?
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
 - [ ] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
@@ -249,4 +252,4 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [ ] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
-- [ ] build: enforce linting (current it is allowed to fail)
+- [x] build: enforce linting (current it is allowed to fail)
