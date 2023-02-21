@@ -48,9 +48,9 @@ jobs:
       - name: ci
         run: npm ci
       - name: lint
-        run: npm run lint || true
+        run: npm run lint
       - name: test
-        run: npm run test:cov || true
+        run: npm run test:cov
 
       # Upload the artifacts folder.
       - name: Upload Artifacts
