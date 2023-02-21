@@ -1,6 +1,6 @@
 {
   "name": "crosswords-js",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Tiny, lightweight crosswords for HTML5/JS/CSS.",
   "main": "src/index.js",
   "devDependencies": {

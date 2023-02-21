@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.13](https://github.com/dwmkerr/crosswords-js/compare/v0.1.12...v0.1.13) (2023-02-21)
+
+
+### Bug Fixes
+
+* correct eslint config and resolve broken tests ([0bc040f](https://github.com/dwmkerr/crosswords-js/commit/0bc040f9fe175dcd6a0a53c258f97885d2ebc19d))
+* correct package name ([20610e9](https://github.com/dwmkerr/crosswords-js/commit/20610e970459ebf012b904861ef7f3da4c0c41e4))
+
 ## [0.1.12](https://github.com/dwmkerr/crosswords-js/compare/v0.1.11...v0.1.12) (2023-02-20)
 
 
