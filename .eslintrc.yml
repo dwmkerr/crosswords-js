@@ -1,8 +1,11 @@
-extends: 
+extends:
   - airbnb-base
 env:
   node: true
   mocha: true
+  # Including browser will allow use of environment-provided global variables such as 'window'
+  # which is not otherwise defined.
+  browser: true
 plugins:
   - import
 rules:
@@ -10,5 +13,16 @@ rules:
   # Sometimes I like a single 'return' statement in a full bloc, e.g. see the
   # tests, so relax the requirement to have single return statements
   arrow-body-style: 0
-  import/no-extraneous-dependencies: [error, { devDependencies: ['**/*.specs.js'] }]
+  import/no-extraneous-dependencies:
+    [error, { devDependencies: ["**/*.specs.js"] }]
   no-process-exit: 0
+  no-param-reassign:
+    [
+      "error",
+      {
+        "props": true,
+        # There are multiple instances in the code where the properties of a function param object 
+        # are modified. They are explicitly excluded below.
+        "ignorePropertyModificationsFor": ["cs", "clue", "cc", "element"],
+      },
+    ]
