@@ -16,6 +16,8 @@ Tiny, lightweight crossword for control for the web. **Crosswords.js** is:
 * Simple
 * Framework Free
 
+Inspired by the excellent free online crosswords on [The Guardian Crosswords][18].
+
 Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 <a href="https://dwmkerr.github.io/crosswords-js/"><img src="./docs/screenshot.png" alt="CrosswordsJS Screenshot" width="480px" /></a>
@@ -240,12 +242,15 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
+- [ ] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
+- [ ] feat(docs): improve the demo site image (its an old one at the moment!)
+- [ ] feat(samples): show how we can check answers or highlight incorrect entries (see issue #9)
 - [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
-- [ ] feat(samples): show how we can check answers
 - [ ] feat(samples): cursor initially on the first clue
+- [ ] feat(dom): support a keyboard scheme or configurable keybindings so that keys for navigating / editing the crossword can be specified in config (allowing for schemes such as 'the guardian' or 'the age'
 - [x] fix: the border on word separators slightly offsets the rendering of the grid
 - [ ] feat(accessibility): get screenreader requirements
-- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample?
+- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample? OR have multiple samples, one for each common framework?
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
 - [x] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
@@ -273,3 +278,4 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [15]: https://github.com/google-github-actions/release-please-action
 [16]: ./.github/workflows/release-please
 [17]: https://allcontributors.org/docs/en/bot/usage
+[18]: https://www.theguardian.com/crosswords
