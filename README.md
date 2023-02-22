@@ -242,7 +242,7 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
-- [ ] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
+- [x] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
 - [ ] feat(docs): improve the demo site image (its an old one at the moment!)
 - [ ] feat(samples): show how we can check answers or highlight incorrect entries (see issue #9)
 - [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
