@@ -7,14 +7,14 @@
 [![NPM Package Version](https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module)](https://www.npmjs.com/package/@dwmkerr/template-nodejs-module)
 [![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js)
 
-**IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
-
 Tiny, lightweight crossword for control for the web. Crossword.js is:
 
 * Lightweight
 * Fast
 * Simple
 * Framework Free
+
+Inspired by the excellent free online crosswords on [The Guardian Crosswords](https://www.theguardian.com/crosswords).
 
 Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js/)
 
@@ -239,12 +239,15 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
+- [ ] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
+- [ ] feat(docs): improve the demo site image (its an old one at the moment!)
+- [ ] feat(samples): show how we can check answers or highlight incorrect entries (see issue #9)
 - [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
-- [ ] feat(samples): show how we can check answers
 - [ ] feat(samples): cursor initially on the first clue
+- [ ] feat(dom): support a keyboard scheme or configurable keybindings so that keys for navigating / editing the crossword can be specified in config (allowing for schemes such as 'the guardian' or 'the age'
 - [x] fix: the border on word separators slightly offsets the rendering of the grid
 - [ ] feat(accessibility): get screenreader requirements
-- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample?
+- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample? OR have multiple samples, one for each common framework?
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
 - [ ] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
