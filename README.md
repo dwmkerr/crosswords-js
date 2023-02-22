@@ -25,18 +25,18 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 ## Index <!-- omit from toc -->
 <!-- vim-markdown-toc GFM -->
 
-- [Quickstart](#quickstart)
-- [Developer Guide](#developer-guide)
-- [Keyboard Functionality](#keyboard-functionality)
-- [Crossword Definition Tips](#crossword-definition-tips)
-- [Design Goals](#design-goals)
-- [Build Pipelines](#build-pipelines)
-  - [Pull Request Pipeline](#pull-request-pipeline)
-  - [Release Pipeline](#release-pipeline)
-- [Adding Contributors](#adding-contributors)
-- [Managing Releases](#managing-releases)
-- [Contributors](#contributors)
-- [TODO](#todo)
+* [Quickstart](#quickstart)
+* [Developer Guide](#developer-guide)
+* [Keyboard Functionality](#keyboard-functionality)
+* [Crossword Definition Tips](#crossword-definition-tips)
+* [Design Goals](#design-goals)
+* [Build Pipelines](#build-pipelines)
+    * [Pull Request Pipeline](#pull-request-pipeline)
+    * [Release Pipeline](#release-pipeline)
+* [Adding Contributors](#adding-contributors)
+* [Managing Releases](#managing-releases)
+* [Contributors](#contributors)
+* [TODO](#todo)
 
 <!-- vim-markdown-toc -->
 
@@ -265,8 +265,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [2]: #contributors-
 [3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg
 [4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml
-[5]: https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module
-<!-- [5]: https://img.shields.io/npm/v/dwmkerr/crosswords-js -->
+[5]: https://img.shields.io/npm/v/crosswords-js
 [6]: https://www.npmjs.com/package/crosswords-js
 [7]: https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg
 [8]: https://codecov.io/gh/dwmkerr/crosswords-js
