@@ -1,39 +1,42 @@
-# CrosswordsJS
+# CrosswordsJS <!-- omit from toc -->
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors][1]][2]
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-[![Release Please](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg)](https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml)
-[![NPM Package Version](https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module)](https://www.npmjs.com/package/@dwmkerr/template-nodejs-module)
-[![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js)
+[![Release Please][3]][4]
+[![NPM Package Version][5]][6]
+[![codecov][7]][8]
 
-Tiny, lightweight crossword for control for the web. Crossword.js is:
+> **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
+
+Tiny, lightweight crossword for control for the web. **Crosswords.js** is:
 
 * Lightweight
 * Fast
 * Simple
 * Framework Free
 
-Inspired by the excellent free online crosswords on [The Guardian Crosswords](https://www.theguardian.com/crosswords).
+Inspired by the excellent free online crosswords on [The Guardian Crosswords][18].
 
-Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js/)
+Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 <a href="https://dwmkerr.github.io/crosswords-js/"><img src="./docs/screenshot.png" alt="CrosswordsJS Screenshot" width="480px" /></a>
 
+## Index <!-- omit from toc -->
 <!-- vim-markdown-toc GFM -->
 
-* [Quickstart](#quickstart)
-* [Developer Guide](#developer-guide)
-* [Keyboard Functionality](#keyboard-functionality)
-* [Crossword Definition Tips](#crossword-definition-tips)
-* [Design Goals](#design-goals)
-* [Build Pipelines](#build-pipelines)
-    * [Pull Request Pipeline](#pull-request-pipeline)
-    * [Release Pipeline](#release-pipeline)
-* [Adding Contributors](#adding-contributors)
-* [Managing Releases](#managing-releases)
-* [Contributors](#contributors)
-* [TODO](#todo)
+- [Quickstart](#quickstart)
+- [Developer Guide](#developer-guide)
+- [Keyboard Functionality](#keyboard-functionality)
+- [Crossword Definition Tips](#crossword-definition-tips)
+- [Design Goals](#design-goals)
+- [Build Pipelines](#build-pipelines)
+  - [Pull Request Pipeline](#pull-request-pipeline)
+  - [Release Pipeline](#release-pipeline)
+- [Adding Contributors](#adding-contributors)
+- [Managing Releases](#managing-releases)
+- [Contributors](#contributors)
+- [TODO](#todo)
 
 <!-- vim-markdown-toc -->
 
@@ -54,7 +57,7 @@ Include the JavaScript and CSS:
 
 To create a crossword, you start with a _Crossword Definition_, which is a simple JSON representation of a crossword:
 
-```js
+```json
 {
   "width": 15,
   "height": 15,
@@ -95,7 +98,7 @@ var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, docu
 
 ## Developer Guide
 
-Ensure you are using Node LTS. I recommend using [Node Version Manager](https://github.com/nvm-sh/nvm) for this:
+Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
 ```sh
 nvm install --lts
@@ -108,7 +111,7 @@ Check out the code, then run:
 make serve
 ```
 
-The sample will run at the address [localhost:8080](http://localhost:3000/).
+The sample will run at the address [localhost:8080][11].
 
 Run the tests with:
 
@@ -131,7 +134,7 @@ make test
 
 This is a little fiddly. I have tried to ensure the syntax is as close to what a reader would see in a printed crossword to make this as clear as possible. Here is an example:
 
-```
+```json
 {
   "downClues": [{
     "x": 6, "y": 1
@@ -162,18 +165,18 @@ There are two pipelines that run for the project:
 
 ### Pull Request Pipeline
 
-Whenever a pull request is raised, the [Pull Request Workflow](./.github/workflows/pull-request.yaml) is run. This will:
+Whenever a pull request is raised, the [Pull Request Workflow][12] is run. This will:
 
 - Install dependencies
 - Lint
 - Run Tests
 - Upload Coverage
 
-Each stage is run on all recent Node versions, except for the 'upload coverage' stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please](https://github.com/google-github-actions/release-please-action) will open a Release Pull Request. When this request is merged, the [Release Pipeline](#release-pipeline) is run.
+Each stage is run on all recent Node versions, except for the 'upload coverage' stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please][13] will open a Release Pull Request. When this request is merged, the [Release Pipeline][14] is run.
 
 ### Release Pipeline
 
-When a [Release Please](https://github.com/google-github-actions/release-please-action) pull request is merged to main, the [Release Please Workflow](./.github/workflows/release-please) is run. This will:
+When a [Release Please][15] pull request is merged to main, the [Release Please Workflow][16] is run. This will:
 
 - Install dependencies
 - Lint
@@ -195,7 +198,7 @@ To add contributors, use a comment like the below in any pull request:
 
 More detailed documentation is available at:
 
-https://allcontributors.org/docs/en/bot/usage
+[allcontributors.org/docs/en/bot/usage][17]
 
 
 ## Managing Releases
@@ -239,7 +242,8 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
-- [ ] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
+- [x] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
+- [ ] bug: Demo site (https://dwmkerr.github.io/crosswords-js/) is not tracking latest version
 - [ ] feat(docs): improve the demo site image (its an old one at the moment!)
 - [ ] feat(samples): show how we can check answers or highlight incorrect entries (see issue #9)
 - [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
@@ -249,10 +253,30 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] feat(accessibility): get screenreader requirements
 - [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample? OR have multiple samples, one for each common framework?
 - [ ] refactor: finish refactoring classes to simple functions (compileCrossword, createDOM etc)
-- [ ] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
+- [x] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
 - [ ] feat: allow italics with underscores, or bold with stars (i.e. very basic markdown)...
 - [ ] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [ ] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
 - [x] build: enforce linting (current it is allowed to fail)
+
+[1]: https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square
+[2]: #contributors-
+[3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg
+[4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml
+[5]: https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module
+<!-- [5]: https://img.shields.io/npm/v/dwmkerr/crosswords-js -->
+[6]: https://www.npmjs.com/package/crosswords-js
+[7]: https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg
+[8]: https://codecov.io/gh/dwmkerr/crosswords-js
+[9]: https://dwmkerr.github.io/crosswords-js/
+[10]: https://github.com/nvm-sh/nvm
+[11]: http://localhost:3000/
+[12]: ./.github/workflows/pull-request.yaml
+[13]: https://github.com/google-github-actions/release-please-action
+[14]: #release-pipeline
+[15]: https://github.com/google-github-actions/release-please-action
+[16]: ./.github/workflows/release-please
+[17]: https://allcontributors.org/docs/en/bot/usage
+[18]: https://www.theguardian.com/crosswords
