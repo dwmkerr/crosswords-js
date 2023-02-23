@@ -17,16 +17,19 @@ function directionFromClueLabel(clueLabel) {
  */
 function compileClue(clueDefinition) {
   if (!clueDefinition) {
-    throw new Error('\'clue\' is required');
+    throw new Error("'clue' is required");
   }
 
   //  First, validate the clue structure.
   if (!clueRegex.test(clueDefinition)) {
-    throw new Error(`Clue '${clueDefinition}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`);
+    throw new Error(
+      `Clue '${clueDefinition}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`
+    );
   }
 
   //  Get the clue components.
-  const [, numberText, connectedCluesText, clueText, answerText] = clueRegex.exec(clueDefinition);
+  const [, numberText, connectedCluesText, clueText, answerText] =
+    clueRegex.exec(clueDefinition);
   const number = parseInt(numberText, 10);
 
   //  If we have connected clues, break them apart.
@@ -43,16 +46,23 @@ function compileClue(clueDefinition) {
   const answerSegmentRegex = /([\d]+)([,-]?)(.*)/;
   let remainingAnswerStructure = answerText;
   while (answerSegmentRegex.test(remainingAnswerStructure)) {
-    const [, length, terminator, rest] = answerSegmentRegex.exec(remainingAnswerStructure);
+    const [, length, terminator, rest] = answerSegmentRegex.exec(
+      remainingAnswerStructure
+    );
     answerStructure.push({ length: parseInt(length, 10), terminator });
     remainingAnswerStructure = rest;
   }
 
   //  Calculate the total length of the answer.
-  const totalLength = answerStructure.reduce((current, as) => current + as.length, 0);
+  const totalLength = answerStructure.reduce(
+    (current, as) => current + as.length,
+    0
+  );
 
   //  Also create the answer structure as text.
-  const answerStructureText = `(${answerStructure.map((as) => `${as.length}${as.terminator}`).join('')})`;
+  const answerStructureText = `(${answerStructure
+    .map((as) => `${as.length}${as.terminator}`)
+    .join('')})`;
 
   return {
     number,

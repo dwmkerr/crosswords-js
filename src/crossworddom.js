@@ -372,23 +372,23 @@ class CrosswordDOM {
               .getCellElement(eventCell.crossword.cells[x - 1][y])
               .querySelector("input")
               .focus();
-            } else {
-              // Can we go to previous segment in clue?
-              const currentIndex =
-                eventCell.acrossClue === clue
-                  ? eventCell.acrossClueLetterIndex
-                  : eventCell.downClueLetterIndex;
-              trace(`current cell index: ${currentIndex}`);
-              const previousIndex = currentIndex - 1;
-              //  If we are at the start of the clue and we have a previous segment, select it.
-              if (previousIndex === -1 && clue.previousClueSegment) {
-                trace("Focussing prev answer segment last cell");
-                last(clue.previousClueSegment.cells).cellElement
-                  .querySelector("input")
-                  .focus();
-              }
+          } else {
+            // Can we go to previous segment in clue?
+            const currentIndex =
+              eventCell.acrossClue === clue
+                ? eventCell.acrossClueLetterIndex
+                : eventCell.downClueLetterIndex;
+            trace(`current cell index: ${currentIndex}`);
+            const previousIndex = currentIndex - 1;
+            //  If we are at the start of the clue and we have a previous segment, select it.
+            if (previousIndex === -1 && clue.previousClueSegment) {
+              trace("Focussing prev answer segment last cell");
+              last(clue.previousClueSegment.cells)
+                .cellElement.querySelector("input")
+                .focus();
             }
-            break;
+          }
+          break;
         case 38: // up
           //  If we can go up, go up.
           if (
@@ -400,22 +400,22 @@ class CrosswordDOM {
               .getCellElement(eventCell.crossword.cells[x][y - 1])
               .querySelector("input")
               .focus();
-            } else {
-              // Can we go to previous segment in clue?
-              const currentIndex =
-                eventCell.acrossClue === clue
-                  ? eventCell.acrossClueLetterIndex
-                  : eventCell.downClueLetterIndex;
-              trace(`current cell index: ${currentIndex}`);
-              const previousIndex = currentIndex - 1;
-              //  If we are at the start of the clue and we have a previous segment, select it.
-              if (previousIndex === -1 && clue.previousClueSegment) {
-                trace("Focussing prev answer segment last cell");
-                last(clue.previousClueSegment.cells).cellElement
-                  .querySelector("input")
-                  .focus();
-              }
+          } else {
+            // Can we go to previous segment in clue?
+            const currentIndex =
+              eventCell.acrossClue === clue
+                ? eventCell.acrossClueLetterIndex
+                : eventCell.downClueLetterIndex;
+            trace(`current cell index: ${currentIndex}`);
+            const previousIndex = currentIndex - 1;
+            //  If we are at the start of the clue and we have a previous segment, select it.
+            if (previousIndex === -1 && clue.previousClueSegment) {
+              trace("Focussing prev answer segment last cell");
+              last(clue.previousClueSegment.cells)
+                .cellElement.querySelector("input")
+                .focus();
             }
+          }
           break;
         case 39: // right
           //  If we can go right, go right.
