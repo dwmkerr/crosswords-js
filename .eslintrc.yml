@@ -1,5 +1,8 @@
+# Base eslint config on prettier rules.
 extends:
-  - airbnb-base
+  - plugin:prettier/recommended
+plugins:
+  - import
 parserOptions:
   # We use ecma version 13, which supports private class fields.
   ecmaVersion: 13
@@ -9,8 +12,6 @@ env:
   # Including browser will allow use of environment-provided global variables such as 'window'
   # which is not otherwise defined.
   browser: true
-plugins:
-  - import
 rules:
   no-console: 0
   # Sometimes I like a single 'return' statement in a full bloc, e.g. see the

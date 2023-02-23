@@ -1,6 +1,6 @@
-const compileCrossword = require('./compile-crossword');
-const CrosswordDOM = require('./crossworddom');
-require('./crosswords.less');
+const compileCrossword = require("./compile-crossword");
+const CrosswordDOM = require("./crossworddom");
+require("./crosswords.less");
 
 //  Define our public API.
 const CrosswordsJS = {
@@ -9,7 +9,7 @@ const CrosswordsJS = {
 };
 
 //  If we are in the browser, add the API to the global scope.
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.CrosswordsJS = CrosswordsJS;
 }
 
