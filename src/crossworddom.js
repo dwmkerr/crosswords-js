@@ -197,22 +197,7 @@ class CrosswordDOM {
       const clue = self.currentClue;
 
       if (event.keyCode === 8) { // backspace
-        //  We don't want default behaviour.
-        event.preventDefault();
-
-        //  Try and move to the previous cell of the clue.
-        const currentIndex = (eventCell.acrossClue === self.currentClue)
-          ? eventCell.acrossClueLetterIndex : eventCell.downClueLetterIndex;
-        const previousIndex = currentIndex - 1;
-        if (previousIndex >= 0) {
-          self.currentClue.cells[previousIndex].cellElement.querySelector('input').focus();
-        }
-
-        //  If the current index is zero, we might need to go to the previous clue
-        //  segment (for a non-linear clue).
-        if (currentIndex === 0 && self.currentClue.previousClueSegment) {
-          self.currentClue.previousClueSegment.cells.at(-1).cellElement.querySelector('input').focus();
-        }
+        // Pass through to the keeper for default behaviour!
       } else if (event.keyCode === 9) { // tab
         //  We don't want default behaviour.
         event.preventDefault();
