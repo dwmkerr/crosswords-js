@@ -34,7 +34,7 @@ function getAnswerSegment(answerStructure, letterIndex) {
 function compileCrossword(crosswordDefinition) {
   if (!crosswordDefinition) {
     throw new Error(
-      "The Crossword must be initialised with a crossword definition."
+      "The Crossword must be initialised with a crossword definition.",
     );
   }
 
@@ -65,7 +65,7 @@ function compileCrossword(crosswordDefinition) {
 
   //  We're going to go through the across clues, then the down clues.
   const clueDefinitions = crosswordDefinition.acrossClues.concat(
-    crosswordDefinition.downClues
+    crosswordDefinition.downClues,
   );
   for (let c = 0; c < clueDefinitions.length; c += 1) {
     //  Grab the clue and build a flag letting us know if we're across or down.
@@ -119,7 +119,7 @@ function compileCrossword(crosswordDefinition) {
       //  Check if we need to add an answer terminator.
       const [segment, index] = getAnswerSegment(
         clueModel.answerStructure,
-        letter
+        letter,
       );
       if (index === segment.length - 1 && segment.terminator !== "") {
         cell[clueModel.across ? "acrossTerminator" : "downTerminator"] =
@@ -139,7 +139,7 @@ function compileCrossword(crosswordDefinition) {
               y + 1
             }) is not coherent with previous clue (${
               cell.acrossClue.code
-            }) answer.`
+            }) answer.`,
           );
         }
         cell.answer = clueModel.answer[letter];
@@ -148,7 +148,7 @@ function compileCrossword(crosswordDefinition) {
       if (letter === 0) {
         if (cell.clueLabel && cell.clueLabel !== clueModel.number) {
           throw new Error(
-            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`
+            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`,
           );
         }
         cell.clueLabel = clueModel.number;
@@ -173,7 +173,7 @@ function compileCrossword(crosswordDefinition) {
     clue.connectedClues = clue.connectedClueNumbers.map((connectedClue) => {
       if (connectedClue.direction === "across") {
         return model.acrossClues.find(
-          (ac) => ac.number === connectedClue.number
+          (ac) => ac.number === connectedClue.number,
         );
       }
       if (connectedClue.direction === "down") {

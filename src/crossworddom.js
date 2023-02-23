@@ -315,14 +315,14 @@ class CrosswordDOM {
           eventCell.acrossClue.answer = setLetter(
             eventCell.acrossClue.answer,
             eventCell.acrossClueLetterIndex,
-            character
+            character,
           );
         }
         if (eventCell.downClue) {
           eventCell.downClue.answer = setLetter(
             eventCell.downClue.answer,
             eventCell.downClueLetterIndex,
-            character
+            character,
           );
         }
       }
@@ -501,7 +501,7 @@ class CrosswordDOM {
         if (cell.light) {
           removeClass(
             self.#cellMap.getCellElement(cell).querySelector("input"),
-            "active"
+            "active",
           );
         }
       });
@@ -516,7 +516,7 @@ class CrosswordDOM {
       clue.cells.forEach((cell) => {
         addClass(
           self.#cellMap.getCellElement(cell).querySelector("input"),
-          "active"
+          "active",
         );
       });
     });

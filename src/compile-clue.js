@@ -3,8 +3,8 @@
 const clueRegex = /^(\d+),?([\dad,]*).[\s]*(.*)[\s]*\(([\d,-]+)\)$/;
 
 function directionFromClueLabel(clueLabel) {
-  if (/a$/.test(clueLabel)) return 'across';
-  if (/d$/.test(clueLabel)) return 'down';
+  if (/a$/.test(clueLabel)) return "across";
+  if (/d$/.test(clueLabel)) return "down";
   return null;
 }
 
@@ -23,7 +23,7 @@ function compileClue(clueDefinition) {
   //  First, validate the clue structure.
   if (!clueRegex.test(clueDefinition)) {
     throw new Error(
-      `Clue '${clueDefinition}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`
+      `Clue "${clueDefinition}" does not meet the required structured "<Number>. Clue Text (<Answer structure>)"`,
     );
   }
 
@@ -35,7 +35,7 @@ function compileClue(clueDefinition) {
   //  If we have connected clues, break them apart.
   let connectedClueNumbers = null;
   if (connectedCluesText) {
-    connectedClueNumbers = connectedCluesText.split(',').map((cc) => ({
+    connectedClueNumbers = connectedCluesText.split(",").map((cc) => ({
       number: parseInt(cc, 10),
       direction: directionFromClueLabel(cc),
     }));
@@ -47,7 +47,7 @@ function compileClue(clueDefinition) {
   let remainingAnswerStructure = answerText;
   while (answerSegmentRegex.test(remainingAnswerStructure)) {
     const [, length, terminator, rest] = answerSegmentRegex.exec(
-      remainingAnswerStructure
+      remainingAnswerStructure,
     );
     answerStructure.push({ length: parseInt(length, 10), terminator });
     remainingAnswerStructure = rest;
@@ -56,13 +56,13 @@ function compileClue(clueDefinition) {
   //  Calculate the total length of the answer.
   const totalLength = answerStructure.reduce(
     (current, as) => current + as.length,
-    0
+    0,
   );
 
   //  Also create the answer structure as text.
   const answerStructureText = `(${answerStructure
     .map((as) => `${as.length}${as.terminator}`)
-    .join('')})`;
+    .join("")})`;
 
   return {
     number,

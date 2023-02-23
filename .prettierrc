@@ -2,9 +2,10 @@
     "singleQuote": true,
     "overrides": [
         {
-            "files": ["**/*.css", "**/*.scss", "**/*.html", "**/*.js"],
+            "files": ["**/*.js"],
             "options": {
-                "singleQuote": false
+                "singleQuote": false,
+                "trailingComma": "all"
             }
         }
     ]

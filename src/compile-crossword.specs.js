@@ -8,7 +8,7 @@ describe("model generation", () => {
     expect(() => {
       compileCrossword();
     }).to.throw(
-      "The Crossword must be initialised with a crossword definition."
+      "The Crossword must be initialised with a crossword definition.",
     );
   });
 
@@ -20,7 +20,7 @@ describe("model generation", () => {
     expect(crosswordModel.width).to.eql(quiptic89.width);
     expect(crosswordModel.height).to.eql(quiptic89.height);
     expect(crosswordModel.acrossClues.length).to.eql(
-      quiptic89.acrossClues.length
+      quiptic89.acrossClues.length,
     );
     expect(crosswordModel.downClues.length).to.eql(quiptic89.downClues.length);
   });
@@ -38,7 +38,7 @@ describe("model generation", () => {
     //  The following elements are parsed from the clue text.
     expect(modelClue.number).to.eql(1);
     expect(modelClue.clueText).to.eql(
-      "Conspicuous influence exerted by active troops "
+      "Conspicuous influence exerted by active troops ",
     );
   });
 
@@ -137,7 +137,7 @@ describe("model generation", () => {
     expect(() => {
       compileCrossword(crosswordDefinition);
     }).to.throw(
-      "Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer."
+      "Clue 1d answer at (3, 3) is not coherent with previous clue (1a) answer.",
     );
   });
 
