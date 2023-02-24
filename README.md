@@ -1,8 +1,11 @@
 # CrosswordsJS <!-- omit from toc -->
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors][1]][2]
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 [![Release Please][3]][4]
 [![NPM Package Version][5]][6]
 [![codecov][7]][8]
@@ -11,10 +14,10 @@
 
 Tiny, lightweight crossword for control for the web. **Crosswords.js** is:
 
-* Lightweight
-* Fast
-* Simple
-* Framework Free
+- Lightweight
+- Fast
+- Simple
+- Framework Free
 
 Inspired by the excellent free online crosswords on [The Guardian Crosswords][18].
 
@@ -23,20 +26,21 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 <a href="https://dwmkerr.github.io/crosswords-js/"><img src="./docs/screenshot.png" alt="CrosswordsJS Screenshot" width="480px" /></a>
 
 ## Index <!-- omit from toc -->
+
 <!-- vim-markdown-toc GFM -->
 
-* [Quickstart](#quickstart)
-* [Developer Guide](#developer-guide)
-* [Keyboard Functionality](#keyboard-functionality)
-* [Crossword Definition Tips](#crossword-definition-tips)
-* [Design Goals](#design-goals)
-* [Build Pipelines](#build-pipelines)
-    * [Pull Request Pipeline](#pull-request-pipeline)
-    * [Release Pipeline](#release-pipeline)
-* [Adding Contributors](#adding-contributors)
-* [Managing Releases](#managing-releases)
-* [Contributors](#contributors)
-* [TODO](#todo)
+- [Quickstart](#quickstart)
+- [Developer Guide](#developer-guide)
+- [Keyboard Functionality](#keyboard-functionality)
+- [Crossword Definition Tips](#crossword-definition-tips)
+- [Design Goals](#design-goals)
+- [Build Pipelines](#build-pipelines)
+  - [Pull Request Pipeline](#pull-request-pipeline)
+  - [Release Pipeline](#release-pipeline)
+- [Adding Contributors](#adding-contributors)
+- [Managing Releases](#managing-releases)
+- [Contributors](#contributors)
+- [TODO](#todo)
 
 <!-- vim-markdown-toc -->
 
@@ -51,7 +55,7 @@ npm install crosswords-js
 Include the JavaScript and CSS:
 
 ```html
-<link href="node_modules/crosswords-js/dist/crosswords.css" rel="stylesheet">
+<link href="node_modules/crosswords-js/dist/crosswords.css" rel="stylesheet" />
 <script src="node_modules/crosswords-js/dist/crosswords.js"></script>
 ```
 
@@ -63,11 +67,13 @@ To create a crossword, you start with a _Crossword Definition_, which is a simpl
   "height": 15,
   "acrossClues": [
     {
-      "x": 2, "y": 1,
+      "x": 2,
+      "y": 1,
       "clue": "1. Conspicuous influence exerted by active troops (8,5)"
     },
     {
-      "x": 1, "y": 3,
+      "x": 1,
+      "y": 3,
       "clue": "10. A coy sort of miss pointlessly promoting lawlessness (9)"
     }
   ]
@@ -93,7 +99,11 @@ The model can be used to build the DOM for a crossword:
 
 ```js
 //  Build the crossword HTML, as a child of the document body element.
-var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, document.body);
+var crosswordDom = new CrosswordsJS.CrosswordsDOM(
+  document,
+  crosswordModel,
+  document.body
+);
 ```
 
 ## Developer Guide
@@ -207,7 +217,6 @@ To add contributors, use a comment like the below in any pull request:
 More detailed documentation is available at:
 
 [allcontributors.org/docs/en/bot/usage][17]
-
 
 ## Managing Releases
 

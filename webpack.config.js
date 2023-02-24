@@ -1,41 +1,43 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production';
+  const isProduction = argv.mode === "production";
 
   return {
-    entry: './src/index.js',
+    entry: "./src/index.js",
 
     devServer: {
       static: {
-        directory: path.join(__dirname, 'sample')
+        directory: path.join(__dirname, "sample"),
       },
       compress: true,
     },
 
-    mode: 'development',
+    mode: "development",
 
     module: {
       rules: [
         {
           test: /\.less$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-            'css-loader',
-            'less-loader'
+            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
+            "css-loader",
+            "less-loader",
           ],
         },
-      ]
+      ],
     },
 
     // Add an instance of the MiniCssExtractPlugin to the plugins list
     // But remember - only for production!
-    plugins: isProduction ? [new MiniCssExtractPlugin({ filename: 'crosswords.css' })] : [],
+    plugins: isProduction
+      ? [new MiniCssExtractPlugin({ filename: "crosswords.css" })]
+      : [],
 
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'crosswords.js',
-    }
+      path: path.resolve(__dirname, "dist"),
+      filename: "crosswords.js",
+    },
   };
 };
