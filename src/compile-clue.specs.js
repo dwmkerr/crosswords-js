@@ -15,7 +15,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue("Red or green fruit (5)");
     }).to.throw(
-      "Clue 'Red or green fruit (5)' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'"
+      "Clue 'Red or green fruit (5)' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'",
     );
   });
 
@@ -23,7 +23,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue("a. Red or green fruit (5)");
     }).to.throw(
-      "Clue 'a. Red or green fruit (5)' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'"
+      "Clue 'a. Red or green fruit (5)' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'",
     );
   });
 
@@ -31,7 +31,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue("3. Red or green fruit");
     }).to.throw(
-      "Clue '3. Red or green fruit' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'"
+      "Clue '3. Red or green fruit' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'",
     );
   });
 
@@ -39,7 +39,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue("3. Red or green fruit (a)");
     }).to.throw(
-      "Clue '3. Red or green fruit (a)' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'"
+      "Clue '3. Red or green fruit (a)' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'",
     );
   });
 

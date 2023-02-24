@@ -23,7 +23,7 @@ function compileClue(clueDefinition) {
   //  First, validate the clue structure.
   if (!clueRegex.test(clueDefinition)) {
     throw new Error(
-      `Clue "${clueDefinition}" does not meet the required structured "<Number>. Clue Text (<Answer structure>)"`,
+      `Clue '${clueDefinition}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
     );
   }
 

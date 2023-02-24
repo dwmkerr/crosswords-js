@@ -1,7 +1,7 @@
 # CrosswordsJS <!-- omit from toc -->
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors][1]][2]
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![Release Please][3]][4]
 [![NPM Package Version][5]][6]
@@ -25,18 +25,18 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 ## Index <!-- omit from toc -->
 <!-- vim-markdown-toc GFM -->
 
-- [Quickstart](#quickstart)
-- [Developer Guide](#developer-guide)
-- [Keyboard Functionality](#keyboard-functionality)
-- [Crossword Definition Tips](#crossword-definition-tips)
-- [Design Goals](#design-goals)
-- [Build Pipelines](#build-pipelines)
-  - [Pull Request Pipeline](#pull-request-pipeline)
-  - [Release Pipeline](#release-pipeline)
-- [Adding Contributors](#adding-contributors)
-- [Managing Releases](#managing-releases)
-- [Contributors](#contributors)
-- [TODO](#todo)
+* [Quickstart](#quickstart)
+* [Developer Guide](#developer-guide)
+* [Keyboard Functionality](#keyboard-functionality)
+* [Crossword Definition Tips](#crossword-definition-tips)
+* [Design Goals](#design-goals)
+* [Build Pipelines](#build-pipelines)
+  * [Pull Request Pipeline](#pull-request-pipeline)
+  * [Release Pipeline](#release-pipeline)
+* [Adding Contributors](#adding-contributors)
+* [Managing Releases](#managing-releases)
+* [Contributors](#contributors)
+* [TODO](#todo)
 
 <!-- vim-markdown-toc -->
 
@@ -44,7 +44,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 Install:
 
-```sh
+```bash
 npm install crosswords-js
 ```
 
@@ -100,14 +100,14 @@ var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, docu
 
 Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
-```sh
+```bash
 nvm install --lts
 nvm use --lts
 ```
 
 Check out the code, then run:
 
-```sh
+```bash
 make serve
 ```
 
@@ -115,8 +115,16 @@ The sample will run at the address [localhost:8080][11].
 
 Run the tests with:
 
-```sh
+```bash
 make test
+```
+
+Linting is provided by `eslint`, which is configured to use `pretter`:
+
+```bash
+# Lint the code, or lint and fix.
+npm run lint
+npm run lint:fix
 ```
 
 ## Keyboard Functionality
@@ -265,8 +273,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [2]: #contributors-
 [3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg
 [4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml
-[5]: https://img.shields.io/npm/v/@dwmkerr/template-nodejs-module
-<!-- [5]: https://img.shields.io/npm/v/dwmkerr/crosswords-js -->
+[5]: https://img.shields.io/npm/v/crosswords-js
 [6]: https://www.npmjs.com/package/crosswords-js
 [7]: https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg
 [8]: https://codecov.io/gh/dwmkerr/crosswords-js
