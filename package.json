@@ -27,8 +27,8 @@
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "lint": "eslint src",
-    "lint:fix": "eslint --fix src",
+    "lint": "eslint *.js src/**/*.js sample/*.js",
+    "lint:fix": "eslint --fix *.js src/**/*.js sample/*.js",
     "start": "webpack-dev-server",
     "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
     "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
