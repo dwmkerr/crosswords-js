@@ -29,6 +29,8 @@
   "scripts": {
     "lint": "eslint *.js src/**/*.js sample/*.js",
     "lint:fix": "eslint --fix *.js src/**/*.js sample/*.js",
+    "prettier": "prettier --check *.md docs/**/*.md sample/*.html",
+    "prettier:fix": "prettier --write *.md docs/**/*.md sample/*.html",
     "start": "webpack-dev-server",
     "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
     "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
