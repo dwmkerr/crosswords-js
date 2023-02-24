@@ -44,7 +44,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 Install:
 
-```sh
+```bash
 npm install crosswords-js
 ```
 
@@ -100,14 +100,14 @@ var crosswordDom = new CrosswordsJS.CrosswordsDOM(document, crosswordModel, docu
 
 Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
-```sh
+```bash
 nvm install --lts
 nvm use --lts
 ```
 
 Check out the code, then run:
 
-```sh
+```bash
 make serve
 ```
 
@@ -115,8 +115,16 @@ The sample will run at the address [localhost:8080][11].
 
 Run the tests with:
 
-```sh
+```bash
 make test
+```
+
+Linting is provided by `eslint`, which is configured to use `pretter`:
+
+```bash
+# Lint the code, or lint and fix.
+npm run lint
+npm run lint:fix
 ```
 
 ## Keyboard Functionality

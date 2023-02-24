@@ -1,4 +1,4 @@
-const compileClue = require('./compile-clue');
+const compileClue = require("./compile-clue");
 
 function buildCellArray2D(crosswordModel) {
   const x = crosswordModel.width;
@@ -33,7 +33,9 @@ function getAnswerSegment(answerStructure, letterIndex) {
 //  and options, this is the object which is returned.
 function compileCrossword(crosswordDefinition) {
   if (!crosswordDefinition) {
-    throw new Error('The Crossword must be initialised with a crossword definition.');
+    throw new Error(
+      "The Crossword must be initialised with a crossword definition.",
+    );
   }
 
   //  Create the basic model structure.
@@ -46,9 +48,15 @@ function compileCrossword(crosswordDefinition) {
   };
 
   //  Validate the bounds.
-  if (model.width === undefined || model.width === null || model.width < 0
-      || model.height === undefined || model.height === null || model.height < 0) {
-    throw new Error('The crossword bounds are invalid.');
+  if (
+    model.width === undefined ||
+    model.width === null ||
+    model.width < 0 ||
+    model.height === undefined ||
+    model.height === null ||
+    model.height < 0
+  ) {
+    throw new Error("The crossword bounds are invalid.");
   }
 
   //  Create the array of cells. Each element has a refence back to the model
@@ -56,7 +64,9 @@ function compileCrossword(crosswordDefinition) {
   model.cells = buildCellArray2D(model);
 
   //  We're going to go through the across clues, then the down clues.
-  const clueDefinitions = crosswordDefinition.acrossClues.concat(crosswordDefinition.downClues);
+  const clueDefinitions = crosswordDefinition.acrossClues.concat(
+    crosswordDefinition.downClues,
+  );
   for (let c = 0; c < clueDefinitions.length; c += 1) {
     //  Grab the clue and build a flag letting us know if we're across or down.
     const clueDefinition = clueDefinitions[c];
@@ -67,27 +77,31 @@ function compileCrossword(crosswordDefinition) {
 
     //  TODO: extract this into the clueCompile function.
     //  Update the clue model.
-    clueModel.code = clueModel.number + (across ? 'a' : 'd');
+    clueModel.code = clueModel.number + (across ? "a" : "d");
     clueModel.answer = clueDefinition.answer;
     clueModel.x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
     clueModel.y = clueDefinition.y - 1;
     clueModel.across = across;
     clueModel.cells = [];
     clueModel.clueLabel = `${clueModel.number}.`;
-    model[across ? 'acrossClues' : 'downClues'].push(clueModel);
+    model[across ? "acrossClues" : "downClues"].push(clueModel);
 
     //  The clue position must be in the bounds.
-    if (clueModel.x < 0 || clueModel.x >= model.width
-      || clueModel.y < 0 || clueModel.y >= model.height) {
+    if (
+      clueModel.x < 0 ||
+      clueModel.x >= model.width ||
+      clueModel.y < 0 ||
+      clueModel.y >= model.height
+    ) {
       throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
     }
 
     //  Make sure the clue is not too long.
     if (across) {
-      if ((clueModel.x + clueModel.totalLength) > model.width) {
+      if (clueModel.x + clueModel.totalLength > model.width) {
         throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
       }
-    } else if ((clueModel.y + clueModel.totalLength) > model.height) {
+    } else if (clueModel.y + clueModel.totalLength > model.height) {
       throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
     }
 
@@ -98,28 +112,44 @@ function compileCrossword(crosswordDefinition) {
     for (let letter = 0; letter < clueModel.totalLength; letter += 1) {
       const cell = model.cells[x][y];
       cell.light = true;
-      cell[across ? 'acrossClue' : 'downClue'] = clueModel;
-      cell[across ? 'acrossClueLetterIndex' : 'downClueLetterIndex'] = letter;
+      cell[across ? "acrossClue" : "downClue"] = clueModel;
+      cell[across ? "acrossClueLetterIndex" : "downClueLetterIndex"] = letter;
       clueModel.cells.push(cell);
 
       //  Check if we need to add an answer terminator.
-      const [segment, index] = getAnswerSegment(clueModel.answerStructure, letter);
-      if (index === (segment.length - 1) && segment.terminator !== '') {
-        cell[clueModel.across ? 'acrossTerminator' : 'downTerminator'] = segment.terminator;
+      const [segment, index] = getAnswerSegment(
+        clueModel.answerStructure,
+        letter,
+      );
+      if (index === segment.length - 1 && segment.terminator !== "") {
+        cell[clueModel.across ? "acrossTerminator" : "downTerminator"] =
+          segment.terminator;
       }
 
       //  If the clue has an answer we set it in the cell...
       if (clueModel.answer) {
         //  ...but only if it is not different to an existing answer.
-        if (cell.answer !== undefined && cell.answer !== ' ' && cell.answer !== clueModel.answer[letter]) {
-          throw new Error(`Clue ${clueModel.code} answer at (${x + 1}, ${y + 1}) is not coherent with previous clue (${cell.acrossClue.code}) answer.`);
+        if (
+          cell.answer !== undefined &&
+          cell.answer !== " " &&
+          cell.answer !== clueModel.answer[letter]
+        ) {
+          throw new Error(
+            `Clue ${clueModel.code} answer at (${x + 1}, ${
+              y + 1
+            }) is not coherent with previous clue (${
+              cell.acrossClue.code
+            }) answer.`,
+          );
         }
         cell.answer = clueModel.answer[letter];
       }
 
       if (letter === 0) {
         if (cell.clueLabel && cell.clueLabel !== clueModel.number) {
-          throw new Error(`Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`);
+          throw new Error(
+            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`,
+          );
         }
         cell.clueLabel = clueModel.number;
       }
@@ -141,23 +171,25 @@ function compileCrossword(crosswordDefinition) {
 
     //  Find the connected clues.
     clue.connectedClues = clue.connectedClueNumbers.map((connectedClue) => {
-      if (connectedClue.direction === 'across') {
-        return model.acrossClues.find((ac) => ac.number === connectedClue.number);
+      if (connectedClue.direction === "across") {
+        return model.acrossClues.find(
+          (ac) => ac.number === connectedClue.number,
+        );
       }
-      if (connectedClue.direction === 'down') {
+      if (connectedClue.direction === "down") {
         return model.downClues.find((ac) => ac.number === connectedClue.number);
       }
-      return model.acrossClues.find((ac) => ac.number === connectedClue.number)
-        || model.downClues.find((ac) => ac.number === connectedClue.number);
+      return (
+        model.acrossClues.find((ac) => ac.number === connectedClue.number) ||
+        model.downClues.find((ac) => ac.number === connectedClue.number)
+      );
     });
 
     //  Rebuild the answer structure text.
-    clue.answerStructureText = `(${
-      [clue.answerStructureText]
-        .concat(clue.connectedClues.map((cc) => cc.answerStructureText))
-        .join(',')
-        .replace(/[()]/g, '')
-    })`;
+    clue.answerStructureText = `(${[clue.answerStructureText]
+      .concat(clue.connectedClues.map((cc) => cc.answerStructureText))
+      .join(",")
+      .replace(/[()]/g, "")})`;
 
     //  Each clue should know its parent 'master clue' as well as the next and
     //  previous clue segments.
@@ -167,7 +199,7 @@ function compileCrossword(crosswordDefinition) {
       if (clueSegmentIndex > 0) {
         cs.previousClueSegment = clueSegments[clueSegmentIndex - 1];
       }
-      if (clueSegmentIndex < (clueSegments.length - 1)) {
+      if (clueSegmentIndex < clueSegments.length - 1) {
         cs.nextClueSegment = clueSegments[clueSegmentIndex + 1];
       }
       [cs.parentClue] = clueSegments;
@@ -175,7 +207,9 @@ function compileCrossword(crosswordDefinition) {
     });
 
     //  Create the master clue label.
-    clue.clueLabel = `${[clue.number].concat(clue.connectedClues.map((cc) => cc.number)).join(',')}.`;
+    clue.clueLabel = `${[clue.number]
+      .concat(clue.connectedClues.map((cc) => cc.number))
+      .join(",")}.`;
 
     //  The connected clues need no answer structure, an indicator they are
     //  connected clues and a back link to the master clue.
