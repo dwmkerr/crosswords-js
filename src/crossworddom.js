@@ -359,6 +359,13 @@ class CrosswordDOM {
       const { width, height } = eventCell.crossword;
       const { x, y } = eventCell;
       const clue = self.currentClue;
+      const currentIndex =
+        eventCell.acrossClue === clue
+          ? eventCell.acrossClueLetterIndex
+          : eventCell.downClueLetterIndex;
+      const previousIndex = currentIndex - 1;
+      const nextIndex = currentIndex + 1;
+      trace(`current cell index: ${currentIndex}`);
 
       switch (event.keyCode) {
         case 37: // left
@@ -373,13 +380,7 @@ class CrosswordDOM {
               .querySelector("input")
               .focus();
           } else {
-            // Can we go to previous segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const previousIndex = currentIndex - 1;
+            // Check for multi-segment clue
             //  If we are at the start of the clue and we have a previous segment, select it.
             if (previousIndex === -1 && clue.previousClueSegment) {
               trace("Focussing prev answer segment last cell");
@@ -401,13 +402,7 @@ class CrosswordDOM {
               .querySelector("input")
               .focus();
           } else {
-            // Can we go to previous segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const previousIndex = currentIndex - 1;
+            // Check for multi-segment clue
             //  If we are at the start of the clue and we have a previous segment, select it.
             if (previousIndex === -1 && clue.previousClueSegment) {
               trace("Focussing prev answer segment last cell");
@@ -429,13 +424,7 @@ class CrosswordDOM {
               .querySelector("input")
               .focus();
           } else {
-            // Can we go to next segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const nextIndex = currentIndex + 1;
+            // Check for multi-segment clue
             //  If we are at the end of the clue and we have a next segment, select it.
             if (nextIndex === clue.cells.length && clue.nextClueSegment) {
               trace("Focussing next answer segment cell index 0");
@@ -457,13 +446,7 @@ class CrosswordDOM {
               .querySelector("input")
               .focus();
           } else {
-            // Can we go to next segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const nextIndex = currentIndex + 1;
+            // Check for multi-segment clue
             //  If we are at the end of the clue and we have a next segment, select it.
             if (nextIndex === clue.cells.length && clue.nextClueSegment) {
               trace("Focussing next answer segment cell index 0");
