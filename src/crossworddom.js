@@ -65,6 +65,63 @@ class CrosswordDOM {
     this.crosswordElement = container;
   }
 
+  setCurrentClue(eventCell) {
+    const across = eventCell.acrossClue;
+    const down = eventCell.downClue;
+
+    //  If we have clicked somewhere which is part of the current clue, we
+    //  will not need to change it (we won't toggle either).
+    if (
+      this.currentClue &&
+      (this.currentClue === across || this.currentClue === down)
+    ) {
+      trace("setCurrentClue: in CurrentClue");
+      return;
+    }
+
+    //  If we have an across clue XOR a down clue, pick the one we have.
+    if ((across && !down) || (!across && down)) {
+      this.currentClue = across || down;
+      trace(
+        `setCurrentClue: ${
+          this.currentClue === across ? "across" : "down"
+        } (xor)`,
+      );
+    } else if (
+      across &&
+      this.currentClue &&
+      (across === this.currentClue.previousClueSegment ||
+        across === this.nextClueSegment)
+    ) {
+      //  We've got across. If we are moving between clue segments,
+      //  prefer to choose the next/previous segment...
+      this.currentClue = across;
+      trace(`setCurrentClue: across (multi-segment)`);
+    } else if (
+      down &&
+      this.currentClue &&
+      (down === this.currentClue.previousClueSegment ||
+        down === this.nextClueSegment)
+    ) {
+      //  We've got down. If we are moving between clue segments,
+      //  prefer to choose the next/previous segment...
+      this.currentClue = down;
+      trace(`setCurrentClue: down (multi-segment)`);
+    } else {
+      //  ...otherwise, Prefer across, unless we're on the first letter of a down clue only
+      this.currentClue =
+        eventCell.downClueLetterIndex === 0 &&
+        eventCell.acrossClueLetterIndex !== 0
+          ? down
+          : across;
+      trace(
+        `setCurrentClue: ${
+          this.currentClue === across ? "across" : "down"
+        } (first letter of down only or default across)`,
+      );
+    }
+  }
+
   //  Selects a clue.
   selectClue(clue) {
     this.currentClue = clue;
@@ -100,7 +157,7 @@ class CrosswordDOM {
 
   //  Creates DOM for a cell.
   #createCellDOM(document, cell) {
-    const self = this;
+    const crosswordDom = this;
     const cellElement = document.createElement("div");
     cellElement.className = "cwcell";
     //  eslint-disable-next-line no-param-reassign
@@ -151,52 +208,13 @@ class CrosswordDOM {
     inputElement.addEventListener("focus", (event) => {
       //  Get the cell data.
       const eventCellElement = event.target.parentNode;
-      const eventCell = self.#cellMap.getCell(eventCellElement);
-      const across = eventCell.acrossClue;
-      const down = eventCell.downClue;
+      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
 
-      //  If we have clicked somewhere which is part of the current clue, we
-      //  will not need to change it (we won't toggle either).
-      if (
-        self.currentClue &&
-        (self.currentClue === across || self.currentClue === down)
-      ) {
-        return;
-      }
-
-      //  If we have an across clue XOR a down clue, pick the one we have.
-      if ((across && !down) || (!across && down)) {
-        self.currentClue = across || down;
-      } else if (
-        across &&
-        self.currentClue &&
-        (across === self.currentClue.previousClueSegment ||
-          across === self.nextClueSegment)
-      ) {
-        //  We've got across. If we are moving between clue segments,
-        //  prefer to choose the next/previous segment...
-        self.currentClue = across;
-      } else if (
-        self.currentClue &&
-        (down === self.currentClue.previousClueSegment ||
-          down === self.nextClueSegment)
-      ) {
-        //  We've got down. If we are moving between clue segments,
-        //  prefer to choose the next/previous segment...
-        self.currentClue = down;
-      } else {
-        //  ...otherwise, Prefer across, unless we're on the first letter of a down clue only
-        self.currentClue =
-          eventCell.downClueLetterIndex === 0 &&
-          eventCell.acrossClueLetterIndex !== 0
-            ? down
-            : across;
-      }
-
+      crosswordDom.setCurrentClue(eventCell);
       //  Update the DOM, inform of state change.
-      self.#updateDOM();
+      crosswordDom.#updateDOM();
       // Inform listeners of current clue change
-      self.#stateChange("clueSelected");
+      crosswordDom.#stateChange("clueSelected");
     });
 
     //  Listen for keydown events.
@@ -204,13 +222,35 @@ class CrosswordDOM {
       trace("keydown");
       //  Get the cell element and cell data.
       const eventCellElement = event.target.parentNode;
-      const eventCell = self.#cellMap.getCell(eventCellElement);
+      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
       const { crossword } = eventCell;
-      const clue = self.currentClue;
+      const clue = crosswordDom.currentClue;
 
       if (event.keyCode === 8) {
         // backspace
-        // Pass through to the keeper for default behaviour!
+        //  We don't want default behaviour.
+        event.preventDefault();
+        // Fill cell with SPACE
+        setCellContent(event, " ");
+
+        const currentIndex =
+          eventCell.acrossClue === clue
+            ? eventCell.acrossClueLetterIndex
+            : eventCell.downClueLetterIndex;
+        trace(`current cell index: ${currentIndex}`);
+        const previousIndex = currentIndex - 1;
+
+        if (previousIndex >= 0) {
+          // Move to previous character
+          trace(`Focussing previous cell index: ${previousIndex}`);
+          clue.cells[previousIndex].cellElement.querySelector("input").focus();
+        } else if (previousIndex === -1 && clue.previousClueSegment) {
+          //  If we are at the start of the clue and we have a previous segment, select it.
+          trace("Focussing previous segment last cell");
+          last(clue.previousClueSegment.cells)
+            .cellElement.querySelector("input")
+            .focus();
+        }
       } else if (event.keyCode === 9) {
         // tab
         //  We don't want default behaviour.
@@ -244,14 +284,14 @@ class CrosswordDOM {
                 : crossword.acrossClues[0];
             }
             //  Select the new clue.
-            self.currentClue = newClue;
-            self.#updateDOM();
-            self.#cellMap
+            crosswordDom.currentClue = newClue;
+            crosswordDom.#updateDOM();
+            crosswordDom.#cellMap
               .getCellElement(newClue.cells[0])
               .querySelector("input")
               .focus();
             // Inform listeners of current clue change
-            self.#stateChange("clueSelected");
+            crosswordDom.#stateChange("clueSelected");
             break;
           }
         }
@@ -263,13 +303,13 @@ class CrosswordDOM {
         //  If we are in a eventCell with an across clue AND down clue, swap the
         //  selected one.
         if (eventCell.acrossClue && eventCell.downClue) {
-          self.currentClue =
-            eventCell.acrossClue === self.currentClue
+          crosswordDom.currentClue =
+            eventCell.acrossClue === crosswordDom.currentClue
               ? eventCell.downClue
               : eventCell.acrossClue;
-          self.#updateDOM();
+          crosswordDom.#updateDOM();
           // Inform listeners of current clue change
-          self.#stateChange("clueSelected");
+          crosswordDom.#stateChange("clueSelected");
         }
       }
     });
@@ -283,8 +323,8 @@ class CrosswordDOM {
 
       //  Get cell data.
       const eventCellElement = event.target.parentNode;
-      const eventCell = self.#cellMap.getCell(eventCellElement);
-      const clue = self.currentClue;
+      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
+      const clue = crosswordDom.currentClue;
 
       // Exclude processing of all keys outside A-Z
       const character = String.fromCharCode(event.keyCode).toLowerCase();
@@ -292,39 +332,9 @@ class CrosswordDOM {
 
       if (legalCharacters.test(character)) {
         //  Sets the letter of a string.
-        const setLetter = (source, index, newLetter) => {
-          let sourceNormalised =
-            source === null || source === undefined ? "" : source;
-          let result = "";
-          while (sourceNormalised.length <= index) {
-            sourceNormalised += " ";
-          }
-          const seek = Math.max(index, sourceNormalised.length);
-          for (let i = 0; i < seek; i += 1) {
-            result += i === index ? newLetter : sourceNormalised[i];
-          }
-          return result;
-        };
-
         // Override current content with the pressed key character
         // eslint-disable-next-line no-param-reassign
-        event.target.value = character;
-
-        //  We need to update the answer.
-        if (eventCell.acrossClue) {
-          eventCell.acrossClue.answer = setLetter(
-            eventCell.acrossClue.answer,
-            eventCell.acrossClueLetterIndex,
-            character,
-          );
-        }
-        if (eventCell.downClue) {
-          eventCell.downClue.answer = setLetter(
-            eventCell.downClue.answer,
-            eventCell.downClueLetterIndex,
-            character,
-          );
-        }
+        setCellContent(event, character);
       }
 
       if (advancingCharacters.test(character)) {
@@ -335,10 +345,10 @@ class CrosswordDOM {
             ? eventCell.acrossClueLetterIndex
             : eventCell.downClueLetterIndex;
         trace(`current cell index: ${currentIndex}`);
-        const nextIndex = currentIndex + 1;
-        if (nextIndex < clue.cells.length) {
-          trace(`Focussing next cell index: ${nextIndex}`);
-          clue.cells[nextIndex].cellElement.querySelector("input").focus();
+        const previousIndex = currentIndex + 1;
+        if (previousIndex < clue.cells.length) {
+          trace(`Focussing next cell index: ${previousIndex}`);
+          clue.cells[previousIndex].cellElement.querySelector("input").focus();
         }
 
         //  If we are at the end of the clue and we have a next segment, select it.
@@ -355,123 +365,23 @@ class CrosswordDOM {
     cellElement.addEventListener("keyup", (event) => {
       trace("keyup");
       const eventCellElement = event.target.parentNode;
-      const eventCell = self.#cellMap.getCell(eventCellElement);
+      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
       const { width, height } = eventCell.crossword;
       const { x, y } = eventCell;
-      const clue = self.currentClue;
+      const clue = crosswordDom.currentClue;
 
       switch (event.keyCode) {
         case 37: // left
-          //  If we can go left, go left.
-          if (
-            eventCell.x > 0 &&
-            eventCell.crossword.cells[x - 1][y].light === true
-          ) {
-            //  TODO: optimise with children[0]?
-            self.#cellMap
-              .getCellElement(eventCell.crossword.cells[x - 1][y])
-              .querySelector("input")
-              .focus();
-          } else {
-            // Can we go to previous segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const previousIndex = currentIndex - 1;
-            //  If we are at the start of the clue and we have a previous segment, select it.
-            if (previousIndex === -1 && clue.previousClueSegment) {
-              trace("Focussing prev answer segment last cell");
-              last(clue.previousClueSegment.cells)
-                .cellElement.querySelector("input")
-                .focus();
-            }
-          }
+          moveLeft(eventCell);
           break;
         case 38: // up
-          //  If we can go up, go up.
-          if (
-            eventCell.y > 0 &&
-            eventCell.crossword.cells[x][y - 1].light === true
-          ) {
-            //  TODO: optimise with children[0]?
-            self.#cellMap
-              .getCellElement(eventCell.crossword.cells[x][y - 1])
-              .querySelector("input")
-              .focus();
-          } else {
-            // Can we go to previous segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const previousIndex = currentIndex - 1;
-            //  If we are at the start of the clue and we have a previous segment, select it.
-            if (previousIndex === -1 && clue.previousClueSegment) {
-              trace("Focussing prev answer segment last cell");
-              last(clue.previousClueSegment.cells)
-                .cellElement.querySelector("input")
-                .focus();
-            }
-          }
+          moveUp(eventCell);
           break;
         case 39: // right
-          //  If we can go right, go right.
-          if (
-            eventCell.x + 1 < width &&
-            eventCell.crossword.cells[x + 1][y].light === true
-          ) {
-            //  TODO: optimise with children[0]?
-            self.#cellMap
-              .getCellElement(eventCell.crossword.cells[x + 1][y])
-              .querySelector("input")
-              .focus();
-          } else {
-            // Can we go to next segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const nextIndex = currentIndex + 1;
-            //  If we are at the end of the clue and we have a next segment, select it.
-            if (nextIndex === clue.cells.length && clue.nextClueSegment) {
-              trace("Focussing next answer segment cell index 0");
-              clue.nextClueSegment.cells[0].cellElement
-                .querySelector("input")
-                .focus();
-            }
-          }
+          moveRight(eventCell);
           break;
         case 40: // down
-          //  If we can go down, go down.
-          if (
-            eventCell.y + 1 < height &&
-            eventCell.crossword.cells[x][y + 1].light === true
-          ) {
-            //  TODO: optimise with children[0]?
-            self.#cellMap
-              .getCellElement(eventCell.crossword.cells[x][y + 1])
-              .querySelector("input")
-              .focus();
-          } else {
-            // Can we go to next segment in clue?
-            const currentIndex =
-              eventCell.acrossClue === clue
-                ? eventCell.acrossClueLetterIndex
-                : eventCell.downClueLetterIndex;
-            trace(`current cell index: ${currentIndex}`);
-            const nextIndex = currentIndex + 1;
-            //  If we are at the end of the clue and we have a next segment, select it.
-            if (nextIndex === clue.cells.length && clue.nextClueSegment) {
-              trace("Focussing next answer segment cell index 0");
-              clue.nextClueSegment.cells[0].cellElement
-                .querySelector("input")
-                .focus();
-            }
-          }
+          moveDown(eventCell);
           break;
         case 9: // tab
           //  todo
@@ -484,6 +394,188 @@ class CrosswordDOM {
     });
 
     return cellElement;
+
+    function moveDown(eventCell) {
+      const { x, y } = eventCell;
+      const clue = crosswordDom.currentClue;
+      const { height } = eventCell.crossword;
+
+      if (
+        eventCell.y + 1 < height &&
+        eventCell.crossword.cells[x][y + 1].light === true
+      ) {
+        //  TODO: optimise with children[0]?
+        crosswordDom.#cellMap
+          .getCellElement(eventCell.crossword.cells[x][y + 1])
+          .querySelector("input")
+          .focus();
+      } else {
+        // Can we go to next segment in clue?
+        const currentIndex =
+          eventCell.acrossClue === clue
+            ? eventCell.acrossClueLetterIndex
+            : eventCell.downClueLetterIndex;
+        trace(`moveDown: current cell index: ${currentIndex}`);
+        const nextIndex = currentIndex + 1;
+        //  If we are at the end of the clue and we have a next segment, select it.
+        if (nextIndex === clue.cells.length && clue.nextClueSegment) {
+          trace("moveDown: Focussing next answer segment cell index 0");
+          clue.nextClueSegment.cells[0].cellElement
+            .querySelector("input")
+            .focus();
+        }
+      }
+    }
+
+    function moveUp(eventCell) {
+      const { x, y } = eventCell;
+      const clue = crosswordDom.currentClue;
+
+      let result = false;
+
+      if (
+        eventCell.y > 0 &&
+        eventCell.crossword.cells[x][y - 1].light === true
+      ) {
+        //  TODO: optimise with children[0]?
+        crosswordDom.#cellMap
+          .getCellElement(eventCell.crossword.cells[x][y - 1])
+          .querySelector("input")
+          .focus();
+        result = true;
+      } else {
+        // Can we go to previous segment in clue?
+        const currentIndex =
+          eventCell.acrossClue === clue
+            ? eventCell.acrossClueLetterIndex
+            : eventCell.downClueLetterIndex;
+        trace(`moveUp: current cell index: ${currentIndex}`);
+        const previousIndex = currentIndex - 1;
+        //  If we are at the start of the clue and we have a previous segment, select it.
+        if (previousIndex === -1 && clue.previousClueSegment) {
+          trace("moveUp: Focussing prev answer segment last cell");
+          last(clue.previousClueSegment.cells)
+            .cellElement.querySelector("input")
+            .focus();
+          result = true;
+        }
+      }
+
+      return result;
+    }
+
+    function moveRight(eventCell) {
+      const { x, y } = eventCell;
+      const { width } = eventCell.crossword;
+      const clue = crosswordDom.currentClue;
+
+      let result = false;
+
+      if (
+        eventCell.x + 1 < width &&
+        eventCell.crossword.cells[x + 1][y].light === true
+      ) {
+        //  TODO: optimise with children[0]?
+        crosswordDom.#cellMap
+          .getCellElement(eventCell.crossword.cells[x + 1][y])
+          .querySelector("input")
+          .focus();
+        result = true;
+      } else {
+        // Can we go to next segment in clue?
+        const currentIndex =
+          eventCell.acrossClue === clue
+            ? eventCell.acrossClueLetterIndex
+            : eventCell.downClueLetterIndex;
+        trace(`current cell index: ${currentIndex}`);
+        const nextIndex = currentIndex + 1;
+        //  If we are at the end of the clue and we have a next segment, select it.
+        if (nextIndex === clue.cells.length && clue.nextClueSegment) {
+          trace("Focussing next answer segment cell index 0");
+          clue.nextClueSegment.cells[0].cellElement
+            .querySelector("input")
+            .focus();
+          result = true;
+        }
+      }
+
+      return result;
+    }
+
+    function moveLeft(eventCell) {
+      const { x, y } = eventCell;
+      const clue = crosswordDom.currentClue;
+
+      let result = false;
+
+      if (
+        eventCell.x > 0 &&
+        eventCell.crossword.cells[x - 1][y].light === true
+      ) {
+        //  TODO: optimise with children[0]?
+        crosswordDom.#cellMap
+          .getCellElement(eventCell.crossword.cells[x - 1][y])
+          .querySelector("input")
+          .focus();
+        result = true;
+      } else {
+        // Can we go to previous segment in clue?
+        const currentIndex =
+          eventCell.acrossClue === clue
+            ? eventCell.acrossClueLetterIndex
+            : eventCell.downClueLetterIndex;
+        trace(`current cell index: ${currentIndex}`);
+        const previousIndex = currentIndex - 1;
+        //  If we are at the start of the clue and we have a previous segment, select it.
+        if (previousIndex === -1 && clue.previousClueSegment) {
+          trace("Focussing prev answer segment last cell");
+          last(clue.previousClueSegment.cells)
+            .cellElement.querySelector("input")
+            .focus();
+          result = true;
+        }
+      }
+
+      return result;
+    }
+
+    function setCellContent(event, character) {
+      function setLetter() {
+        return (source, index, newLetter) => {
+          let sourceNormalised =
+            source === null || source === undefined ? "" : source;
+          let result = "";
+          while (sourceNormalised.length <= index) {
+            sourceNormalised += " ";
+          }
+          const seek = Math.max(index, sourceNormalised.length);
+          for (let i = 0; i < seek; i += 1) {
+            result += i === index ? newLetter : sourceNormalised[i];
+          }
+          return result;
+        };
+      }
+
+      const eventCell = crosswordDom.#cellMap.getCell(event.target.parentNode);
+      //  eslint-disable-next-line no-param-reassign
+      event.target.value = character;
+
+      //  We need to update the answer.
+      if (eventCell.acrossClue) {
+        eventCell.acrossClue.answer = setLetter(
+          eventCell.acrossClue.answer,
+          eventCell.acrossClueLetterIndex,
+          character,
+        );
+      }
+      if (eventCell.downClue) {
+        eventCell.downClue.answer = setLetter(
+          eventCell.downClue.answer,
+          eventCell.downClueLetterIndex,
+          character,
+        );
+      }
+    }
   }
 
   //  Updates the DOM based on the model, ensuring that the CSS
@@ -493,14 +585,14 @@ class CrosswordDOM {
     //  TODO: pick a name - active, current or selected.
     const activeClue = this.currentClue;
     const { crossword } = this;
-    const self = this;
+    const crosswordDom = this;
 
     //  Clear all clue cells.
     crossword.cells.forEach((row) => {
       row.forEach((cell) => {
         if (cell.light) {
           removeClass(
-            self.#cellMap.getCellElement(cell).querySelector("input"),
+            crosswordDom.#cellMap.getCellElement(cell).querySelector("input"),
             "active",
           );
         }
@@ -515,7 +607,7 @@ class CrosswordDOM {
     clues.forEach((clue) => {
       clue.cells.forEach((cell) => {
         addClass(
-          self.#cellMap.getCellElement(cell).querySelector("input"),
+          crosswordDom.#cellMap.getCellElement(cell).querySelector("input"),
           "active",
         );
       });
