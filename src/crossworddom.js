@@ -219,7 +219,7 @@ class CrosswordDOM {
 
     //  Listen for keydown events.
     cellElement.addEventListener("keydown", (event) => {
-      trace("keydown");
+      trace(`keydown: keycode=${event.keyCode}`);
       //  Get the cell element and cell data.
       const eventCellElement = event.target.parentNode;
       const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
@@ -227,7 +227,7 @@ class CrosswordDOM {
       const clue = crosswordDom.currentClue;
 
       if (event.keyCode === 8) {
-        // backspace
+        // BACKSPACE
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
@@ -237,7 +237,7 @@ class CrosswordDOM {
           eventCell.acrossClue === clue
             ? eventCell.acrossClueLetterIndex
             : eventCell.downClueLetterIndex;
-        trace(`current cell index: ${currentIndex}`);
+        trace(`BACKSPACE: current cell index: ${currentIndex}`);
         const previousIndex = currentIndex - 1;
 
         if (previousIndex >= 0) {
@@ -252,10 +252,10 @@ class CrosswordDOM {
             .focus();
         }
       } else if (event.keyCode === 9) {
-        // tab
+        // TAB
         //  We don't want default behaviour.
         event.preventDefault();
-
+        trace(`TAB`);
         //  Get the next clue.
         const searchClues = clue.across
           ? crossword.acrossClues
@@ -263,6 +263,7 @@ class CrosswordDOM {
         for (let i = 0; i < searchClues.length; i += 1) {
           if (clue === searchClues[i]) {
             let newClue = null;
+
             if (event.shiftKey) {
               //  shift-tab selects previous clue
               if (i > 0) {
@@ -283,6 +284,7 @@ class CrosswordDOM {
                 ? crossword.downClues[0]
                 : crossword.acrossClues[0];
             }
+
             //  Select the new clue.
             crosswordDom.currentClue = newClue;
             crosswordDom.#updateDOM();
@@ -296,7 +298,7 @@ class CrosswordDOM {
           }
         }
       } else if (event.keyCode === 13) {
-        // enter
+        // ENTER
         //  We don't want default behaviour.
         event.preventDefault();
 
@@ -311,6 +313,12 @@ class CrosswordDOM {
           // Inform listeners of current clue change
           crosswordDom.#stateChange("clueSelected");
         }
+      } else if (event.keyCode === 46) {
+        // DELETE
+        //  We don't want default behaviour.
+        event.preventDefault();
+        // Fill cell with SPACE
+        setCellContent(event, " ");
       }
     });
 
@@ -331,9 +339,7 @@ class CrosswordDOM {
       trace(`character:<${character}>`);
 
       if (legalCharacters.test(character)) {
-        //  Sets the letter of a string.
-        // Override current content with the pressed key character
-        // eslint-disable-next-line no-param-reassign
+        //  Sets the letter in the current clue cell.
         setCellContent(event, character);
       }
 
@@ -345,14 +351,14 @@ class CrosswordDOM {
             ? eventCell.acrossClueLetterIndex
             : eventCell.downClueLetterIndex;
         trace(`current cell index: ${currentIndex}`);
-        const previousIndex = currentIndex + 1;
-        if (previousIndex < clue.cells.length) {
-          trace(`Focussing next cell index: ${previousIndex}`);
-          clue.cells[previousIndex].cellElement.querySelector("input").focus();
-        }
+        const nextIndex = currentIndex + 1;
 
-        //  If we are at the end of the clue and we have a next segment, select it.
-        if (nextIndex === clue.cells.length && clue.nextClueSegment) {
+        if (nextIndex < clue.cells.length) {
+          // We are still within the bounds of the current clue (segment)
+          trace(`Focussing next cell index: ${nextIndex}`);
+          clue.cells[nextIndex].cellElement.querySelector("input").focus();
+        } else if (clue.nextClueSegment) {
+          //  We are at the end of the clue segment and there is a next segment.
           trace("Focussing next answer segment cell index 0");
           clue.nextClueSegment.cells[0].cellElement
             .querySelector("input")
@@ -384,9 +390,8 @@ class CrosswordDOM {
           moveDown(eventCell);
           break;
         case 9: // tab
-          //  todo
+          // tab handled in keydown event handler
           break;
-
         //  No action needed for any other keys.
         default:
           break;
