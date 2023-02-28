@@ -1,7 +1,9 @@
 # crosswords-js <!-- omit from toc -->
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
+[![All Contributors][1]][2]
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Release Please][3]][4]
@@ -29,7 +31,6 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 - [Quickstart](#quickstart)
   - [Application Programming Interface (API)](#application-programming-interface-api)
-  - [Styling](#styling)
   - [Sample applications](#sample-applications)
 - [Contributor guide](#contributor-guide)
   - [Setting up your dev environment](#setting-up-your-dev-environment)
@@ -199,10 +200,6 @@ You can use the `controller` to programmatically manipulate the **gridView** - t
 For further information on these topics, consult the [module API][30] documentation.
 
 For examples, refer to the [development server code][31].
-
-### Styling
-
-The library ships with some simple default styles out of the box, but aims to be easily customisable. See [`crossword-styling.md`][35] for details.
 
 ### Sample applications
 
@@ -494,7 +491,6 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://www.dwmkerr.com"><img src="https://avatars.githubusercontent.com/u/1926984?v=4?s=100" width="100px;" alt="Dave Kerr"/><br /><sub><b>Dave Kerr</b></sub></a><br /><a href="https://github.com/dwmkerr/crosswords-js/commits?author=dwmkerr" title="Documentation">📖</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=dwmkerr" title="Code">💻</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=dwmkerr" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/pvspain"><img src="https://avatars.githubusercontent.com/u/716363?v=4?s=100" width="100px;" alt="Paul Spain"/><br /><sub><b>Paul Spain</b></sub></a><br /><a href="https://github.com/dwmkerr/crosswords-js/commits?author=pvspain" title="Documentation">📖</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=pvspain" title="Code">💻</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=pvspain" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mmkal"><img src="https://avatars.githubusercontent.com/u/15040698?v=4?s=100" width="100px;" alt="Misha Kaletsky"/><br /><sub><b>Misha Kaletsky</b></sub></a><br /><a href="https://github.com/dwmkerr/crosswords-js/commits?author=mmkal" title="Code">💻</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=mmkal" title="Documentation">📖</a> <a href="https://github.com/dwmkerr/crosswords-js/pulls?q=is%3Apr+reviewed-by%3Ammkal" title="Reviewed Pull Requests">👀</a></td>
     </tr>
   </tbody>
 </table>
@@ -516,8 +512,7 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
 - [x] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
-- [x] bug: [Demo site][9] is not tracking latest version
-- [ ] bug: [Demo site][9] seems to have loading issues
+- [ ] bug: [Demo site][9] is not tracking latest version
 - [x] feat(docs): improve the demo site image (its an old one at the moment!)
 - [x] feat: show how we can check answers or highlight incorrect entries (see issue #9)
 - [x] feat(samples): allow us to switch between 2-3 crosswords on the sample
@@ -538,8 +533,8 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 
 [1]: https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square
 [2]: #contributors-
-[3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/main.yml/badge.svg
-[4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/main.yml
+[3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg
+[4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml
 [5]: https://img.shields.io/npm/v/crosswords-js
 [6]: https://www.npmjs.com/package/crosswords-js
 [7]: https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg

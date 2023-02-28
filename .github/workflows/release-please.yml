@@ -1,9 +1,8 @@
-# The 'main' workflow builds the code, tests it, deploys the demo site, and
-# also creates the release please PR if needed. If the release please PR is
-# merged, it releases to NPM.
+# The 'release-please' workflow is used to create the 'Release Please' pull
+# request. This PR is opened when we have a new commit to main.
 # See:
 #   https://github.com/googleapis/release-please
-name: main
+name: Release Please
 
 on:
   push:
@@ -20,7 +19,8 @@ env:
 jobs:
   validate-main:
 
-    runs-on: ubuntu-20.04
+    # https://github.com/actions/runner-images#available-images 
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -48,20 +48,21 @@ jobs:
       # Lint and test.
       - name: ci
         run: npm ci
-      - name: build
-        run: npm run build
       - name: lint
         run: npm run lint
       - name: test
         run: npm run test:cov
 
-      # Upload the artifacts folder.
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+      # Build and upload the demo application.
+
+      - name: Build demo application
+        run: npm run dev:prod
+      - name: Upload demo artifacts
+        # https://github.com/actions/upload-pages-artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: build-artifacts
-          path: |
-            ./artifacts/
+          # Created by npm run dev:prod
+          path: dev/dist/
         # Only upload artifacts for the build on the LTS version (we don't
         # need artifacts per node version).
         if: ${{ matrix.node-version == env.NODE_LTS_VERSION }}
@@ -71,14 +72,16 @@ jobs:
     # 'validate-main' job.
     needs: validate-main
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
-      # Download the build artifacts.
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
+      # Upload the build artifacts.
+      - name: Upload coverage artifacts
+        # https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
+          # Created by npm run test:cov
           path: ./artifacts
 
       # Upload coverage.
@@ -87,47 +90,22 @@ jobs:
         with:
           directory: ./artifacts/coverage
 
-  deploy-demo-site:
-    # The 'deploy demo site' job will only run if successfully complete the
+  release-please:
+    # The 'release please' job will only run if successfully complete the
     # 'validate-main' job.
     needs: validate-main
 
-    runs-on: ubuntu-20.04
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-      # Setup the right version of Node.js.
-      - name: Setup Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_LTS_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-
-      # Fixup Git URLs, see:
-      # https://stackoverflow.com/questions/70663523/the-unauthenticated-git-protocol-on-port-9418-is-no-longer-supported
-      - name: Fix up git URLs
-        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
-
-      # Build the demo site.
-      - name: Build Demo Site
-        run: |
-          make build-sample-site
-
-      # Publish the demo site to GitHub pages.
-      - name: Publish Demo Site to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@releases/v4
-        with:
-          folder: artifacts/sample-site
-
-  release-please:
-    # The 'release please' job will only run if successfully complete the
-    # 'validate-main' job. The deployment steps only occur if this is a release
-    # merge.
-    needs: validate-main
-
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Release Please
@@ -169,15 +147,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
 
-      # Build the demo site.
-      - name: Build Demo Site
-        run: |
-          make build-sample-site
-        if: ${{ steps.release.outputs.release_created }}
 
-      # Publish the demo site to GitHub pages.
-      - name: Publish Demo Site to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@releases/v4
-        with:
-          folder: artifacts/sample-site
-        if: ${{ steps.release.outputs.release_created }}
+      # Publish the demo to GitHub pages.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        # https://github.com/actions/deploy-pages
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action

@@ -14,4 +14,8 @@ dev/dist/
 
 # Rebase artefacts
 git-rebase-todo*
-rebase*.log
+*.log
+*.reflog
+
+# VS Code CLI - enable remote tunnels
+code

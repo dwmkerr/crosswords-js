@@ -28,23 +28,11 @@
         "test"
       ]
     },
-    {
-      "login": "mmkal",
-      "name": "Misha Kaletsky",
-      "avatar_url": "https://avatars.githubusercontent.com/u/15040698?v=4",
-      "profile": "https://github.com/mmkal",
-      "contributions": [
-        "code",
-        "doc",
-        "review"
-      ]
-    }
   ],
   "contributorsPerLine": 7,
   "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "crosswords-js",
-  "projectOwner": "dwmkerr",
-  "commitType": "docs"
+  "projectOwner": "dwmkerr"
 }

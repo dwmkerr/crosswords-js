@@ -16,6 +16,7 @@ const quiptic89 = require('../data/quiptic_89.json');
 const alberich4 = require('../data/alberich_4.json');
 const ftimes17095 = require('../data/ftimes_17095.json');
 const daquick20230818 = require('../data/da_quick_20230818.json');
+const bletchley001 = require('../data/bletchley_001.json');
 
 const { width, height, acrossClues, downClues } = quiptic89;
 const mimetype = 'application/vnd.js-crossword';
@@ -296,8 +297,10 @@ describe('newCrosswordModel()', () => {
   });
 
   it('should validate the test crosswords', () => {
-    [ftimes17095, alberich4, quiptic89, daquick20230818].forEach((cd) => {
-      newCrosswordModel(cd);
-    });
+    [ftimes17095, alberich4, quiptic89, daquick20230818, bletchley001].forEach(
+      (cd) => {
+        expect(newCrosswordModel(cd)).is.not.null;
+      },
+    );
   });
 });
