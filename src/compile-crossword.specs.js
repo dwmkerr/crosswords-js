@@ -38,7 +38,7 @@ describe("model generation", () => {
     //  The following elements are parsed from the clue text.
     expect(modelClue.number).to.eql(1);
     expect(modelClue.clueText).to.eql(
-      "Conspicuous influence exerted by active troops ",
+      "Conspicuous influence exerted by active troops",
     );
   });
 
@@ -156,7 +156,7 @@ describe("model generation", () => {
 
     //  Make sure the connected clues are set.
     expect(clue4down.connectedClues).to.eql([clue21across]);
-    expect(clue4down.answerStructureText).to.eql("(9,3,5)");
+    expect(clue4down.answerLengthText).to.eql("(9,3,5)");
     expect(clue4down.clueLabel).to.eql("4,21.");
   });
 });
