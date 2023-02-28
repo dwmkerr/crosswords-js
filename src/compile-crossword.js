@@ -8,7 +8,7 @@ function buildCellArray2D(crosswordModel) {
     array[i] = new Array(y);
     for (let j = 0; j < y; j += 1) {
       array[i][j] = {
-        crossword: crosswordModel,
+        model: crosswordModel,
         x: i,
         y: j,
       };
