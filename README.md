@@ -2,7 +2,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors][1]][2]
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
@@ -115,9 +115,12 @@ nvm install --lts --latest-npm
 nvm use --lts
 ```
 
-Check out the code, then run:
+Check out the code, then, from the root directory, run:
 
 ```bash
+# Fetch all dependent packages
+npm install
+# Start the sample app
 npm start
 ```
 
@@ -145,7 +148,7 @@ npm run prettier
 npm run prettier:fix
 ```
 
-To automate all these checks on each git commit, create a `pre-commit` hook in your repository:
+To automate all these checks on each commit to your local git repository, create a `pre-commit` hook in your repository:
 
 ```bash
 # From the root directory of the package...
