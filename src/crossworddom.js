@@ -14,6 +14,7 @@ const advancingCharacters = /^[ a-zA-Z]$/;
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.
 const updateCrosswordFontSize = (crosswordContainer) => {
+  trace("updateCrosswordFontSize");
   //  Get the width of a cell (first child of first row).
   const cellWidth = crosswordContainer.children[0].children[0].clientWidth;
   //  eslint-disable-next-line no-param-reassign
@@ -58,16 +59,18 @@ class CrosswordDOM {
 
     //  Update the fontsize when the window changes size, add the crossword, set
     //  the correct fontsize right away.
-    window.addEventListener("resize", () =>
-      updateCrosswordFontSize(this.#crosswordElement),
-    );
+    const window = document.defaultView;
+    window.addEventListener("resize", () => {
+      trace("window.event:resize");
+      updateCrosswordFontSize(this.#crosswordElement);
+    });
     this.#domParentElement.appendChild(this.#crosswordElement);
     updateCrosswordFontSize(this.#crosswordElement);
-
-    //  Add a helper function to allow the font to be resized programmatically,
-    //  useful if something else changes the size of the crossword.
-    this.updateFontSize = () => updateCrosswordFontSize(this.#crosswordElement);
   }
+
+  //  Add a helper function to allow the font to be resized programmatically,
+  //  useful if something else changes the size of the crossword.
+  updateFontSize = () => updateCrosswordFontSize(this.#crosswordElement);
 
   // static class method
   static #focus(cellElement) {
