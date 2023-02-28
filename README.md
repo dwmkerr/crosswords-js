@@ -111,14 +111,14 @@ var crosswordDom = new CrosswordsJS.CrosswordsDOM(
 Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
 ```bash
-nvm install --lts
+nvm install --lts --latest-npm
 nvm use --lts
 ```
 
 Check out the code, then run:
 
 ```bash
-make serve
+npm start
 ```
 
 The sample will run at the address [localhost:8080][11].
@@ -126,15 +126,36 @@ The sample will run at the address [localhost:8080][11].
 Run the tests with:
 
 ```bash
-make test
+npm test
 ```
 
-Linting is provided by `eslint`, which is configured to use `pretter`:
+Linting is provided by `eslint`, which is configured to use `prettier`:
 
 ```bash
 # Lint the code, or lint and fix.
 npm run lint
 npm run lint:fix
+```
+
+Documentation and HTML can be checked for standard conformance using `prettier`:
+
+```bash
+# Check html and docs for correctness, or check and fix.
+npm run prettier
+npm run prettier:fix
+```
+
+To automate all these checks on each git commit, create a `pre-commit` hook in your repository:
+
+```bash
+# From the root directory of the package...
+cat << EOF > .git/hooks/pre-commit
+#!/bin/sh
+npm run prettier:fix && \\
+npm run lint:fix && \\
+npm test
+EOF
+chmod u+x .git/hooks/pre-commit
 ```
 
 ## Keyboard Functionality

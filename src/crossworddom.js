@@ -2,7 +2,7 @@ const CellMap = require("./cell-map");
 const { removeClass, addClass, first, last } = require("./helpers");
 
 // Configure trace logging
-const tracing = true;
+const tracing = false;
 const trace = (message) => {
   if (tracing) console.log(message);
 };
