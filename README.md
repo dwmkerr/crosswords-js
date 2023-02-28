@@ -29,18 +29,18 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 <!-- vim-markdown-toc GFM -->
 
-* [Quickstart](#quickstart)
-* [Developer Guide](#developer-guide)
-* [Keyboard Functionality](#keyboard-functionality)
-* [Crossword Definition Tips](#crossword-definition-tips)
-* [Design Goals](#design-goals)
-* [Build Pipelines](#build-pipelines)
-  * [Pull Request Pipeline](#pull-request-pipeline)
-  * [Release Pipeline](#release-pipeline)
-* [Adding Contributors](#adding-contributors)
-* [Managing Releases](#managing-releases)
-* [Contributors](#contributors)
-* [TODO](#todo)
+- [Quickstart](#quickstart)
+- [Developer Guide](#developer-guide)
+- [Keyboard Functionality](#keyboard-functionality)
+- [Crossword Definition Tips](#crossword-definition-tips)
+- [Design Goals](#design-goals)
+- [Build Pipelines](#build-pipelines)
+  - [Pull Request Pipeline](#pull-request-pipeline)
+  - [Release Pipeline](#release-pipeline)
+- [Adding Contributors](#adding-contributors)
+- [Managing Releases](#managing-releases)
+- [Contributors](#contributors)
+- [TODO](#todo)
 
 <!-- vim-markdown-toc -->
 
