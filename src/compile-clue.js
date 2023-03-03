@@ -1,7 +1,7 @@
 //  This is the main regex which rips apart a clue into a number, clue and
 //  answer structure.
 const clueRegex = /^(\d+),?([\dad,]*).[\s]*(.*)[\s]*\(([\d,-]+)\)$/;
-
+const missing = [undefined, null];
 function directionFromClueLabel(clueLabel) {
   if (/a$/.test(clueLabel)) return "across";
   if (/d$/.test(clueLabel)) return "down";
@@ -13,14 +13,47 @@ function directionFromClueLabel(clueLabel) {
  *
  * @param clueDefinition - a string which defines the clue, in the format:
  *   "<Number>. <Clue> (<Answer Structure>)"
+ * @param isAcrossClue - a boolean indicating the clue orientation
  * @returns - the clue model for the given defintion
  */
-function compileClue(clueDefinition) {
-  if (!clueDefinition) {
-    throw new Error("'clue' is required");
+function compileClue(clueDefinition, isAcrossClue) {
+  function isClueDefinition(clueDefinition) {
+    const valid = { x: 1, y: 1, clue: "1. Clue (1)" };
+    const validKeys = Object.keys(valid);
+    const cdKeys = Object.keys(clueDefinition);
+
+    if (
+      // check all required properties of valid are in clueDefinition
+      validKeys.every((x) => cdKeys.includes(x)) &&
+      // exclude clueDefinition with additional properties
+      cdKeys.length == validKeys.length
+    ) {
+      // check the type of each property matches
+      for (const key of validKeys) {
+        if (typeof valid[key] != typeof clueDefinition[key]) return false;
+      }
+    }
+
+    return true;
+  }
+  // test for null or undefined argument
+  if (clueDefinition === undefined || isAcrossClue === undefined) {
+    throw new Error("'clueDefinition' and 'isAcrossClue' are required");
   }
 
-  //  First, validate the clue structure.
+  if (clueDefinition === null) {
+    throw new Error("'clueDefinition' can't be null");
+  }
+
+  if (!isClueDefinition(clueDefinition)) {
+    throw new Error("'clueDefinition' is malformed");
+  }
+
+  //  validate isAcrossClue.
+  if (typeof isAcrossClue != "boolean") {
+    throw new Error("'isAcrossClue' must be a boolean");
+  }
+
   if (!clueRegex.test(clueDefinition)) {
     throw new Error(
       `Clue '${clueDefinition}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
@@ -28,9 +61,16 @@ function compileClue(clueDefinition) {
   }
 
   //  Get the clue components.
+
   const [, numberText, connectedCluesText, clueText, answerText] =
     clueRegex.exec(clueDefinition);
   const number = parseInt(numberText, 10);
+  const code = number + (isAcrossClue ? "a" : "d");
+  const x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
+  const y = clueDefinition.y - 1;
+  const cells = [];
+  const clueLabel = `${number}.`;
+  const answer = answerText;
 
   //  If we have connected clues, break them apart.
   let connectedClueNumbers = null;
@@ -65,12 +105,19 @@ function compileClue(clueDefinition) {
     .join("")})`;
 
   return {
-    number,
-    clueText,
-    connectedClueNumbers,
+    isAcrossClue,
+    answer,
     answerStructure,
     answerStructureText,
+    cells,
+    clueLabel,
+    clueText,
+    code,
+    connectedClueNumbers,
+    number,
     totalLength,
+    x,
+    y,
   };
 }
 

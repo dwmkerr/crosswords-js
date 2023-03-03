@@ -73,17 +73,9 @@ function compileCrossword(crosswordDefinition) {
     const across = c < crosswordDefinition.acrossClues.length;
 
     //  Compile the clue from the clue model.
-    const clueModel = compileClue(clueDefinition.clue);
+    const clueModel = compileClue(clueDefinition, across);
 
-    //  TODO: extract this into the clueCompile function.
     //  Update the clue model.
-    clueModel.code = clueModel.number + (across ? "a" : "d");
-    clueModel.answer = clueDefinition.answer;
-    clueModel.x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
-    clueModel.y = clueDefinition.y - 1;
-    clueModel.across = across;
-    clueModel.cells = [];
-    clueModel.clueLabel = `${clueModel.number}.`;
     model[across ? "acrossClues" : "downClues"].push(clueModel);
 
     //  The clue position must be in the bounds.
