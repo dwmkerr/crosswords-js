@@ -32,6 +32,8 @@ function compileClue(clueDefinition, isAcrossClue) {
       for (const key of validKeys) {
         if (typeof valid[key] != typeof clueDefinition[key]) return false;
       }
+    } else {
+      return false;
     }
 
     return true;
@@ -56,7 +58,7 @@ function compileClue(clueDefinition, isAcrossClue) {
 
   if (!clueRegex.test(clueDefinition)) {
     throw new Error(
-      `Clue '${clueDefinition}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
+      `Clue '${clueDefinition.clue}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
     );
   }
 
