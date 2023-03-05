@@ -1,5 +1,30 @@
 //  This is the main regex which rips apart a clue into a number, clue and
 //  answer structure.
+// 
+// There are no leading characters allowed
+// 
+// The number is evaluated as: ^(\d+),?([\dad,]*)
+//   - one or more digits
+//   - followed by an optional comma
+//   - followed by an optional additional segment group: [\dad,]*
+//      - zero or more of any of (digit,'a','d',',')
+//
+// Followed by any character (typically a period '.')
+// Followed by zero or more whitespace
+//
+// The clue is evaluated as: .*
+//   - a sequence of zero or more (non-whitespace) characters
+//   
+// Followed by zero or more whitespace
+// Followed by an opening parenthesis '('
+//
+// The answer structure is evaluated as: [\d,-]+
+//   - a sequence of one or more of any of (digit,'-')
+//
+// Followed by a closing parenthesis ')'
+// There are no trailing characters allowed   
+
+// For a single segment clue
 const clueRegex = /^(\d+),?([\dad,]*).[\s]*(.*)[\s]*\(([\d,-]+)\)$/;
 const missing = [undefined, null];
 function directionFromClueLabel(clueLabel) {
@@ -17,26 +42,35 @@ function directionFromClueLabel(clueLabel) {
  * @returns - the clue model for the given defintion
  */
 function compileClue(clueDefinition, isAcrossClue) {
-  function isClueDefinition(clueDefinition) {
+  function validateClueStructure(clueDefinition) {
     const valid = { x: 1, y: 1, clue: "1. Clue (1)" };
     const validKeys = Object.keys(valid);
     const cdKeys = Object.keys(clueDefinition);
 
-    if (
-      // check all required properties of valid are in clueDefinition
-      validKeys.every((x) => cdKeys.includes(x)) &&
-      // exclude clueDefinition with additional properties
-      cdKeys.length == validKeys.length
-    ) {
-      // check the type of each property matches
-      for (const key of validKeys) {
-        if (typeof valid[key] != typeof clueDefinition[key]) return false;
-      }
-    } else {
-      return false;
+    for (const validKey of validKeys) {
+      if (!cdKeys.includes(validKey))
+        throw new Error(`'clueDefinition.${validKey}' property is missing`);
     }
 
-    return true;
+    for (const key of validKeys) {
+      if (typeof valid[key] != typeof clueDefinition[key]) {
+        throw new Error(
+          `'clueDefinition.${key}' must have type <${typeof valid[key]}>`,
+        );
+      }
+    }
+ 
+    // check for additional properties in clueDefinition
+    const difference = new Set(cdKeys);
+    for (const validKey of validKeys) {
+      difference.delete(validKey);
+    }
+
+    if (difference.size > 0) {
+      throw new Error(
+        `'clueDefinition' has unexpected properties <${[...difference].join(',')}>`,
+      );
+    }
   }
   // test for null or undefined argument
   if (clueDefinition === undefined || isAcrossClue === undefined) {
@@ -47,16 +81,19 @@ function compileClue(clueDefinition, isAcrossClue) {
     throw new Error("'clueDefinition' can't be null");
   }
 
-  if (!isClueDefinition(clueDefinition)) {
-    throw new Error("'clueDefinition' is malformed");
+  //  validate isAcrossClue.
+  if (isAcrossClue === null) {
+    throw new Error("'isAcrossClue' can't be null");
   }
 
   //  validate isAcrossClue.
   if (typeof isAcrossClue != "boolean") {
-    throw new Error("'isAcrossClue' must be a boolean");
+    throw new Error("'isAcrossClue' must be a boolean (true,false)");
   }
 
-  if (!clueRegex.test(clueDefinition)) {
+  validateClueStructure(clueDefinition);
+
+  if (!clueRegex.test(clueDefinition.clue)) {
     throw new Error(
       `Clue '${clueDefinition.clue}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
     );
@@ -65,13 +102,13 @@ function compileClue(clueDefinition, isAcrossClue) {
   //  Get the clue components.
 
   const [, numberText, connectedCluesText, clueText, answerText] =
-    clueRegex.exec(clueDefinition);
+    clueRegex.exec(clueDefinition.clue);
   const number = parseInt(numberText, 10);
   const code = number + (isAcrossClue ? "a" : "d");
   const x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
   const y = clueDefinition.y - 1;
   const cells = [];
-  const clueLabel = `${number}.`;
+  const clueLabel = `${number}`;
   const answer = answerText;
 
   //  If we have connected clues, break them apart.
