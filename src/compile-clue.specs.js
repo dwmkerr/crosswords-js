@@ -23,7 +23,7 @@ cd["unexpected-properties"] = {
   clue: "3. Red or green fruit (5)",
 };
 cd["valid-single-segment"] = { x: 12, y: 9, clue: "3. Red or green fruit (5)" };
-cd["valid-multi-word"] = { x: 12, y: 9, clue: "9. Clue (5,3-4)" };
+cd["valid-multi-word-hyphenated"] = { x: 12, y: 9, clue: "9. Clue (5,3-4)" };
 cd["valid-multi-segment"] = { x: 12, y: 9, clue: "9,3a,4. Clue (5,3-4)" };
 
 describe("compileClue", () => {
@@ -140,8 +140,8 @@ describe("compileClue", () => {
     expect(clueModel.answerSegmentsText).to.eql("(5)", isAcrossClue);
   });
 
-  it("should compile the answer structure", () => {
-    const clueModel = compileClue(cd["valid-multi-word"], isAcrossClue);
+  it("should compile multi-word and hyphenated answers", () => {
+    const clueModel = compileClue(cd["valid-multi-word-hyphenated"], isAcrossClue);
     expect(clueModel.number).to.eql(9);
     expect(clueModel.clueText).to.eql("Clue");
     expect(clueModel.answerLength).to.eql(12);
@@ -164,17 +164,11 @@ describe("compileClue", () => {
       { length: 4, terminator: "" },
     ]);
     expect(clueModel.answerSegmentsText).to.eql("(5,3-4)");
-    expect(clueModel.connectedClues).to.eql([
+    expect(clueModel.connectedDirectedClues).to.eql([
       { number: 3, direction: "across" },
       { number: 4, direction: null },
     ]);
   });
-
-  // const x = cd.x - 1; //  Definitions are 1 based, models are more useful 0 based.
-  // const y = cd.y - 1;
-  // const cells = [];
-  // const clueLabel = `${number}.`;
-  // const answer = answerText;
 
   it("should compile the number and answer lengths of a clue string", () => {
     const clueModel = compileClue(cd["valid-single-segment"], isAcrossClue);

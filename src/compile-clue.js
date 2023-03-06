@@ -19,7 +19,7 @@ function directionFromClueLabel(clueLabel) {
 }
 
 /**
- * compileClue - create a clue model from a clue defintion
+ * compileClue - create a clue model from a clue definition
  *
  * @param clueDefinition - an object which defines the clue, with properties:
  * x: the zero-based grid column index of the starting letter of the clue
@@ -27,7 +27,7 @@ function directionFromClueLabel(clueLabel) {
  * clue: the clue description string which has the format:
  *   "<Number Structure>.<Clue>(<Answer Structure>)"
  * @param isAcrossClue - a boolean indicating the clue orientation
- * @returns - the clue model for the given defintion
+ * @returns - the clue model for the given definition
  */
 function compileClue(clueDefinition, isAcrossClue) {
   function validateClueStructure(clueDefinition) {
@@ -62,7 +62,9 @@ function compileClue(clueDefinition, isAcrossClue) {
       );
     }
   }
-  // test for null or undefined argument
+
+  // Test for null or undefined argument
+
   if (clueDefinition === undefined || isAcrossClue === undefined) {
     throw new Error("'clueDefinition' and 'isAcrossClue' are required");
   }
@@ -71,27 +73,31 @@ function compileClue(clueDefinition, isAcrossClue) {
     throw new Error("'clueDefinition' can't be null");
   }
 
-  //  validate isAcrossClue.
   if (isAcrossClue === null) {
     throw new Error("'isAcrossClue' can't be null");
   }
 
-  //  validate isAcrossClue.
   if (typeof isAcrossClue != "boolean") {
     throw new Error("'isAcrossClue' must be a boolean (true,false)");
   }
 
+  // Test the properties and types of the clueDefinition argument
   validateClueStructure(clueDefinition);
 
+  // Test if clue text matches expected pattern
   if (!clueRegex.test(clueDefinition.clue)) {
     throw new Error(
       `Clue '${clueDefinition.clue}' does not match the required pattern '${cluePattern}'`,
     );
   }
 
+  // Extract simple properties
   const x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
   const y = clueDefinition.y - 1;
+
+  // Initialise array of crossword grid elements - populated as part of crossword DOM
   const cells = [];
+  // Initialise user's answer for clue
   const answer = "";
 
   //  Get the clue components.
@@ -101,18 +107,18 @@ function compileClue(clueDefinition, isAcrossClue) {
 
   //// Parse numberGroup
 
-  let numberSegments = [],
-    connectedClues = [],
+  let clueLabelSegments = [],
+    connectedDirectedClues = [],
     remainingText = numberGroup;
 
   while (numberGroupRegex.test(remainingText)) {
-    const [,numberSegment,,residual] = numberGroupRegex.exec(remainingText);
-    numberSegments.push(numberSegment);
+    const [, labelSegment, , residual] = numberGroupRegex.exec(remainingText);
+    clueLabelSegments.push(labelSegment);
     // Trim leading ',' from residual
     remainingText = residual;
   }
 
-  const anchorSegment = first(numberSegments);
+  const anchorSegment = first(clueLabelSegments);
   const number = parseInt(anchorSegment, 10);
   const clueLabel = number.toString();
   // Code is number followed by 'a' or 'd'...
@@ -121,19 +127,15 @@ function compileClue(clueDefinition, isAcrossClue) {
     ? anchorSegment
     : anchorSegment + (isAcrossClue ? "a" : "d");
 
-    //  Trim off anchor segment
-    let connectedSegments = numberSegments.slice(1);
-    // build connected clues
-    if (connectedSegments) {
-      connectedClues = connectedSegments.map((cs) =>
-        cs
-          ? {
-              number: parseInt(cs, 10),
-              direction: directionFromClueLabel(cs),
-            }
-          : null,
-      );
-    }
+  //  Trim off anchor segment
+  let connectedSegments = clueLabelSegments.slice(1);
+  // build connected clues
+  if (connectedSegments) {
+    connectedDirectedClues = connectedSegments.map((cs) => ({
+      number: parseInt(cs, 10),
+      direction: directionFromClueLabel(cs),
+    }));
+  }
 
   //// Parse clueGroup
 
@@ -141,7 +143,7 @@ function compileClue(clueDefinition, isAcrossClue) {
 
   //// Parse answerGroup
 
-  const answerSegments = [];
+  let answerSegments = [];
   remainingText = answerGroup;
   while (answerGroupRegex.test(remainingText)) {
     const [, length, terminator, residual] =
@@ -168,7 +170,7 @@ function compileClue(clueDefinition, isAcrossClue) {
     clueLabel,
     clueText,
     code,
-    connectedClues,
+    connectedDirectedClues,
     number,
     x,
     y,

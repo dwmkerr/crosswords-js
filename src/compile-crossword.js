@@ -18,13 +18,13 @@ function buildCellArray2D(crosswordModel) {
 }
 
 // Find the segment of an answer a specific letter is in.
-function getAnswerSegment(answerStructure, letterIndex) {
+function getAnswerSegment(answerSegments, letterIndex) {
   let remainingIndex = letterIndex;
-  for (let i = 0; i < answerStructure.length; i += 1) {
-    if (remainingIndex <= answerStructure[i].length) {
-      return [answerStructure[i], remainingIndex];
+  for (let i = 0; i < answerSegments.length; i += 1) {
+    if (remainingIndex <= answerSegments[i].length) {
+      return [answerSegments[i], remainingIndex];
     }
-    remainingIndex -= answerStructure[i].length;
+    remainingIndex -= answerSegments[i].length;
   }
   return null;
 }
@@ -90,10 +90,10 @@ function compileCrossword(crosswordDefinition) {
 
     //  Make sure the clue is not too long.
     if (across) {
-      if (clueModel.x + clueModel.totalLength > model.width) {
+      if (clueModel.x + clueModel.answerLength > model.width) {
         throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
       }
-    } else if (clueModel.y + clueModel.totalLength > model.height) {
+    } else if (clueModel.y + clueModel.answerLength > model.height) {
       throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
     }
 
@@ -101,7 +101,7 @@ function compileCrossword(crosswordDefinition) {
     //  an answer (which is optional), we can validate it
     //  is coherent.
     let { x, y } = clueModel;
-    for (let letter = 0; letter < clueModel.totalLength; letter += 1) {
+    for (let letter = 0; letter < clueModel.answerLength; letter += 1) {
       const cell = model.cells[x][y];
       cell.light = true;
       cell[across ? "acrossClue" : "downClue"] = clueModel;
@@ -110,7 +110,7 @@ function compileCrossword(crosswordDefinition) {
 
       //  Check if we need to add an answer terminator.
       const [segment, index] = getAnswerSegment(
-        clueModel.answerStructure,
+        clueModel.answerSegments,
         letter,
       );
       if (index === segment.length - 1 && segment.terminator !== "") {
@@ -159,27 +159,27 @@ function compileCrossword(crosswordDefinition) {
   const allClues = model.acrossClues.concat(model.downClues);
   allClues.forEach((clue) => {
     //  Skip clues without a connected clue.
-    if (!clue.connectedClueNumbers) return;
+    if (!clue.connectedDirectedClues) return;
 
     //  Find the connected clues.
-    clue.connectedClues = clue.connectedClueNumbers.map((connectedClue) => {
-      if (connectedClue.direction === "across") {
+    clue.connectedClues = clue.connectedDirectedClues.map((cdc) => {
+      if (cdc.direction === "across") {
         return model.acrossClues.find(
-          (ac) => ac.number === connectedClue.number,
+          (ac) => ac.number === cdc.number,
         );
       }
-      if (connectedClue.direction === "down") {
-        return model.downClues.find((ac) => ac.number === connectedClue.number);
+      if (cdc.direction === "down") {
+        return model.downClues.find((ac) => ac.number === cdc.number);
       }
       return (
-        model.acrossClues.find((ac) => ac.number === connectedClue.number) ||
-        model.downClues.find((ac) => ac.number === connectedClue.number)
+        model.acrossClues.find((ac) => ac.number === cdc.number) ||
+        model.downClues.find((ac) => ac.number === cdc.number)
       );
     });
 
     //  Rebuild the answer structure text.
-    clue.answerStructureText = `(${[clue.answerStructureText]
-      .concat(clue.connectedClues.map((cc) => cc.answerStructureText))
+    clue.answerSegmentsText = `(${[clue.answerSegmentsText]
+      .concat(clue.connectedClues.map((cc) => cc.answerSegmentsText))
       .join(",")
       .replace(/[()]/g, "")})`;
 
@@ -206,7 +206,7 @@ function compileCrossword(crosswordDefinition) {
     //  The connected clues need no answer structure, an indicator they are
     //  connected clues and a back link to the master clue.
     clue.connectedClues.forEach((cc) => {
-      cc.answerStructureText = null; // we just show the answer structure for the first clue
+      cc.answerSegmentsText = null; // we just show the answer structure for the first clue
       cc.isConnectedClue = true; // makes it easier to render these clues differently
     });
   });
