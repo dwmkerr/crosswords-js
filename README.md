@@ -100,7 +100,6 @@ The model can be used to build the DOM for a crossword:
 ```js
 //  Build the crossword HTML, as a child of the document body element.
 var crosswordDom = new CrosswordsJS.CrosswordsDOM(
-  document,
   crosswordModel,
   document.body
 );
