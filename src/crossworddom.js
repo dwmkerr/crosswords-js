@@ -1,5 +1,5 @@
 const CellMap = require("./cell-map");
-const { removeClass, addClass, first, last } = require("./helpers");
+const { removeClass, addClass, last } = require("./helpers");
 
 // Configure trace logging
 const tracing = true;
