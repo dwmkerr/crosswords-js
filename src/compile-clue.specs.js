@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const compileClue = require("./compile-clue");
+const { compileClue, cluePattern } = require("./compile-clue");
 const isAcrossClue = true;
 const cd = [];
 cd["missing-clue"] = { x: 12, y: 9 };
@@ -24,11 +24,7 @@ cd["unexpected-properties"] = {
 };
 cd["valid-single-segment"] = { x: 12, y: 9, clue: "3. Red or green fruit (5)" };
 cd["valid-multi-word"] = { x: 12, y: 9, clue: "9. Clue (5,3-4)" };
-cd["valid-multi-segment"] = { x: 12, y: 9, clue: "9,3a,4. Clue (5,3-4)"
-};
-
-//  Clues should look like this:
-//    "<Number>. Clue Text (<Answer structure>)"
+cd["valid-multi-segment"] = { x: 12, y: 9, clue: "9,3a,4. Clue (5,3-4)" };
 
 describe("compileClue", () => {
   it("should fail if no clueDefinition is provided", () => {
@@ -107,7 +103,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue(cd["missing-label"], isAcrossClue);
     }).to.throw(
-      `Clue '${cd["missing-label"].clue}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
+      `Clue '${cd["missing-label"].clue}' does not match the required pattern '${cluePattern}'`,
     );
   });
 
@@ -115,7 +111,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue(cd["non-numeric-label"], isAcrossClue);
     }).to.throw(
-      `Clue '${cd["non-numeric-label"].clue}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
+      `Clue '${cd["non-numeric-label"].clue}' does not match the required pattern '${cluePattern}'`,
     );
   });
 
@@ -123,7 +119,7 @@ describe("compileClue", () => {
     expect(() => {
       compileClue(cd["missing-answer"], isAcrossClue);
     }).to.throw(
-      `Clue '${cd["missing-answer"].clue}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
+      `Clue '${cd["missing-answer"].clue}' does not match the required pattern '${cluePattern}'`,
     );
   });
 
@@ -131,43 +127,43 @@ describe("compileClue", () => {
     expect(() => {
       compileClue(cd["non-numeric-answer"], isAcrossClue);
     }).to.throw(
-      `Clue '${cd["non-numeric-answer"].clue}' does not meet the required structured '<Number>. Clue Text (<Answer structure>)'`,
+      `Clue '${cd["non-numeric-answer"].clue}' does not match the required pattern '${cluePattern}'`,
     );
   });
 
   it("should compile the number and answer lengths of a clue string", () => {
     const clueModel = compileClue(cd["valid-single-segment"], isAcrossClue);
     expect(clueModel.number).to.eql(3);
-    expect(clueModel.clueText).to.eql("Red or green fruit ");
-    expect(clueModel.totalLength).to.eql(5);
-    expect(clueModel.answerStructure).to.eql([{ length: 5, terminator: "" }]);
-    expect(clueModel.answerStructureText).to.eql("(5)", isAcrossClue);
+    expect(clueModel.clueText).to.eql("Red or green fruit");
+    expect(clueModel.answerLength).to.eql(5);
+    expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: "" }]);
+    expect(clueModel.answerSegmentsText).to.eql("(5)", isAcrossClue);
   });
 
   it("should compile the answer structure", () => {
     const clueModel = compileClue(cd["valid-multi-word"], isAcrossClue);
     expect(clueModel.number).to.eql(9);
-    expect(clueModel.clueText).to.eql("Clue ");
-    expect(clueModel.totalLength).to.eql(12);
-    expect(clueModel.answerStructure).to.eql([
+    expect(clueModel.clueText).to.eql("Clue");
+    expect(clueModel.answerLength).to.eql(12);
+    expect(clueModel.answerSegments).to.eql([
       { length: 5, terminator: "," },
       { length: 3, terminator: "-" },
       { length: 4, terminator: "" },
     ]);
-    expect(clueModel.answerStructureText).to.eql("(5,3-4)", isAcrossClue);
+    expect(clueModel.answerSegmentsText).to.eql("(5,3-4)", isAcrossClue);
   });
 
   it("should compile multi-segment clue numbers", () => {
     const clueModel = compileClue(cd["valid-multi-segment"], isAcrossClue);
     expect(clueModel.number).to.eql(9);
-    expect(clueModel.clueText).to.eql("Clue ");
-    expect(clueModel.totalLength).to.eql(12);
-    expect(clueModel.answerStructure).to.eql([
+    expect(clueModel.clueText).to.eql("Clue");
+    expect(clueModel.answerLength).to.eql(12);
+    expect(clueModel.answerSegments).to.eql([
       { length: 5, terminator: "," },
       { length: 3, terminator: "-" },
       { length: 4, terminator: "" },
     ]);
-    expect(clueModel.answerStructureText).to.eql("(5,3-4)");
+    expect(clueModel.answerSegmentsText).to.eql("(5,3-4)");
     expect(clueModel.connectedClueNumbers).to.eql([
       { number: 3, direction: "across" },
       { number: 4, direction: null },
@@ -182,15 +178,15 @@ describe("compileClue", () => {
 
   it("should compile the number and answer lengths of a clue string", () => {
     const clueModel = compileClue(cd["valid-single-segment"], isAcrossClue);
+    expect(clueModel.answer).to.eql("");
+    expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: "" }]);
+    expect(clueModel.answerSegmentsText).to.eql("(5)", isAcrossClue);
+    expect(clueModel.cells).to.eql([]);
+    expect(clueModel.clueLabel).to.eql("3");
+    expect(clueModel.clueText).to.eql("Red or green fruit ");
     expect(clueModel.number).to.eql(3);
+    expect(clueModel.answerLength).to.eql(5);
     expect(clueModel.x).to.eql(11);
     expect(clueModel.y).to.eql(8);
-    expect(clueModel.cells).to.eql([]);
-    expect(clueModel.clueLabel).to.eql('3');
-    expect(clueModel.answer).to.eql('5');
-    expect(clueModel.clueText).to.eql("Red or green fruit ");
-    expect(clueModel.totalLength).to.eql(5);
-    expect(clueModel.answerStructure).to.eql([{ length: 5, terminator: "" }]);
-    expect(clueModel.answerStructureText).to.eql("(5)", isAcrossClue);
   });
 });
