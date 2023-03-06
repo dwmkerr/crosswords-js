@@ -164,7 +164,7 @@ describe("compileClue", () => {
       { length: 4, terminator: "" },
     ]);
     expect(clueModel.answerSegmentsText).to.eql("(5,3-4)");
-    expect(clueModel.connectedClueNumbers).to.eql([
+    expect(clueModel.connectedClues).to.eql([
       { number: 3, direction: "across" },
       { number: 4, direction: null },
     ]);
@@ -183,7 +183,7 @@ describe("compileClue", () => {
     expect(clueModel.answerSegmentsText).to.eql("(5)", isAcrossClue);
     expect(clueModel.cells).to.eql([]);
     expect(clueModel.clueLabel).to.eql("3");
-    expect(clueModel.clueText).to.eql("Red or green fruit ");
+    expect(clueModel.clueText).to.eql("Red or green fruit");
     expect(clueModel.number).to.eql(3);
     expect(clueModel.answerLength).to.eql(5);
     expect(clueModel.x).to.eql(11);

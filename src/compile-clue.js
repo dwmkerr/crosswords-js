@@ -1,9 +1,9 @@
-const { first,last } = require("./helpers");
+const { first, last } = require("./helpers");
 
 // Parse the groups: /^numberGroup\.clueGroup\(answerGroup\)$/
 const clueRegex = /^(\d+[ad]?[,\dad]*?)\.(\s*.*?\s*)\(([\d,-]+)\)$/;
 // Parse numberGroup into 1+ segment labels
-const numberGroupRegex = /^(\d+[ad]?)(,.*)$/;
+const numberGroupRegex = /^(\d+[ad]?)(,(.*))*$/;
 // Parse clueGroup from surrounding whitespace
 const clueGroupRegex = /^\s*(.*?)\s*$/;
 // Parse answerGroup into 1+ single-word or multi-word lengths
@@ -101,45 +101,39 @@ function compileClue(clueDefinition, isAcrossClue) {
 
   //// Parse numberGroup
 
-  let numberSegments = [];
-  let remainingText = numberGroup;
+  let numberSegments = [],
+    connectedClues = [],
+    remainingText = numberGroup;
+
   while (numberGroupRegex.test(remainingText)) {
-    const [, numberSegment, residual] =
-      numberGroupRegex.exec(remainingText);
+    const [,numberSegment,,residual] = numberGroupRegex.exec(remainingText);
     numberSegments.push(numberSegment);
     // Trim leading ',' from residual
-    remainingText = residual ? residual.slice(1) : null;
+    remainingText = residual;
   }
 
-  let anchorSegment, number, clueLabel, code;
+  const anchorSegment = first(numberSegments);
+  const number = parseInt(anchorSegment, 10);
+  const clueLabel = number.toString();
+  // Code is number followed by 'a' or 'd'...
+  // Check last character of anchorSegment and append if required
+  const code = "ad".includes(last(anchorSegment))
+    ? anchorSegment
+    : anchorSegment + (isAcrossClue ? "a" : "d");
 
-  if (numberSegments) {
-    anchorSegment = first(numberSegments);
-    number = parseInt(anchorSegment, 10);
-    clueLabel = number.toString();
-    // Code is number followed by 'a' or 'd'...
-    // Check last character of anchorSegment and append if required
-    code = "ad".includes(last(anchorSegment))
-      ? anchorSegment
-      : anchorSegment + (isAcrossClue ? "a" : "d");
-   
-     //  Trim off anchor segment
+    //  Trim off anchor segment
     let connectedSegments = numberSegments.slice(1);
     // build connected clues
     if (connectedSegments) {
-      connectedClues = numberSegments.map((ns) =>
-        ns
+      connectedClues = connectedSegments.map((cs) =>
+        cs
           ? {
-              number: parseInt(ns, 10),
-              direction: directionFromClueLabel(ns),
+              number: parseInt(cs, 10),
+              direction: directionFromClueLabel(cs),
             }
           : null,
       );
     }
-    if (connectedClues.length > 0) {
-      connectedClues.filter((x) => x !== null);
-    }  
-  }
 
   //// Parse clueGroup
 
