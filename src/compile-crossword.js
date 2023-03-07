@@ -1,4 +1,4 @@
-const compileClue = require("./compile-clue");
+const { compileClue } = require("./compile-clue");
 
 function buildCellArray2D(crosswordModel) {
   const x = crosswordModel.width;
@@ -164,9 +164,7 @@ function compileCrossword(crosswordDefinition) {
     //  Find the connected clues.
     clue.connectedClues = clue.connectedDirectedClues.map((cdc) => {
       if (cdc.direction === "across") {
-        return model.acrossClues.find(
-          (ac) => ac.number === cdc.number,
-        );
+        return model.acrossClues.find((ac) => ac.number === cdc.number);
       }
       if (cdc.direction === "down") {
         return model.downClues.find((ac) => ac.number === cdc.number);
