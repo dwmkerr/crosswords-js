@@ -23,8 +23,18 @@ cd["unexpected-properties"] = {
   clue: "3. Red or green fruit (5)",
 };
 cd["valid-single-segment"] = { x: 12, y: 9, clue: "3. Red or green fruit (5)" };
-cd["valid-multi-word-hyphenated"] = { x: 12, y: 9, clue: "9. Clue (5,3-4)" };
-cd["valid-multi-segment"] = { x: 12, y: 9, clue: "9,3a,4. Clue (5,3-4)" };
+cd["valid-multi-word-hyphenated-answer"] = {
+  x: 12,
+  y: 9,
+  clue: "9. Clue (5,3-4)",
+};
+cd["invalid-multi-word-hyphenated-answer"] = {
+  x: 12,
+  y: 9,
+  clue: "9. Clue (5,3-4-,6)",
+};
+cd["valid-multi-segment-number"] = { x: 12, y: 9, clue: "9,3a,4. Clue (5)" };
+cd["invalid-multi-segment-number"] = { x: 12, y: 9, clue: "9,3b,4. Clue (5)" };
 
 describe("compileClue", () => {
   it("should fail if no clueDefinition is provided", () => {
@@ -110,9 +120,7 @@ describe("compileClue", () => {
   it("should fail if the clue number is not numeric", () => {
     expect(() => {
       compileClue(cd["non-numeric-label"], isAcrossClue);
-    }).to.throw(
-      `Clue '${cd["non-numeric-label"].clue}' does not match the required pattern '${cluePattern}'`,
-    );
+    }).to.throw(`'a. Red or green fruit (5)' Error in <numberText> near <a>`);
   });
 
   it("should fail if the answer structure is not provided", () => {
@@ -126,9 +134,7 @@ describe("compileClue", () => {
   it("should fail if the answer structure is not numeric", () => {
     expect(() => {
       compileClue(cd["non-numeric-answer"], isAcrossClue);
-    }).to.throw(
-      `Clue '${cd["non-numeric-answer"].clue}' does not match the required pattern '${cluePattern}'`,
-    );
+    }).to.throw(`'3. Red or green fruit (a)' Error in <answerText> near <a>`);
   });
 
   it("should compile the number and answer lengths of a clue string", () => {
@@ -141,7 +147,10 @@ describe("compileClue", () => {
   });
 
   it("should compile multi-word and hyphenated answers", () => {
-    const clueModel = compileClue(cd["valid-multi-word-hyphenated"], isAcrossClue);
+    const clueModel = compileClue(
+      cd["valid-multi-word-hyphenated-answer"],
+      isAcrossClue,
+    );
     expect(clueModel.number).to.eql(9);
     expect(clueModel.clueText).to.eql("Clue");
     expect(clueModel.answerLength).to.eql(12);
@@ -153,21 +162,32 @@ describe("compileClue", () => {
     expect(clueModel.answerSegmentsText).to.eql("(5,3-4)", isAcrossClue);
   });
 
+  it("should fail on error in multi-word and hyphenated answer", () => {
+    expect(() => {
+      compileClue(cd["invalid-multi-word-hyphenated-answer"], isAcrossClue);
+    }).to.throw("'9. Clue (5,3-4-,6)' Error in <answerText> near <4-,6>");
+  });
+
   it("should compile multi-segment clue numbers", () => {
-    const clueModel = compileClue(cd["valid-multi-segment"], isAcrossClue);
+    const clueModel = compileClue(
+      cd["valid-multi-segment-number"],
+      isAcrossClue,
+    );
     expect(clueModel.number).to.eql(9);
     expect(clueModel.clueText).to.eql("Clue");
-    expect(clueModel.answerLength).to.eql(12);
-    expect(clueModel.answerSegments).to.eql([
-      { length: 5, terminator: "," },
-      { length: 3, terminator: "-" },
-      { length: 4, terminator: "" },
-    ]);
-    expect(clueModel.answerSegmentsText).to.eql("(5,3-4)");
+    expect(clueModel.answerLength).to.eql(5);
+    expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: "" }]);
+    expect(clueModel.answerSegmentsText).to.eql("(5)");
     expect(clueModel.connectedDirectedClues).to.eql([
       { number: 3, direction: "across" },
       { number: 4, direction: null },
     ]);
+  });
+
+  it("should fail on error in multi-segment clue number", () => {
+    expect(() => {
+      compileClue(cd["invalid-multi-segment-number"], isAcrossClue);
+    }).to.throw("'9,3b,4. Clue (5)' Error in <numberText> near <3b,4>");
   });
 
   it("should compile the number and answer lengths of a clue string", () => {

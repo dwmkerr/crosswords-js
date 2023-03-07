@@ -1,13 +1,14 @@
 const { first, last } = require("./helpers");
 
 // Parse the groups: /^numberGroup\.clueGroup\(answerGroup\)$/
-const clueRegex = /^(\d+[ad]?[,\dad]*?)\.(\s*.*?\s*)\(([\d,-]+)\)$/;
-// Parse numberGroup into 1+ segment labels
-const numberGroupRegex = /^(\d+[ad]?)(,(.*))*$/;
+// const clueRegex = /^(\d+[ad]?[,\dad]*?)\.(\s*.*?\s*)\(([\d,-]+)\)$/;
+const clueRegex = /^(.*?)\.(.*?)\((.*?)\)$/;
+// Parse numberGroup into 1+ cluesegment labels
+const numberGroupRegex = /^(\d+[ad]?)(,(\d+[ad]?.*))*$/;
 // Parse clueGroup from surrounding whitespace
 const clueGroupRegex = /^\s*(.*?)\s*$/;
 // Parse answerGroup into 1+ single-word or multi-word lengths
-const answerGroupRegex = /^(\d+)([,-]?)(.*)$/;
+const answerGroupRegex = /^(\d+)(([,-])(\d+.*))*$/;
 
 const cluePattern = "<NumberText>.<ClueText>(<AnswerText>)";
 
@@ -118,6 +119,12 @@ function compileClue(clueDefinition, isAcrossClue) {
     remainingText = residual;
   }
 
+  if (remainingText != undefined) {
+    throw new Error(
+      `'${clueDefinition.clue}' Error in <numberText> near <${remainingText}>`,
+    );
+  }
+
   const anchorSegment = first(clueLabelSegments);
   const number = parseInt(anchorSegment, 10);
   const clueLabel = number.toString();
@@ -139,18 +146,28 @@ function compileClue(clueDefinition, isAcrossClue) {
 
   //// Parse clueGroup
 
-  const clueText = clueGroup.match(clueGroupRegex)[1];
+  const [, clueText] = clueGroupRegex.exec(clueGroup);
 
   //// Parse answerGroup
 
   let answerSegments = [];
   remainingText = answerGroup;
   while (answerGroupRegex.test(remainingText)) {
-    const [, length, terminator, residual] =
+    const [, length, , terminator, residual] =
       answerGroupRegex.exec(remainingText);
-    answerSegments.push({ length: parseInt(length, 10), terminator });
+    answerSegments.push({
+      length: parseInt(length, 10),
+      terminator: terminator ?? "",
+    });
     remainingText = residual;
   }
+
+  if (remainingText != undefined) {
+    throw new Error(
+      `'${clueDefinition.clue}' Error in <answerText> near <${remainingText}>`,
+    );
+  }
+
   //  Calculate the total length of the answer.
   const answerLength = answerSegments.reduce(
     (current, as) => current + as.length,
