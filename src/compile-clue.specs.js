@@ -22,6 +22,18 @@ cd["unexpected-properties"] = {
   a: "z",
   clue: "3. Red or green fruit (5)",
 };
+cd["optional-properties"] = {
+  x: 12,
+  y: 9,
+  answer: "guess",
+  clue: "3. Red or green fruit (5)",
+};
+cd["undefined-answer"] = {
+  x: 12,
+  y: 9,
+  answer: undefined,
+  clue: "Red or green fruit (5)",
+};
 cd["valid-single-segment"] = { x: 12, y: 9, clue: "3. Red or green fruit (5)" };
 cd["valid-multi-word-hyphenated-answer"] = {
   x: 12,
@@ -64,49 +76,60 @@ describe("compileClue", () => {
   it("should fail if clueDefinition.x replaced by another property", () => {
     expect(() => {
       compileClue(cd["z-replaces-x"], isAcrossClue);
-    }).to.throw("'clueDefinition.x' property is missing");
+    }).to.throw("'clueDefinition.x' is missing");
   });
 
   it("should fail if clueDefinition.x missing", () => {
     expect(() => {
       compileClue(cd["missing-x"], isAcrossClue);
-    }).to.throw("'clueDefinition.x' property is missing");
+    }).to.throw("'clueDefinition.x' is missing");
   });
 
   it("should fail if clueDefinition.x is null", () => {
     expect(() => {
       compileClue(cd["null-x"], isAcrossClue);
-    }).to.throw("'clueDefinition.x' must have type <number>");
+    }).to.throw("'clueDefinition.x (null)' must be a number");
   });
 
   it("should fail if clueDefinition.x is a string", () => {
     expect(() => {
       compileClue(cd["string-x"], isAcrossClue);
-    }).to.throw("'clueDefinition.x' must have type <number>");
+    }).to.throw("'clueDefinition.x (a)' must be a number");
   });
 
   it("should fail if clueDefinition.y missing", () => {
     expect(() => {
       compileClue(cd["missing-y"], isAcrossClue);
-    }).to.throw("'clueDefinition.y' property is missing");
+    }).to.throw("'clueDefinition.y' is missing");
   });
 
   it("should fail if clueDefinition.y is null", () => {
     expect(() => {
       compileClue(cd["null-y"], isAcrossClue);
-    }).to.throw("'clueDefinition.y' must have type <number>");
+    }).to.throw("'clueDefinition.y (null)' must be a number");
   });
 
   it("should fail if clueDefinition.y is a boolean", () => {
     expect(() => {
       compileClue(cd["boolean-y"], isAcrossClue);
-    }).to.throw("'clueDefinition.y' must have type <number>");
+    }).to.throw("'clueDefinition.y (true)' must be a number");
   });
 
   it("should fail if clueDefinition has unexpected properties", () => {
     expect(() => {
       compileClue(cd["unexpected-properties"], isAcrossClue);
     }).to.throw("'clueDefinition' has unexpected properties <z,a>");
+  });
+
+  it("should pass if clueDefinition has optional properties", () => {
+    const clueModel = compileClue(cd["optional-properties"], isAcrossClue);
+    expect(clueModel.answer).to.eql("guess");
+  });
+
+  it("should fail if clueDefinition.answer is not a string", () => {
+    expect(() => {
+      compileClue(cd["undefined-answer"], isAcrossClue);
+    }).to.throw("'clueDefinition.answer (undefined)' must be a string");
   });
 
   it("should fail if the clue number is not provided", () => {
@@ -143,7 +166,7 @@ describe("compileClue", () => {
     expect(clueModel.clueText).to.eql("Red or green fruit");
     expect(clueModel.answerLength).to.eql(5);
     expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: "" }]);
-    expect(clueModel.answerSegmentsText).to.eql("(5)", isAcrossClue);
+    expect(clueModel.answerLengthText).to.eql("(5)", isAcrossClue);
   });
 
   it("should compile multi-word and hyphenated answers", () => {
@@ -159,7 +182,7 @@ describe("compileClue", () => {
       { length: 3, terminator: "-" },
       { length: 4, terminator: "" },
     ]);
-    expect(clueModel.answerSegmentsText).to.eql("(5,3-4)", isAcrossClue);
+    expect(clueModel.answerLengthText).to.eql("(5,3-4)", isAcrossClue);
   });
 
   it("should fail on error in multi-word and hyphenated answer", () => {
@@ -177,7 +200,7 @@ describe("compileClue", () => {
     expect(clueModel.clueText).to.eql("Clue");
     expect(clueModel.answerLength).to.eql(5);
     expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: "" }]);
-    expect(clueModel.answerSegmentsText).to.eql("(5)");
+    expect(clueModel.answerLengthText).to.eql("(5)");
     expect(clueModel.connectedDirectedClues).to.eql([
       { number: 3, direction: "across" },
       { number: 4, direction: null },
@@ -192,9 +215,9 @@ describe("compileClue", () => {
 
   it("should compile the number and answer lengths of a clue string", () => {
     const clueModel = compileClue(cd["valid-single-segment"], isAcrossClue);
-    expect(clueModel.answer).to.eql("");
+    expect(clueModel.answer).to.eql(undefined);
     expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: "" }]);
-    expect(clueModel.answerSegmentsText).to.eql("(5)", isAcrossClue);
+    expect(clueModel.answerLengthText).to.eql("(5)", isAcrossClue);
     expect(clueModel.cells).to.eql([]);
     expect(clueModel.clueLabel).to.eql("3");
     expect(clueModel.clueText).to.eql("Red or green fruit");

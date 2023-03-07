@@ -1,16 +1,16 @@
 const { compileClue } = require("./compile-clue");
 
 function buildCellArray2D(crosswordModel) {
-  const x = crosswordModel.width;
-  const y = crosswordModel.height;
-  const array = new Array(x);
-  for (let i = 0; i < y; i += 1) {
-    array[i] = new Array(y);
-    for (let j = 0; j < y; j += 1) {
-      array[i][j] = {
+  const width = crosswordModel.width;
+  const height = crosswordModel.height;
+  const array = new Array(width);
+  for (let across = 0; across < width; across += 1) {
+    array[across] = new Array(height);
+    for (let down = 0; down < height; down += 1) {
+      array[across][down] = {
         model: crosswordModel,
-        x: i,
-        y: j,
+        x: across,
+        y: down,
       };
     }
   }
@@ -176,8 +176,8 @@ function compileCrossword(crosswordDefinition) {
     });
 
     //  Rebuild the answer structure text.
-    clue.answerSegmentsText = `(${[clue.answerSegmentsText]
-      .concat(clue.connectedClues.map((cc) => cc.answerSegmentsText))
+    clue.answerLengthText = `(${[clue.answerLengthText]
+      .concat(clue.connectedClues.map((cc) => cc.answerLengthText))
       .join(",")
       .replace(/[()]/g, "")})`;
 
@@ -204,7 +204,7 @@ function compileCrossword(crosswordDefinition) {
     //  The connected clues need no answer structure, an indicator they are
     //  connected clues and a back link to the master clue.
     clue.connectedClues.forEach((cc) => {
-      cc.answerSegmentsText = null; // we just show the answer structure for the first clue
+      cc.answerLengthText = null; // we just show the answer structure for the first clue
       cc.isConnectedClue = true; // makes it easier to render these clues differently
     });
   });

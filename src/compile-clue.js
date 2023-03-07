@@ -2,7 +2,7 @@ const { first, last } = require("./helpers");
 
 // Parse the groups: /^numberGroup\.clueGroup\(answerGroup\)$/
 // const clueRegex = /^(\d+[ad]?[,\dad]*?)\.(\s*.*?\s*)\(([\d,-]+)\)$/;
-const clueRegex = /^(.*?)\.(.*?)\((.*?)\)$/;
+const clueRegex = /^(.*?)\.(.*)\((.*?)\)$/;
 // Parse numberGroup into 1+ cluesegment labels
 const numberGroupRegex = /^(\d+[ad]?)(,(\d+[ad]?.*))*$/;
 // Parse clueGroup from surrounding whitespace
@@ -32,27 +32,50 @@ function directionFromClueLabel(clueLabel) {
  */
 function compileClue(clueDefinition, isAcrossClue) {
   function validateClueStructure(clueDefinition) {
-    const valid = { x: 1, y: 1, clue: "1. Clue (1)" };
-    const validKeys = Object.keys(valid);
+    const required = { x: 1, y: 1, clue: "1. Clue (1)" };
+    const optional = { answer: "" };
+    const requiredKeys = Object.keys(required);
+    const optionalKeys = Object.keys(optional);
     const cdKeys = Object.keys(clueDefinition);
 
-    for (const validKey of validKeys) {
-      if (!cdKeys.includes(validKey))
-        throw new Error(`'clueDefinition.${validKey}' property is missing`);
+    // Test for presence of required keys
+    for (const requiredKey of requiredKeys) {
+      if (!cdKeys.includes(requiredKey))
+        throw new Error(`'clueDefinition.${requiredKey}' is missing`);
     }
 
-    for (const key of validKeys) {
-      if (typeof valid[key] != typeof clueDefinition[key]) {
+    // Test for type of required keys
+    for (const key of requiredKeys) {
+      if (typeof required[key] != typeof clueDefinition[key]) {
         throw new Error(
-          `'clueDefinition.${key}' must have type <${typeof valid[key]}>`,
+          `'clueDefinition.${key} (${
+            clueDefinition[key]
+          })' must be a ${typeof required[key]}`,
         );
       }
     }
 
-    // check for additional properties in clueDefinition
+    // Test for presence and type of optional keys
+    for (const key of optionalKeys) {
+      if (
+        cdKeys.includes(key) &&
+        typeof optional[key] != typeof clueDefinition[key]
+      )
+        throw new Error(
+          `'clueDefinition.${key} (${
+            clueDefinition[key]
+          })' must be a ${typeof optional[key]}`,
+        );
+    }
+
+    // Test for additional properties in clueDefinition
+
     const difference = new Set(cdKeys);
-    for (const validKey of validKeys) {
-      difference.delete(validKey);
+    for (const requiredKey of requiredKeys) {
+      difference.delete(requiredKey);
+    }
+    for (const optionalKey of optionalKeys) {
+      difference.delete(optionalKey);
     }
 
     if (difference.size > 0) {
@@ -99,7 +122,7 @@ function compileClue(clueDefinition, isAcrossClue) {
   // Initialise array of crossword grid elements - populated as part of crossword DOM
   const cells = [];
   // Initialise user's answer for clue
-  const answer = "";
+  const answer = clueDefinition.answer;
 
   //  Get the clue components.
   const [, numberGroup, clueGroup, answerGroup] = clueRegex.exec(
@@ -175,14 +198,14 @@ function compileClue(clueDefinition, isAcrossClue) {
   );
 
   //  Also create the answer segments as text.
-  const answerSegmentsText = `(${answerGroup})`;
+  const answerLengthText = `(${answerGroup})`;
 
   return {
     isAcrossClue,
     answer,
     answerLength,
     answerSegments,
-    answerSegmentsText,
+    answerLengthText,
     cells,
     clueLabel,
     clueText,
