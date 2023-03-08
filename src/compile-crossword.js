@@ -38,8 +38,8 @@ function compileCrossword(crosswordDefinition) {
     );
   }
 
-  //  Create the basic model structure.
-  const model = {
+  //  Create the basic crosswordModel structure.
+  const crosswordModel = {
     width: crosswordDefinition.width,
     height: crosswordDefinition.height,
     acrossClues: [],
@@ -49,19 +49,19 @@ function compileCrossword(crosswordDefinition) {
 
   //  Validate the bounds.
   if (
-    model.width === undefined ||
-    model.width === null ||
-    model.width < 0 ||
-    model.height === undefined ||
-    model.height === null ||
-    model.height < 0
+    crosswordModel.width === undefined ||
+    crosswordModel.width === null ||
+    crosswordModel.width < 0 ||
+    crosswordModel.height === undefined ||
+    crosswordModel.height === null ||
+    crosswordModel.height < 0
   ) {
     throw new Error("The crossword bounds are invalid.");
   }
 
-  //  Create the array of cells. Each element has a refence back to the model
+  //  Create the array of cells. Each element has a refence back to the crosswordModel
   //  for convenience.
-  model.cells = buildCellArray2D(model);
+  crosswordModel.cells = buildCellArray2D(crosswordModel);
 
   //  We're going to go through the across clues, then the down clues.
   const clueDefinitions = crosswordDefinition.acrossClues.concat(
@@ -70,30 +70,30 @@ function compileCrossword(crosswordDefinition) {
   for (let c = 0; c < clueDefinitions.length; c += 1) {
     //  Grab the clue and build a flag letting us know if we're across or down.
     const clueDefinition = clueDefinitions[c];
-    const across = c < crosswordDefinition.acrossClues.length;
+    const isAcrossClue = c < crosswordDefinition.acrossClues.length;
 
-    //  Compile the clue from the clue model.
-    const clueModel = compileClue(clueDefinition, across);
+    //  Compile the clue from the clue.
+    const clueModel = compileClue(clueDefinition, isAcrossClue);
 
-    //  Update the clue model.
-    model[across ? "acrossClues" : "downClues"].push(clueModel);
+    //  Update the crosswordModel.
+    crosswordModel[isAcrossClue ? "acrossClues" : "downClues"].push(clueModel);
 
     //  The clue position must be in the bounds.
     if (
       clueModel.x < 0 ||
-      clueModel.x >= model.width ||
+      clueModel.x >= crosswordModel.width ||
       clueModel.y < 0 ||
-      clueModel.y >= model.height
+      clueModel.y >= crosswordModel.height
     ) {
       throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
     }
 
     //  Make sure the clue is not too long.
-    if (across) {
-      if (clueModel.x + clueModel.answerLength > model.width) {
+    if (isAcrossClue) {
+      if (clueModel.x + clueModel.answerLength > crosswordModel.width) {
         throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
       }
-    } else if (clueModel.y + clueModel.answerLength > model.height) {
+    } else if (clueModel.y + clueModel.answerLength > crosswordModel.height) {
       throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
     }
 
@@ -102,10 +102,11 @@ function compileCrossword(crosswordDefinition) {
     //  is coherent.
     let { x, y } = clueModel;
     for (let letter = 0; letter < clueModel.answerLength; letter += 1) {
-      const cell = model.cells[x][y];
+      const cell = crosswordModel.cells[x][y];
       cell.light = true;
-      cell[across ? "acrossClue" : "downClue"] = clueModel;
-      cell[across ? "acrossClueLetterIndex" : "downClueLetterIndex"] = letter;
+      cell[isAcrossClue ? "acrossClue" : "downClue"] = clueModel;
+      cell[isAcrossClue ? "acrossClueLetterIndex" : "downClueLetterIndex"] =
+        letter;
       clueModel.cells.push(cell);
 
       //  Check if we need to add an answer terminator.
@@ -114,7 +115,7 @@ function compileCrossword(crosswordDefinition) {
         letter,
       );
       if (index === segment.length - 1 && segment.terminator !== "") {
-        cell[clueModel.across ? "acrossTerminator" : "downTerminator"] =
+        cell[clueModel.isAcross ? "acrossTerminator" : "downTerminator"] =
           segment.terminator;
       }
 
@@ -146,7 +147,7 @@ function compileCrossword(crosswordDefinition) {
         cell.clueLabel = clueModel.number;
       }
 
-      if (across) {
+      if (isAcrossClue) {
         x += 1;
       } else {
         y += 1;
@@ -154,9 +155,9 @@ function compileCrossword(crosswordDefinition) {
     }
   }
 
-  //  Now that we have constructed the full model, we will connect the non-linear
+  //  Now that we have constructed the full crosswordModel, we will connect the non-linear
   //  clues.
-  const allClues = model.acrossClues.concat(model.downClues);
+  const allClues = crosswordModel.acrossClues.concat(crosswordModel.downClues);
   allClues.forEach((clue) => {
     //  Skip clues without a connected clue.
     if (!clue.connectedDirectedClues) return;
@@ -164,14 +165,16 @@ function compileCrossword(crosswordDefinition) {
     //  Find the connected clues.
     clue.connectedClues = clue.connectedDirectedClues.map((cdc) => {
       if (cdc.direction === "across") {
-        return model.acrossClues.find((ac) => ac.number === cdc.number);
+        return crosswordModel.acrossClues.find(
+          (ac) => ac.number === cdc.number,
+        );
       }
       if (cdc.direction === "down") {
-        return model.downClues.find((ac) => ac.number === cdc.number);
+        return crosswordModel.downClues.find((ac) => ac.number === cdc.number);
       }
       return (
-        model.acrossClues.find((ac) => ac.number === cdc.number) ||
-        model.downClues.find((ac) => ac.number === cdc.number)
+        crosswordModel.acrossClues.find((ac) => ac.number === cdc.number) ||
+        crosswordModel.downClues.find((ac) => ac.number === cdc.number)
       );
     });
 
@@ -209,7 +212,7 @@ function compileCrossword(crosswordDefinition) {
     });
   });
 
-  return model;
+  return crosswordModel;
 }
 
 module.exports = compileCrossword;
