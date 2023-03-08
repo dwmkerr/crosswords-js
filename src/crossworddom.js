@@ -1,11 +1,5 @@
 const CellMap = require("./cell-map");
-const { removeClass, addClass, last } = require("./helpers");
-
-// Configure trace logging
-const tracing = true;
-const trace = (message) => {
-  if (tracing) console.log(message);
-};
+const { addClass, last, memoize, removeClass, trace } = require("./helpers");
 
 // Regular expressions for keypress processing
 const legalCharacters = /^[a-zA-Z]$/;
@@ -21,6 +15,12 @@ const updateCrosswordFontSize = (crosswordGridElement) => {
   crosswordGridElement.style.fontSize = `${cellWidth * 0.6}px`;
 };
 
+// Helper function to filter single-segment and anchor-segment clues
+// from clue array
+const anchorSegmentClues = memoize((clues) => {
+  return clues.filter((x) => !x.previousClueSegment);
+});
+
 class CrosswordDOM {
   #cellMap;
   #crosswordModel;
@@ -33,16 +33,14 @@ class CrosswordDOM {
     this.#crosswordModel = crosswordModel;
     this.#cellMap = new CellMap();
     this.#domParentElement = domParentElement;
-    const document = this.#domParentElement.ownerDocument;
-    const window = document.defaultView;
 
     //  Now build the DOM for the crossword.
-    this.#crosswordGridElement = document.createElement("div");
+    this.#crosswordGridElement = this.#document.createElement("div");
     this.#crosswordGridElement.className = "crossword";
 
     //  Create each cell.
     for (let y = 0; y < this.#crosswordModel.height; y += 1) {
-      const row = document.createElement("div");
+      const row = this.#document.createElement("div");
       row.className = "cwrow";
       this.#crosswordGridElement.appendChild(row);
 
@@ -50,7 +48,7 @@ class CrosswordDOM {
         const cell = this.#crosswordModel.cells[x][y];
 
         //  Build the cell element and add it to the row.
-        const cellElement = this.#createCellDOM(document, cell);
+        const cellElement = this.#createCellDOM(this.#document, cell);
         row.appendChild(cellElement);
 
         //  Update the map of cells
@@ -59,17 +57,43 @@ class CrosswordDOM {
     }
 
     //  Update the fontsize when the window changes size
-    window.addEventListener("resize", () => {
-      trace("window.event:resize");
-      updateCrosswordFontSize(this.#crosswordGridElement);
-    });
+    this.#window.addEventListener("resize", this.#onWindowResize);
     // Add the crossword grid to the webpage DOM
     this.#domParentElement.appendChild(this.#crosswordGridElement);
     // Set the font size
     updateCrosswordFontSize(this.#crosswordGridElement);
   }
 
-  //  Add a helper function to allow the font to be resized programmatically,
+  // Accessor for window associated with DOM
+  get #window() {
+    return this.#document.defaultView;
+  }
+  // Accessor for document associated with DOM
+  get #document() {
+    return this.#domParentElement.ownerDocument;
+  }
+
+  #onWindowResize = () => {
+    trace("window.event:resize");
+    updateCrosswordFontSize(this.#crosswordGridElement);
+  };
+
+  // Helper function to retrieve corresponding cellElement for cell
+  cellElement = (cell) => {
+    return this.#cellMap.getCellElement(cell);
+  };
+
+  // Helper function to retrieve corresponding inputElement for cell
+  inputElement = (cell) => {
+    return this.cellElement(cell).querySelector("input");
+  };
+
+  // Helper function to retrieve corresponding cell for cellElement
+  cell = (cellElement) => {
+    return this.#cellMap.getCell(cellElement);
+  };
+
+  //  Helper function to allow the font to be resized programmatically,
   //  useful if something else changes the size of the crossword.
   updateFontSize = () => updateCrosswordFontSize(this.#crosswordGridElement);
 
@@ -85,12 +109,12 @@ class CrosswordDOM {
     return this.#currentClue;
   }
   set currentClue(clue) {
+    trace(`set currentClue`);
     if (clue !== this.#currentClue) {
       this.#currentClue = clue;
       this.#showActiveClue();
       // TODO: handle multi-segment clue: focus first clue segment cell[0] ?
-      const cell = clue.cells[0];
-      const cellElement = this.#cellMap.getCellElement(cell);
+      const cellElement = this.cellElement(clue.cells[0]);
       CrosswordDOM.#focus(cellElement);
       this.#stateChange("clueSelected");
     }
@@ -159,10 +183,10 @@ class CrosswordDOM {
 
   //  Completely cleans up the crossword.
   destroy() {
-    //  TODO: we should also clean up the resize listener.
     //  Clear the map, DOM and state change handler.
     this.#cellMap.removeCrosswordCells(this.#crosswordModel);
     this.#domParentElement.removeChild(this.#crosswordGridElement);
+    this.#window.removeEventListener("resize", this.#onWindowResize);
     this.onStateChanged = null;
   }
 
@@ -234,8 +258,7 @@ class CrosswordDOM {
     inputElement.addEventListener("focus", (event) => {
       trace("event:focus");
       //  Get the cell data.
-      const eventCellElement = event.target.parentNode;
-      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
+      const eventCell = crosswordDom.cell(event.target.parentNode);
       if (crosswordDom.#currentClueChanged(eventCell)) {
         this.#showActiveClue();
         this.#stateChange("clueSelected");
@@ -245,11 +268,11 @@ class CrosswordDOM {
     //  Listen for keydown events.
     cellElement.addEventListener("keydown", (event) => {
       trace(`event:keydown keycode=${event.keyCode}`);
+
       //  Get the cell element and cell data.
-      const eventCellElement = event.target.parentNode;
-      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
+      const eventCell = crosswordDom.cell(event.target.parentNode);
       const { model } = eventCell;
-      const clue = crosswordDom.currentClue;
+      let clue = crosswordDom.currentClue;
 
       if (event.keyCode === 8) {
         // BACKSPACE
@@ -281,8 +304,21 @@ class CrosswordDOM {
         //  We don't want default behaviour.
         event.preventDefault();
         trace("TAB");
-        //  Get the next clue.
-        const searchClues = clue.across ? model.acrossClues : model.downClues;
+
+        // get anchor segment of multi-segment clue
+        while (clue.previousClueSegment) {
+          clue = clue.previousClueSegment;
+        }
+        // Get the next clue.
+        // Skip clues which are part of a multi-segment clue and not the anchor segment.
+        const searchClues = clue.isAcross
+          ? anchorSegmentClues(model.acrossClues)
+          : anchorSegmentClues(model.downClues);
+
+        trace(
+          `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
+        );
+
         for (let i = 0; i < searchClues.length; i += 1) {
           if (clue === searchClues[i]) {
             let newClue = null;
@@ -294,7 +330,7 @@ class CrosswordDOM {
                 newClue = searchClues[i - 1];
               } else {
                 // on first clue, wrap to last clue in other direction
-                newClue = clue.across
+                newClue = clue.isAcross
                   ? model.downClues[model.downClues.length - 1]
                   : model.acrossClues[model.acrossClues.length - 1];
               }
@@ -303,7 +339,9 @@ class CrosswordDOM {
               newClue = searchClues[i + 1];
             } else {
               // on last clue, tab wraps to first clue in other direction
-              newClue = clue.across ? model.downClues[0] : model.acrossClues[0];
+              newClue = clue.isAcross
+                ? model.downClues[0]
+                : model.acrossClues[0];
             }
 
             //  Select the new clue.
@@ -348,8 +386,7 @@ class CrosswordDOM {
       event.preventDefault();
 
       //  Get cell data.
-      const eventCellElement = event.target.parentNode;
-      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
+      const eventCell = crosswordDom.cell(event.target.parentNode);
       const clue = crosswordDom.currentClue;
 
       // Exclude processing of all keys outside A-Z
@@ -388,8 +425,7 @@ class CrosswordDOM {
     //  Listen for keyup events.
     cellElement.addEventListener("keyup", (event) => {
       trace("event:keyup");
-      const eventCellElement = event.target.parentNode;
-      const eventCell = crosswordDom.#cellMap.getCell(eventCellElement);
+      const eventCell = crosswordDom.cell(event.target.parentNode);
 
       switch (event.keyCode) {
         case 37: // left
@@ -461,8 +497,7 @@ class CrosswordDOM {
         eventCell.model.cells[x][y + 1].light === true
       ) {
         const cell = eventCell.model.cells[x][y + 1];
-        const cellElement = crosswordDom.#cellMap.getCellElement(cell);
-        // TODO: check for clue change and emit
+        const cellElement = crosswordDom.cellElement(cell);
         CrosswordDOM.#focus(cellElement);
         result = true;
       } else {
@@ -484,7 +519,7 @@ class CrosswordDOM {
         eventCell.model.cells[x + 1][y].light === true
       ) {
         const cell = eventCell.model.cells[x + 1][y];
-        const cellElement = crosswordDom.#cellMap.getCellElement(cell);
+        const cellElement = crosswordDom.cellElement(cell);
         CrosswordDOM.#focus(cellElement);
         result = true;
       } else {
@@ -502,7 +537,7 @@ class CrosswordDOM {
 
       if (eventCell.y > 0 && eventCell.model.cells[x][y - 1].light === true) {
         const cell = eventCell.model.cells[x][y - 1];
-        const cellElement = crosswordDom.#cellMap.getCellElement(cell);
+        const cellElement = crosswordDom.cellElement(cell);
         CrosswordDOM.#focus(cellElement);
         result = true;
       } else {
@@ -520,7 +555,7 @@ class CrosswordDOM {
       if (eventCell.x > 0 && eventCell.model.cells[x - 1][y].light === true) {
         //  TODO: optimise with children[0]?
         const cell = eventCell.model.cells[x - 1][y];
-        const cellElement = crosswordDom.#cellMap.getCellElement(cell);
+        const cellElement = crosswordDom.cellElement(cell);
         CrosswordDOM.#focus(cellElement);
         result = true;
       } else {
@@ -548,7 +583,7 @@ class CrosswordDOM {
         };
       }
 
-      const eventCell = crosswordDom.#cellMap.getCell(event.target.parentNode);
+      const eventCell = crosswordDom.cell(event.target.parentNode);
       //  eslint-disable-next-line no-param-reassign
       event.target.value = character;
 
@@ -587,10 +622,7 @@ class CrosswordDOM {
       : [clue];
     clues.forEach((c) => {
       c.cells.forEach((cell) => {
-        addClass(
-          this.#cellMap.getCellElement(cell).querySelector("input"),
-          "active",
-        );
+        addClass(this.inputElement(cell), "active");
       });
     });
   }
@@ -599,10 +631,7 @@ class CrosswordDOM {
     this.#crosswordModel.cells.forEach((row) => {
       row.forEach((cell) => {
         if (cell.light) {
-          removeClass(
-            this.#cellMap.getCellElement(cell).querySelector("input"),
-            "active",
-          );
+          removeClass(this.inputElement(cell), "active");
         }
       });
     });

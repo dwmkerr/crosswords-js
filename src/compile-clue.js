@@ -119,6 +119,7 @@ function compileClue(clueDefinition, isAcrossClue) {
   const x = clueDefinition.x - 1; //  Definitions are 1 based, models are more useful 0 based.
   const y = clueDefinition.y - 1;
 
+  const isAcross = isAcrossClue;
   // Initialise array of crossword grid elements - populated as part of crossword DOM
   const cells = [];
   // Initialise user's answer for clue
@@ -201,7 +202,7 @@ function compileClue(clueDefinition, isAcrossClue) {
   const answerLengthText = `(${answerGroup})`;
 
   return {
-    isAcrossClue,
+    isAcross,
     answer,
     answerLength,
     answerSegments,
