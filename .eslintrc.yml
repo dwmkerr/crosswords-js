@@ -25,7 +25,7 @@ rules:
       "error",
       {
         "props": true,
-        # $scorp appears in angular sample app
+        # $scope appears in angular sample app
         "ignorePropertyModificationsFor": ["$scope"],
       },
     ]
