@@ -1,9 +1,10 @@
 // Configure trace logging
-const tracing = true;
+const tracing = false;
 
-//  Lightweight helper functions.
+// Lightweight helper functions.
 
 function addClass(element, className) {
+  // eslint-disable-next-line no-param-reassign
   element.className += ` ${className}`;
 }
 
@@ -32,6 +33,7 @@ const memoize = (fn) => {
 
 function removeClass(element, className) {
   const expression = new RegExp(`(?:^|\\s)${className}(?!\\S)`, "g");
+  // eslint-disable-next-line no-param-reassign
   element.className = element.className.replace(expression, "");
 }
 

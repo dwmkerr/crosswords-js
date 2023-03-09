@@ -25,8 +25,7 @@ rules:
       "error",
       {
         "props": true,
-        # There are multiple instances in the code where the properties of a function param object 
-        # are modified. They are explicitly excluded below.
-        "ignorePropertyModificationsFor": ["cs", "clue", "cc", "element", "$scope"],
+        # $scorp appears in angular sample app
+        "ignorePropertyModificationsFor": ["$scope"],
       },
     ]

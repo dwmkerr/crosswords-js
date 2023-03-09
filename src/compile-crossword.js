@@ -163,6 +163,7 @@ function compileCrossword(crosswordDefinition) {
     if (!clue.connectedDirectedClues) return;
 
     //  Find the connected clues.
+    //  eslint-disable-next-line no-param-reassign
     clue.connectedClues = clue.connectedDirectedClues.map((cdc) => {
       if (cdc.direction === "across") {
         return crosswordModel.acrossClues.find(
@@ -179,6 +180,7 @@ function compileCrossword(crosswordDefinition) {
     });
 
     //  Rebuild the answer structure text.
+    //  eslint-disable-next-line no-param-reassign
     clue.answerLengthText = `(${[clue.answerLengthText]
       .concat(clue.connectedClues.map((cc) => cc.answerLengthText))
       .join(",")
@@ -190,16 +192,20 @@ function compileCrossword(crosswordDefinition) {
     const clueSegments = [clue].concat(clue.connectedClues);
     clueSegments.forEach((cs) => {
       if (clueSegmentIndex > 0) {
+        //  eslint-disable-next-line no-param-reassign
         cs.previousClueSegment = clueSegments[clueSegmentIndex - 1];
       }
       if (clueSegmentIndex < clueSegments.length - 1) {
+        //  eslint-disable-next-line no-param-reassign
         cs.nextClueSegment = clueSegments[clueSegmentIndex + 1];
       }
+      //  eslint-disable-next-line no-param-reassign
       [cs.parentClue] = clueSegments;
       clueSegmentIndex += 1;
     });
 
     //  Create the master clue label.
+    //  eslint-disable-next-line no-param-reassign
     clue.clueLabel = `${[clue.number]
       .concat(clue.connectedClues.map((cc) => cc.number))
       .join(",")}.`;
@@ -207,7 +213,9 @@ function compileCrossword(crosswordDefinition) {
     //  The connected clues need no answer structure, an indicator they are
     //  connected clues and a back link to the master clue.
     clue.connectedClues.forEach((cc) => {
+      //  eslint-disable-next-line no-param-reassign
       cc.answerLengthText = null; // we just show the answer structure for the first clue
+      //  eslint-disable-next-line no-param-reassign
       cc.isConnectedClue = true; // makes it easier to render these clues differently
     });
   });
