@@ -2,8 +2,8 @@ const CellMap = require("./cell-map");
 const { addClass, last, memoize, removeClass, trace } = require("./helpers");
 
 // Regular expressions for keypress processing
-const legalCharacters = /^[a-zA-Z]$/;
-const advancingCharacters = /^[ a-zA-Z]$/;
+const echoingKeyPressCharacters = /^[a-zA-Z]$/;
+const advancingKeyPressCharacters = /^[ a-zA-Z]$/;
 
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.
@@ -321,8 +321,8 @@ class CrosswordDOM {
         trace("TAB");
 
         // get anchor segment of multi-segment clue
-        while (clue.previousClueSegment) {
-          clue = clue.previousClueSegment;
+        if (clue.parentClue) {
+          clue = clue.parentClue;
         }
         // Get the next clue.
         // Skip clues which are part of a multi-segment clue and not the anchor segment.
@@ -394,13 +394,13 @@ class CrosswordDOM {
       const character = String.fromCharCode(event.keyCode).toLowerCase();
       trace(`character:<${character}>`);
 
-      if (legalCharacters.test(character)) {
+      if (echoingKeyPressCharacters.test(character)) {
         //  Sets the letter in the current clue cell.
         trace(`Setting content: <${character}>`);
         setCellContent(event, character);
       }
 
-      if (advancingCharacters.test(character)) {
+      if (advancingKeyPressCharacters.test(character)) {
         trace("Advancing to next cell");
         //  Move to the next cell in the clue.
         const currentIndex =
