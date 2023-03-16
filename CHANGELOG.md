@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.14](https://github.com/dwmkerr/crosswords-js/compare/v0.1.13...v0.1.14) (2023-03-13)
+
+
+### Bug Fixes
+
+* Backspace and Delete key handling ([#31](https://github.com/dwmkerr/crosswords-js/issues/31)) ([1ccd96e](https://github.com/dwmkerr/crosswords-js/commit/1ccd96e50d60cf74a8537d10baba4420321c77d7))
+
 ## [0.1.13](https://github.com/dwmkerr/crosswords-js/compare/v0.1.12...v0.1.13) (2023-02-21)
 
 ### Bug Fixes

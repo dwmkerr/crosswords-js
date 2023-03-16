@@ -2,7 +2,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors][1]][2]
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
@@ -100,7 +100,6 @@ The model can be used to build the DOM for a crossword:
 ```js
 //  Build the crossword HTML, as a child of the document body element.
 var crosswordDom = new CrosswordsJS.CrosswordsDOM(
-  document,
   crosswordModel,
   document.body
 );
@@ -111,14 +110,17 @@ var crosswordDom = new CrosswordsJS.CrosswordsDOM(
 Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
 ```bash
-nvm install --lts
+nvm install --lts --latest-npm
 nvm use --lts
 ```
 
-Check out the code, then run:
+Check out the code, then, from the root directory, run:
 
 ```bash
-make serve
+# Fetch all dependent packages
+npm install
+# Start the sample app
+npm start
 ```
 
 The sample will run at the address [localhost:8080][11].
@@ -126,15 +128,36 @@ The sample will run at the address [localhost:8080][11].
 Run the tests with:
 
 ```bash
-make test
+npm test
 ```
 
-Linting is provided by `eslint`, which is configured to use `pretter`:
+Linting is provided by `eslint`, which is configured to use `prettier`:
 
 ```bash
 # Lint the code, or lint and fix.
 npm run lint
 npm run lint:fix
+```
+
+Documentation and HTML can be checked for standard conformance using `prettier`:
+
+```bash
+# Check html and docs for correctness, or check and fix.
+npm run prettier
+npm run prettier:fix
+```
+
+To automate all these checks on each commit to your local git repository, create a `pre-commit` hook in your repository:
+
+```bash
+# From the root directory of the package...
+cat << EOF > .git/hooks/pre-commit
+#!/bin/sh
+npm run prettier:fix && \\
+npm run lint:fix && \\
+npm test
+EOF
+chmod u+x .git/hooks/pre-commit
 ```
 
 ## Keyboard Functionality
@@ -260,7 +283,7 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
 - [x] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
-- [ ] bug: Demo site (https://dwmkerr.github.io/crosswords-js/) is not tracking latest version
+- [ ] bug: [Demo site][9] is not tracking latest version
 - [ ] feat(docs): improve the demo site image (its an old one at the moment!)
 - [ ] feat(samples): show how we can check answers or highlight incorrect entries (see issue #9)
 - [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
@@ -273,7 +296,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [x] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
 - [ ] feat: allow italics with underscores, or bold with stars (i.e. very basic markdown)...
-- [ ] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
+- [x] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [ ] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
 - [x] build: enforce linting (current it is allowed to fail)
