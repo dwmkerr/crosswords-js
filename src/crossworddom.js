@@ -2,6 +2,7 @@ const CellMap = require("./cell-map");
 const { addClass, last, removeClass, trace } = require("./helpers");
 const {
   anchorSegmentClues,
+  hideElement,
   resetCell,
   resetClue,
   revealCell,
@@ -400,6 +401,8 @@ class CrosswordDOM {
         event.preventDefault();
         // Fill cell with SPACE
         setCellContent(crosswordDom, event, " ");
+        // remove any visual flag in cell that letter is incorrect
+        hideElement(crosswordDom.incorrectElement(eventCell));
 
         const currentIndex =
           eventCell.acrossClue === clue
@@ -475,6 +478,8 @@ class CrosswordDOM {
         event.preventDefault();
         // Fill cell with SPACE
         setCellContent(crosswordDom, event, " ");
+        // remove any visual flag in cell that letter is incorrect
+        hideElement(crosswordDom.incorrectElement(eventCell));
       }
     });
 
@@ -497,6 +502,8 @@ class CrosswordDOM {
         //  Sets the letter in the current clue cell.
         trace(`Setting content: <${character}>`);
         setCellContent(crosswordDom, event, character);
+        // remove any visual flag in cell that letter is incorrect
+        hideElement(crosswordDom.incorrectElement(eventCell));
       }
 
       if (advancingKeyPressCharacters.test(character)) {

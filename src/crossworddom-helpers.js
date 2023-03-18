@@ -10,6 +10,13 @@ const updateCrosswordFontSize = (crosswordGridElement) => {
   crosswordGridElement.style.fontSize = `${cellWidth * 0.6}px`;
 };
 
+const hideElement = (element) => {
+  element && element.classList.add("hidden");
+};
+const showElement = (element) => {
+  element && element.classList.remove("hidden");
+};
+
 // Helper function to filter single-segment and anchor-segment clues
 // from clue array
 const anchorSegmentClues = memoize((clues) => {
@@ -34,7 +41,7 @@ function revealCell(crosswordDom, cell) {
   //  eslint-disable-next-line no-param-reassign
   crosswordDom.inputElement(cell).value = solutionLetter;
   // set visual flag in cell that letter has been revealed
-  crosswordDom.revealElement(cell).classList.remove("hidden");
+  showElement(crosswordDom.revealedElement(cell));
 }
 
 function revealClue(crosswordDom, clue) {
@@ -64,7 +71,7 @@ function testCell(crosswordDom, cell) {
   const solutionLetter = clue.solution[letterIndex];
   if (answerLetter !== solutionLetter) {
     // set visual flag in cell that answer letter is incorrect
-    crosswordDom.incorrectElement(cell).classList.remove("hidden");
+    showElement(crosswordDom.incorrectElement(cell));
   }
 }
 
@@ -98,7 +105,7 @@ function resetCell(crosswordDom, cell) {
   crosswordDom.inputElement(cell).value = "";
   // remove visual flags in cell
   crosswordDom.incorrectElement(cell).classList.add("hidden");
-  crosswordDom.revealElement(cell).classList.add("hidden");
+  crosswordDom.revealedElement(cell).classList.add("hidden");
 }
 
 function resetClue(crosswordDom, clue) {
@@ -116,10 +123,12 @@ function resetClue(crosswordDom, clue) {
 
 module.exports = {
   anchorSegmentClues,
+  hideElement,
   resetCell,
   resetClue,
   revealCell,
   revealClue,
+  showElement,
   testCell,
   testClue,
   updateCrosswordFontSize,
