@@ -40,13 +40,21 @@ function last(array) {
 // 'memoize' pattern implementation
 // https://en.wikipedia.org/wiki/Memoization
 const memoize = (fn) => {
+  // A hopefully unique object property name/key!
+  const id = "id_Z?7kQ;x8j!";
   let cache = {};
   return (arg) => {
-    if (!(arg in cache)) {
-      trace("memoize:caching...");
-      cache[arg] = fn(arg);
+    if (!arg[id]) {
+      // Attach a random id to this object
+      //  eslint-disable-next-line no-param-reassign
+      arg[id] = Math.random().toString(16).slice(2);
     }
-    return cache[arg];
+
+    if (!(arg[id] in cache)) {
+      cache[arg[id]] = fn(arg);
+      trace(`memoize:caching id ${arg[id]}`);
+    }
+    return cache[arg[id]];
   };
 };
 
@@ -65,6 +73,18 @@ function setLetter(source, index, newLetter) {
 function toggleClass(element, className) {
   element.classList.toggle(className);
 }
+
+// Fails for circular objects
+// - Property or nested property contains reference
+//   to root object
+const toHexString = (obj) => {
+  return (
+    "0x" +
+    [...JSON.stringify(obj)]
+      .map((c, i) => str.charCodeAt(i).toString(16))
+      .join("")
+  );
+};
 
 const trace = (message) => {
   if (tracing) console.log(message);

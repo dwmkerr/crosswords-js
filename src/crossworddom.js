@@ -19,6 +19,16 @@ const {
   toggleClueDirection,
 } = require("./celldom-helpers");
 
+// Keycode values
+const BACKSPACE = 8,
+  TAB = 9,
+  ENTER = 13,
+  LEFT = 37,
+  UP = 38,
+  RIGHT = 39,
+  DOWN = 40,
+  DELETE = 46;
+
 // Regular expressions for keypress processing.
 // All pressed keys are upper-cased before testing.
 const echoingKeyPressCharacters = /^[A-Z]$/;
@@ -128,11 +138,11 @@ class CrosswordDOM {
     return this.#current.clue;
   }
   set currentClue(clue) {
-    trace(`set currentClue`);
     if (clue !== this.#current.clue) {
       if (this.#current.clue) {
         this.#deactivateClue(this.#current.clue);
       }
+      trace(`set currentClue: ${clue.code}`);
       this.#current.clue = clue;
       this.#activateClue(clue);
       this.currentCell = clue.cells[0];
@@ -385,8 +395,7 @@ class CrosswordDOM {
       const { model } = eventCell;
       let clue = crosswordDom.currentClue;
 
-      if (event.keyCode === 8) {
-        // BACKSPACE
+      if (event.keyCode === BACKSPACE) {
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
@@ -408,8 +417,7 @@ class CrosswordDOM {
           trace("Focussing previous segment last cell");
           crosswordDom.currentCell = last(clue.previousClueSegment.cells);
         }
-      } else if (event.keyCode === 9) {
-        // TAB
+      } else if (event.keyCode === TAB) {
         //  We don't want default behaviour.
         event.preventDefault();
         trace("TAB");
@@ -427,7 +435,6 @@ class CrosswordDOM {
         trace(
           `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
         );
-
         for (let i = 0; i < searchClues.length; i += 1) {
           if (clue === searchClues[i]) {
             let newClue = null;
@@ -458,14 +465,12 @@ class CrosswordDOM {
             break;
           }
         }
-      } else if (event.keyCode === 13) {
-        // ENTER
+      } else if (event.keyCode === ENTER) {
         //  We don't want default behaviour.
         event.preventDefault();
         trace("ENTER");
         toggleClueDirection(crosswordDom, eventCell);
-      } else if (event.keyCode === 46) {
-        // DELETE
+      } else if (event.keyCode === DELETE) {
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
@@ -522,16 +527,16 @@ class CrosswordDOM {
       const eventCell = crosswordDom.cell(event.target.parentNode);
 
       switch (event.keyCode) {
-        case 37: // left
+        case LEFT:
           moveLeft(crosswordDom, eventCell);
           break;
-        case 38: // up
+        case UP:
           moveUp(crosswordDom, eventCell);
           break;
-        case 39: // right
+        case RIGHT:
           moveRight(crosswordDom, eventCell);
           break;
-        case 40: // down
+        case DOWN:
           moveDown(crosswordDom, eventCell);
           break;
         //  No action needed for any other keys.
