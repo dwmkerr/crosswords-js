@@ -47,6 +47,7 @@ function revealCell(crosswordDom, cell) {
 function revealClue(crosswordDom, clue) {
   assert(crosswordDom, "revealClue: <crosswordDom> is null or undefined");
   assert(clue, "revealClue: <clue> is null or undefined");
+  trace(`revealClue: '${clue.code}'`);
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
@@ -78,6 +79,7 @@ function testCell(crosswordDom, cell) {
 function testClue(crosswordDom, clue) {
   assert(crosswordDom, "testClue: <crosswordDom> is null or undefined");
   assert(clue, "testClue: <clue> is null or undefined");
+  trace(`testClue: '${clue.code}'`);
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
@@ -111,6 +113,7 @@ function resetCell(crosswordDom, cell) {
 function resetClue(crosswordDom, clue) {
   assert(crosswordDom, "resetClue: <crosswordDom> is null or undefined");
   assert(clue, "resetClue: <clue> is null or undefined");
+  trace(`resetClue: '${clue.code}'`);
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];

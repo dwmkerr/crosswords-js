@@ -1,5 +1,5 @@
 // Configure trace logging
-const tracing = false;
+const tracing = true;
 
 // Lightweight helper functions.
 
@@ -7,6 +7,11 @@ function addClass(element, className) {
   element.classList.add(className);
 }
 
+/**
+ * assert - logical constraint testing
+ * @param condition - boolean test expression
+ * @param message - string to be recorded on test failure
+ */
 function assert(condition, message) {
   if (!condition) {
     throw new Error(message || "Assertion failed");
@@ -37,15 +42,22 @@ function last(array) {
   return array ? array.slice(-1) : null;
 }
 
-// 'memoize' pattern implementation
-// https://en.wikipedia.org/wiki/Memoization
+/**
+ * **memoize** - wrap an arbitrary, single-argument, 
+ * [idempotent](https://en.wikipedia.org/wiki/Idempotence) 
+ * function with result-caching. 
+ * Useful for [_expensive_](https://en.wikipedia.org/wiki/Analysis_of_algorithms) functions. 
+ * @param {*} fn the function to be [memoized](https://en.wikipedia.org/wiki/Memoization)
+ * @returns a reference to the wrapped function. Assign this reference to a variable
+ * and invoke in the same manner as a function.
+ */
 const memoize = (fn) => {
   // A hopefully unique object property name/key!
   const id = "id_Z?7kQ;x8j!";
   let cache = {};
   return (arg) => {
     if (!arg[id]) {
-      // Attach a random id to this object
+      // Attach a random id property to this object
       //  eslint-disable-next-line no-param-reassign
       arg[id] = Math.random().toString(16).slice(2);
     }
@@ -54,6 +66,7 @@ const memoize = (fn) => {
       cache[arg[id]] = fn(arg);
       trace(`memoize:caching id ${arg[id]}`);
     }
+
     return cache[arg[id]];
   };
 };
@@ -62,8 +75,13 @@ function removeClass(element, className) {
   element.classList.remove(className);
 }
 
-// Helper function to pad a word <source> as necessary to set
-// the letter at <index> to <newLetter>
+/**
+ * setLetter - Set the _source_ letter at _index_ to _newLetter_. Pad _source_ if required.
+ * @param {*} source string to be modified
+ * @param {*} index target position in _source_
+ * @param {*} newLetter replacement letter
+ * @returns
+ */
 function setLetter(source, index, newLetter) {
   let result = source === null || source === undefined ? "" : source;
   result = result.padEnd(index + 1, " ");
@@ -74,10 +92,13 @@ function toggleClass(element, className) {
   element.classList.toggle(className);
 }
 
-// Fails for circular objects
-// - Property or nested property contains reference
-//   to root object
+/**
+ * toHexString - convert an object to a hexadecimal string
+ * @param {} obj - object to be converted
+ * @returns string of hexadecimal digits
+ */
 const toHexString = (obj) => {
+  // Fails for circular objects
   return (
     "0x" +
     [...JSON.stringify(obj)]
@@ -86,6 +107,10 @@ const toHexString = (obj) => {
   );
 };
 
+/**
+ * trace - console logging
+ * @param message - string to be logged
+ */
 const trace = (message) => {
   if (tracing) console.log(message);
 };

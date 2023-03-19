@@ -1,5 +1,5 @@
 const CellMap = require("./cell-map");
-const { addClass, last, removeClass, trace } = require("./helpers");
+const { addClass, assert, last, removeClass, trace } = require("./helpers");
 const {
   anchorSegmentClues,
   hideElement,
@@ -143,7 +143,7 @@ class CrosswordDOM {
       if (this.#current.clue) {
         this.#deactivateClue(this.#current.clue);
       }
-      trace(`set currentClue: ${clue.code}`);
+      trace(`set currentClue: '${clue.code}'`);
       this.#current.clue = clue;
       this.#activateClue(clue);
       this.currentCell = clue.cells[0];
@@ -170,6 +170,7 @@ class CrosswordDOM {
   }
 
   testCrossword() {
+    trace("testCrossword");
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
@@ -181,6 +182,7 @@ class CrosswordDOM {
   }
 
   revealCurrentCell() {
+    trace("revealCurrentCell");
     revealCell(this.currentCell);
     this.#stateChange("cellRevealed");
   }
@@ -191,6 +193,7 @@ class CrosswordDOM {
   }
 
   revealCrossword() {
+    trace("revealCrossword");
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
@@ -207,6 +210,7 @@ class CrosswordDOM {
   }
 
   resetCrossword() {
+    trace("resetCrossword");
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
@@ -336,15 +340,15 @@ class CrosswordDOM {
       cellElement.appendChild(clueLabel);
     }
 
+    const revealedIndicator = document.createElement("div");
     // Remove 'hidden' div class to reveal
-    const cellRevealed = document.createElement("div");
-    cellRevealed.className = "cwcell-revealed hidden";
-    cellElement.appendChild(cellRevealed);
+    revealedIndicator.className = "cwcell-revealed hidden";
+    cellElement.appendChild(revealedIndicator);
 
+    const incorrectIndicator = document.createElement("div");
     // Toggle 'hidden' div class to reveal/hide
-    const cellIncorrect = document.createElement("div");
-    cellIncorrect.className = "cwcell-incorrect hidden";
-    cellElement.appendChild(cellIncorrect);
+    incorrectIndicator.className = "cwcell-incorrect hidden";
+    cellElement.appendChild(incorrectIndicator);
 
     //  Check to see whether we need to add an across clue answer segment terminator.
     if (cell.acrossTerminator === ",") {
@@ -438,36 +442,35 @@ class CrosswordDOM {
         trace(
           `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
         );
-        for (let i = 0; i < searchClues.length; i += 1) {
-          if (clue === searchClues[i]) {
-            let newClue = null;
 
-            if (event.shiftKey) {
-              //  Shift-tab selects previous clue
-              if (i > 0) {
-                // Selects previous clue in same direction if not the first clue
-                newClue = searchClues[i - 1];
-              } else {
-                // On first clue, wrap to last clue in other direction
-                newClue = clue.isAcross
-                  ? model.downClues[model.downClues.length - 1]
-                  : model.acrossClues[model.acrossClues.length - 1];
-              }
-            } else if (i < searchClues.length - 1) {
-              // Tab selects next clue in same direction if not the last clue
-              newClue = searchClues[i + 1];
-            } else {
-              // On last clue, tab wraps to first clue in other direction
-              newClue = clue.isAcross
-                ? model.downClues[0]
-                : model.acrossClues[0];
-            }
+        let newClue = null;
+        const currentIndex = searchClues.indexOf(clue);
+        assert(
+          currentIndex !== -1,
+          `keydown(TAB): clue '${clue.code}' not found in searchClues`,
+        );
 
-            // Select the new clue.
-            crosswordDom.currentClue = newClue;
-            break;
+        if (event.shiftKey) {
+          //  Shift-tab selects previous clue
+          if (currentIndex > 0) {
+            // Selects previous clue in same direction if not the first clue
+            newClue = searchClues[currentIndex - 1];
+          } else {
+            // On first clue, wrap to last clue in other direction
+            newClue = clue.isAcross
+              ? model.downClues[model.downClues.length - 1]
+              : model.acrossClues[model.acrossClues.length - 1];
           }
+        } else if (currentIndex < searchClues.length - 1) {
+          // Tab selects next clue in same direction if not the last clue
+          newClue = searchClues[currentIndex + 1];
+        } else {
+          // On last clue, tab wraps to first clue in other direction
+          newClue = clue.isAcross ? model.downClues[0] : model.acrossClues[0];
         }
+
+        // Select the new clue.
+        crosswordDom.currentClue = newClue;
       } else if (event.keyCode === ENTER) {
         //  We don't want default behaviour.
         event.preventDefault();
@@ -486,7 +489,7 @@ class CrosswordDOM {
     //  Listen for keypress events.
     cellElement.addEventListener("keypress", (event) => {
       trace("event:keypress");
-      // We've just pressed a key that generates a char.
+      // We've just pressed a key that generates a character.
       // Stop default handling for input component
       event.preventDefault();
 
@@ -507,8 +510,8 @@ class CrosswordDOM {
       }
 
       if (advancingKeyPressCharacters.test(character)) {
-        trace("Advancing to next cell");
         //  Move to the next cell in the clue.
+        trace("Advancing to next cell");
         const currentIndex =
           eventCell.acrossClue === clue
             ? eventCell.acrossClueLetterIndex

@@ -65,7 +65,30 @@
       <h4></h4>
       <p class="small">Original source: <a href="{{info.source}}">{{info.source}}</a>.</p>
       <hr />
-      <p ng-if="currentClue">{{currentClue.clueLabel}} {{currentClue.clue}} {{currentClue.answerStructureText}}</td>
+      <div id="cell-buttons">
+        <button id="reveal-cell" (click)="revealCell()">Show Letter</button>
+      </div>
+      <div id="clue-buttons">
+        <button id="check-clue" (click)="checkClue()">Check Clue</button>
+        <button id="reveal-clue" (click)="revealClue()">Show Clue</button>
+        <button id="clear-clue" (click)="clearClue()">Clear Clue</button>
+      </div>
+      <div id="grid-buttons">
+        <button id="check-crossword" (click)="checkCrossword()">
+          Check Crossword
+        </button>
+        <button id="reveal-crossword" (click)="revealCrossword()">
+          Show Crossword
+        </button>
+        <button id="clear-crossword" (click)="clearCrossword()">
+          Clear Crossword
+        </button>
+      </div>
+      <hr />
+      <p ng-if="currentClue">
+        {{currentClue.clueLabel}} {{currentClue.clueText}}
+        {{currentClue.answerLengthText}}
+      </p>
       <div id="crossword1"></div>
       <table>
         <tr>
