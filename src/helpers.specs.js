@@ -22,21 +22,21 @@ describe("replaceStrAt()", () => {
     const result = replaceStrAt("hello", 4, "X");
     expect(result).to.eql("hellX");
   });
-  it("should extend [original] to accommodate long [str]", () => {
-    const result = replaceStrAt("hello", 2, "wotcha");
-    expect(result).to.eql("hewotcha");
-  });
-  it("should return [original] for [index] beyond [original] length", () => {
-    const result = replaceStrAt("hello", 9, "X");
+  it("should return [original] for [index] < 0", () => {
+    const result = replaceStrAt("hello", -1, "X");
     expect(result).to.eql("hello");
   });
   it("should return [original] for [index] = [original] length", () => {
     const result = replaceStrAt("hello", 5, "X");
     expect(result).to.eql("hello");
   });
-  it("should return [original] for [index] < 0", () => {
-    const result = replaceStrAt("hello", -1, "X");
+  it("should return [original] for [index] > [original] length", () => {
+    const result = replaceStrAt("hello", 9, "X");
     expect(result).to.eql("hello");
+  });
+  it("should extend [original] if overlaying [str] extends beyond current length", () => {
+    const result = replaceStrAt("hello", 2, "wotcha");
+    expect(result).to.eql("hewotcha");
   });
 });
 

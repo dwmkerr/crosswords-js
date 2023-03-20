@@ -3,14 +3,20 @@ const tracing = true;
 
 // Lightweight helper functions.
 
+/**
+ * **addClass** - add a [CSS](https://en.wikipedia.org/wiki/CSS) class to a
+ * [DOM](https://en.wikipedia.org/wiki/Document_Object_Model) element.
+ * @param {*} element the element (object reference)
+ * @param {*} className the class to add (string)
+ */
 function addClass(element, className) {
   element.classList.add(className);
 }
 
 /**
- * assert - logical constraint testing
- * @param condition - boolean test expression
- * @param message - string to be recorded on test failure
+ * **assert** - logical constraint testing
+ * @param condition - test expression (boolean)
+ * @param message - (string) recorded on test failure - _condition_ evaluates to `false`.
  */
 function assert(condition, message) {
   if (!condition) {
@@ -18,6 +24,11 @@ function assert(condition, message) {
   }
 }
 
+/**
+ * **first** - get the first element of an array
+ * @param {*} array
+ * @returns the first element of _array_ or null for empty,undefined or null array
+ */
 function first(array) {
   // If array is not nullish, return first element
   return array ? array[0] : null;
@@ -37,16 +48,21 @@ function replaceStrAt(original, index, str) {
     : original;
 }
 
+/**
+ * **last** - get the last element of an array
+ * @param {*} array
+ * @returns the last element of _array_ or null for empty,undefined or null array
+ */
 function last(array) {
   // If array is not nullish, return last element
   return array ? array.slice(-1) : null;
 }
 
 /**
- * **memoize** - wrap an arbitrary, single-argument, 
- * [idempotent](https://en.wikipedia.org/wiki/Idempotence) 
- * function with result-caching. 
- * Useful for [_expensive_](https://en.wikipedia.org/wiki/Analysis_of_algorithms) functions. 
+ * **memoize** - wrap an arbitrary, single-argument,
+ * [idempotent](https://en.wikipedia.org/wiki/Idempotence)
+ * function with result-caching.
+ * Useful for [_expensive_](https://en.wikipedia.org/wiki/Analysis_of_algorithms) functions.
  * @param {*} fn the function to be [memoized](https://en.wikipedia.org/wiki/Memoization)
  * @returns a reference to the wrapped function. Assign this reference to a variable
  * and invoke in the same manner as a function.
@@ -71,6 +87,12 @@ const memoize = (fn) => {
   };
 };
 
+/**
+ * **removeClass** - remove a [CSS](https://en.wikipedia.org/wiki/CSS) class from a
+ * [DOM](https://en.wikipedia.org/wiki/Document_Object_Model) element.
+ * @param {*} element the element (object reference)
+ * @param {*} className the class to add (string)
+ */
 function removeClass(element, className) {
   element.classList.remove(className);
 }
@@ -88,6 +110,12 @@ function setLetter(source, index, newLetter) {
   return replaceStrAt(result, index, newLetter);
 }
 
+/**
+ * **toggleClass** - _toggle_(add/remove) a [CSS](https://en.wikipedia.org/wiki/CSS) class on a
+ * [DOM](https://en.wikipedia.org/wiki/Document_Object_Model) element.
+ * @param {*} element the element (object reference)
+ * @param {*} className the class to add (string)
+ */
 function toggleClass(element, className) {
   element.classList.toggle(className);
 }

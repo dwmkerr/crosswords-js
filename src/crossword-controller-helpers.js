@@ -1,13 +1,19 @@
-const { memoize, setLetter, trace } = require("./helpers");
+const { assert, memoize, setLetter, trace } = require("./helpers");
 
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.
-const updateCrosswordFontSize = (crosswordGridElement) => {
+const updateCrosswordFontSize = (crosswordView) => {
   trace("updateCrosswordFontSize");
+  assert(crosswordView, "crosswordView is null or undefined");
+  assert(crosswordView.children[0], "crossword row[0] is null or undefined");
+  assert(
+    crosswordView.children[0].children[0],
+    "crossword cell[0,0] is null or undefined",
+  );
   //  Get the width of a cell (first child of first row).
-  const cellWidth = crosswordGridElement.children[0].children[0].clientWidth;
+  const cellWidth = crosswordView.children[0].children[0].clientWidth;
   //  eslint-disable-next-line no-param-reassign
-  crosswordGridElement.style.fontSize = `${cellWidth * 0.6}px`;
+  crosswordView.style.fontSize = `${cellWidth * 0.6}px`;
 };
 
 const hideElement = (element) => {
@@ -23,9 +29,9 @@ const anchorSegmentClues = memoize((clues) => {
   return clues.filter((x) => !x.previousClueSegment);
 });
 
-function revealCell(crosswordDom, cell) {
-  assert(crosswordDom, "revealLetter: <crosswordDom> is null or undefined");
-  assert(cell, "revealLetter: <cell> is null or undefined");
+function revealCell(controller, cell) {
+  assert(controller, "<controller> is null or undefined");
+  assert(cell, "<cell> is null or undefined");
 
   // get index of cell-letter in clue
   const clue = cell.acrossClue ? cell.acrossClue : cell.downClue;
@@ -39,28 +45,28 @@ function revealCell(crosswordDom, cell) {
   clue.revealed = setLetter(clue.revealed, letterIndex, solutionLetter);
   // reveal letter in grid
   //  eslint-disable-next-line no-param-reassign
-  crosswordDom.inputElement(cell).value = solutionLetter;
+  controller.inputElement(cell).value = solutionLetter;
   // set visual flag in cell that letter has been revealed
-  showElement(crosswordDom.revealedElement(cell));
+  showElement(controller.revealedElement(cell));
 }
 
-function revealClue(crosswordDom, clue) {
-  assert(crosswordDom, "revealClue: <crosswordDom> is null or undefined");
-  assert(clue, "revealClue: <clue> is null or undefined");
+function revealClue(controller, clue) {
+  assert(controller, "<controller> is null or undefined");
+  assert(clue, "<clue> is null or undefined");
   trace(`revealClue: '${clue.code}'`);
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
   clues.forEach((c) => {
     c.cells.forEach((cell) => {
-      revealCell(crosswordDom, cell);
+      revealCell(controller, cell);
     });
   });
 }
 
-function testCell(crosswordDom, cell) {
-  assert(crosswordDom, "testCell: <crosswordDom> is null or undefined");
-  assert(cell, "testCell: <cell> is null or undefined");
+function testCell(controller, cell) {
+  assert(controller, "<controller> is null or undefined");
+  assert(cell, "<cell> is null or undefined");
 
   // get index of cell-letter in clue
   const clue = cell.acrossClue ? cell.acrossClue : cell.downClue;
@@ -72,27 +78,27 @@ function testCell(crosswordDom, cell) {
   const solutionLetter = clue.solution[letterIndex];
   if (answerLetter !== solutionLetter) {
     // set visual flag in cell that answer letter is incorrect
-    showElement(crosswordDom.incorrectElement(cell));
+    showElement(controller.incorrectElement(cell));
   }
 }
 
-function testClue(crosswordDom, clue) {
-  assert(crosswordDom, "testClue: <crosswordDom> is null or undefined");
-  assert(clue, "testClue: <clue> is null or undefined");
+function testClue(controller, clue) {
+  assert(controller, "<controller> is null or undefined");
+  assert(clue, "<clue> is null or undefined");
   trace(`testClue: '${clue.code}'`);
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
   clues.forEach((c) => {
     c.cells.forEach((cell) => {
-      testCell(crosswordDom, cell);
+      testCell(controller, cell);
     });
   });
 }
 
-function resetCell(crosswordDom, cell) {
-  assert(crosswordDom, "resetCell: <crosswordDom> is null or undefined");
-  assert(cell, "resetCell: <cell> is null or undefined");
+function resetCell(controller, cell) {
+  assert(controller, "<controller> is null or undefined");
+  assert(cell, "<cell> is null or undefined");
 
   // get index of cell-letter in clue
   const clue = cell.acrossClue ? cell.acrossClue : cell.downClue;
@@ -104,22 +110,22 @@ function resetCell(crosswordDom, cell) {
   clue.answer[letterIndex] = "";
   // clear grid cell
   // eslint-disable-next-line no-param-reassign
-  crosswordDom.inputElement(cell).value = "";
+  controller.inputElement(cell).value = "";
   // remove visual flags in cell
-  crosswordDom.incorrectElement(cell).classList.add("hidden");
-  crosswordDom.revealedElement(cell).classList.add("hidden");
+  controller.incorrectElement(cell).classList.add("hidden");
+  controller.revealedElement(cell).classList.add("hidden");
 }
 
-function resetClue(crosswordDom, clue) {
-  assert(crosswordDom, "resetClue: <crosswordDom> is null or undefined");
-  assert(clue, "resetClue: <clue> is null or undefined");
+function resetClue(controller, clue) {
+  assert(controller, "<controller> is null or undefined");
+  assert(clue, "<clue> is null or undefined");
   trace(`resetClue: '${clue.code}'`);
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
   clues.forEach((c) => {
     c.cells.forEach((cell) => {
-      resetCell(crosswordDom, cell);
+      resetCell(controller, cell);
     });
   });
 }

@@ -10,7 +10,7 @@ const {
   testCell,
   testClue,
   updateCrosswordFontSize,
-} = require("./crossworddom-helpers");
+} = require("./crossword-controller-helpers");
 const {
   moveDown,
   moveLeft,
@@ -18,7 +18,7 @@ const {
   moveUp,
   setCellContent,
   toggleClueDirection,
-} = require("./celldom-helpers");
+} = require("./cell-element-helpers");
 
 // Keycode values
 const BACKSPACE = 8,
@@ -35,9 +35,12 @@ const BACKSPACE = 8,
 const echoingKeyPressCharacters = /^[A-Z]$/;
 const advancingKeyPressCharacters = /^[ A-Z]$/;
 
-class CrosswordDOM {
+/** **CrosswordController** - an [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
+ * _Controller_ class for the _CrosswordsJS_ package. Use this class to access the package API.
+ */
+class CrosswordController {
   #cellMap;
-  #crosswordGridElement;
+  #crosswordView;
   #crosswordModel;
   #current;
   #domParentElement;
@@ -49,20 +52,20 @@ class CrosswordDOM {
     this.#domParentElement = domParentElement;
     this.#current = { clue: null, cell: null };
     //  Now build the DOM for the crossword.
-    this.#crosswordGridElement = this.#document.createElement("div");
-    this.gridElement.className = "crossword";
+    this.#crosswordView = this.#document.createElement("div");
+    this.crosswordView.className = "crossword";
 
     //  Create each cell.
     for (let y = 0; y < this.#crosswordModel.height; y += 1) {
       const row = this.#document.createElement("div");
       row.className = "cwrow";
-      this.gridElement.appendChild(row);
+      this.crosswordView.appendChild(row);
 
       for (let x = 0; x < this.#crosswordModel.width; x += 1) {
         const cell = this.#crosswordModel.cells[x][y];
 
         //  Build the cell element and add it to the row.
-        const cellElement = this.#createCellDOM(this.#document, cell);
+        const cellElement = this.#newCellElement(this.#document, cell);
         row.appendChild(cellElement);
 
         //  Update the map of cells
@@ -70,20 +73,20 @@ class CrosswordDOM {
       }
     }
 
-    //  Update the font size when the window changes size
-    this.#window.addEventListener("resize", this.#onWindowResize);
     //  Focus the first clue when the page loads
     this.#window.addEventListener("onload", this.#onPageLoaded);
     //  Add the crossword grid to the webpage DOM
-    this.#domParentElement.appendChild(this.gridElement);
+    this.#domParentElement.appendChild(this.crosswordView);
+    //  Update the font size when the window changes size
+    this.#window.addEventListener("resize", this.#onWindowResize);
     //  Set the font size
-    updateCrosswordFontSize(this.gridElement);
+    updateCrosswordFontSize(this.crosswordView);
   }
   //  Completely cleans up the crossword.
   destroy() {
     //  Clear the map, DOM and state change handler.
     this.#cellMap.removeCrosswordCells(this.#crosswordModel);
-    this.#domParentElement.removeChild(this.gridElement);
+    this.#domParentElement.removeChild(this.crosswordView);
     this.#window.removeEventListener("resize", this.#onWindowResize);
     this.onStateChanged = null;
   }
@@ -120,7 +123,7 @@ class CrosswordDOM {
 
   //  Helper function to allow the font to be resized programmatically,
   //  useful if something else changes the size of the crossword.
-  updateFontSize = () => updateCrosswordFontSize(this.gridElement);
+  updateFontSize = () => updateCrosswordFontSize(this.crosswordView);
 
   // Accessors for public property currentCell
   get currentCell() {
@@ -159,10 +162,12 @@ class CrosswordDOM {
     this.#onStateChanged = eventHandler;
   }
 
-  // Accessor for gridElement
-  get gridElement() {
-    return this.#crosswordGridElement;
+  // Accessor for crosswordView
+  get crosswordView() {
+    return this.#crosswordView;
   }
+
+  //// API methods ////
 
   testCurrentClue() {
     testClue(this.currentClue);
@@ -220,7 +225,8 @@ class CrosswordDOM {
     });
     this.#stateChange("crosswordReset");
   }
-  //// Private methods
+
+  //// Private methods ////
 
   // Accessor for document associated with DOM
   get #document() {
@@ -233,7 +239,10 @@ class CrosswordDOM {
 
   #onWindowResize() {
     trace("window.event:resize");
-    updateCrosswordFontSize(this.gridElement);
+    // We must retrieve the crosswordView by querying the global DOM object, "document".
+    // https://developer.mozilla.org/en-US/docs/Web/API/Document
+    const crosswordView = document.querySelector(".crossword");
+    updateCrosswordFontSize(crosswordView);
   }
 
   #onPageLoaded() {
@@ -295,11 +304,13 @@ class CrosswordDOM {
     return this.currentClue !== previousClue;
   }
 
-  //  Sends a state change message.
+  /**
+   * **#stateChange**: Publish crossword events to the handler allocated/subscribed to _onStateChange_.
+   * @param {*} message The name of the event to be published
+   * @param {*} data not used
+   * - Events: _cellRevealed_,_clueReset_,_clueRevealed_,_clueSelected_,_clueTested_,_crosswordReset_,_crosswordRevealed_,_crosswordTested_
+   */
   #stateChange(message, data) {
-    //  TODO: we could probably inherit from EventEmitter as a more standard way
-    //  to implement this functionality.
-    //  Send the message.
     trace(`stateChange: ${message}`);
     this.#onStateChanged &&
       this.#onStateChanged({
@@ -308,9 +319,15 @@ class CrosswordDOM {
       });
   }
 
-  //  Creates DOM for a cell.
-  #createCellDOM(document, cell) {
-    const crosswordDom = this;
+  /**
+   * **newCellElement**: build a crossword grid _cell_ DOM element
+   * with child elements and event listeners to handle user interaction events.
+   * @param {*} document the root node of the [DOM](https://en.wikipedia.org/wiki/Document_Object_Model#DOM_tree_structure)
+   * @param {*} cell the representation of this grid cell in the  _crosswordModel_.
+   * @returns the DOM element for the _cell_
+   */
+  #newCellElement(document, cell) {
+    const controller = this;
     const cellElement = document.createElement("div");
     cellElement.className = "cwcell";
     //  eslint-disable-next-line no-param-reassign
@@ -373,8 +390,8 @@ class CrosswordDOM {
     inputElement.addEventListener("focus", (event) => {
       trace("event:focus");
       //  Get the cell data.
-      const eventCell = crosswordDom.cell(event.target.parentNode);
-      if (crosswordDom.#currentClueChanged(eventCell)) {
+      const eventCell = controller.cell(event.target.parentNode);
+      if (controller.#currentClueChanged(eventCell)) {
         this.#stateChange("clueSelected");
       }
     });
@@ -382,12 +399,12 @@ class CrosswordDOM {
     //  Listen for click events.
     inputElement.addEventListener("click", (event) => {
       trace("event:click");
-      const eventCell = crosswordDom.cell(event.target.parentNode);
+      const eventCell = controller.cell(event.target.parentNode);
       // Test for second click on same cell
-      if (eventCell === crosswordDom.currentCell) {
-        toggleClueDirection(crosswordDom, eventCell);
+      if (eventCell === controller.currentCell) {
+        toggleClueDirection(controller, eventCell);
       } else {
-        crosswordDom.currentCell = eventCell;
+        controller.currentCell = eventCell;
       }
     });
 
@@ -396,17 +413,17 @@ class CrosswordDOM {
       trace(`event:keydown keycode=${event.keyCode}`);
 
       //  Get the cell element and cell data.
-      const eventCell = crosswordDom.cell(event.target.parentNode);
+      const eventCell = controller.cell(event.target.parentNode);
       const { model } = eventCell;
-      let clue = crosswordDom.currentClue;
+      let clue = controller.currentClue;
 
       if (event.keyCode === BACKSPACE) {
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
-        setCellContent(crosswordDom, event, " ");
+        setCellContent(controller, event, " ");
         // remove any visual flag in cell that letter is incorrect
-        hideElement(crosswordDom.incorrectElement(eventCell));
+        hideElement(controller.incorrectElement(eventCell));
 
         const currentIndex =
           eventCell.acrossClue === clue
@@ -418,11 +435,11 @@ class CrosswordDOM {
         if (previousIndex >= 0) {
           // Move to previous character
           trace(`Focussing previous cell index: ${previousIndex}`);
-          crosswordDom.currentCell = clue.cells[previousIndex];
+          controller.currentCell = clue.cells[previousIndex];
         } else if (previousIndex === -1 && clue.previousClueSegment) {
           //  If we are at the start of the clue and we have a previous segment, select it.
           trace("Focussing previous segment last cell");
-          crosswordDom.currentCell = last(clue.previousClueSegment.cells);
+          controller.currentCell = last(clue.previousClueSegment.cells);
         }
       } else if (event.keyCode === TAB) {
         //  We don't want default behaviour.
@@ -470,19 +487,19 @@ class CrosswordDOM {
         }
 
         // Select the new clue.
-        crosswordDom.currentClue = newClue;
+        controller.currentClue = newClue;
       } else if (event.keyCode === ENTER) {
         //  We don't want default behaviour.
         event.preventDefault();
         trace("ENTER");
-        toggleClueDirection(crosswordDom, eventCell);
+        toggleClueDirection(controller, eventCell);
       } else if (event.keyCode === DELETE) {
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
-        setCellContent(crosswordDom, event, " ");
+        setCellContent(controller, event, " ");
         // remove any visual flag in cell that letter is incorrect
-        hideElement(crosswordDom.incorrectElement(eventCell));
+        hideElement(controller.incorrectElement(eventCell));
       }
     });
 
@@ -494,8 +511,8 @@ class CrosswordDOM {
       event.preventDefault();
 
       //  Get cell data.
-      const eventCell = crosswordDom.cell(event.target.parentNode);
-      const clue = crosswordDom.currentClue;
+      const eventCell = controller.cell(event.target.parentNode);
+      const clue = controller.currentClue;
 
       // Convert keyCode to upper-case character
       const character = String.fromCharCode(event.keyCode).toUpperCase();
@@ -504,9 +521,9 @@ class CrosswordDOM {
       if (echoingKeyPressCharacters.test(character)) {
         //  Sets the letter in the current clue cell.
         trace(`Setting content: <${character}>`);
-        setCellContent(crosswordDom, event, character);
+        setCellContent(controller, event, character);
         // remove any visual flag in cell that letter is incorrect
-        hideElement(crosswordDom.incorrectElement(eventCell));
+        hideElement(controller.incorrectElement(eventCell));
       }
 
       if (advancingKeyPressCharacters.test(character)) {
@@ -522,11 +539,11 @@ class CrosswordDOM {
         if (nextIndex < clue.cells.length) {
           // We are still within the bounds of the current clue (segment)
           trace(`Focussing next cell index: ${nextIndex}`);
-          crosswordDom.currentCell = clue.cells[nextIndex];
+          controller.currentCell = clue.cells[nextIndex];
         } else if (clue.nextClueSegment) {
           //  We are at the end of the clue segment and there is a next segment.
           trace("Focussing next answer segment cell index 0");
-          crosswordDom.currentClue = clue.nextClueSegment;
+          controller.currentClue = clue.nextClueSegment;
         }
       }
     });
@@ -534,20 +551,20 @@ class CrosswordDOM {
     //  Listen for keyup events.
     cellElement.addEventListener("keyup", (event) => {
       trace("event:keyup");
-      const eventCell = crosswordDom.cell(event.target.parentNode);
+      const eventCell = controller.cell(event.target.parentNode);
 
       switch (event.keyCode) {
         case LEFT:
-          moveLeft(crosswordDom, eventCell);
+          moveLeft(controller, eventCell);
           break;
         case UP:
-          moveUp(crosswordDom, eventCell);
+          moveUp(controller, eventCell);
           break;
         case RIGHT:
-          moveRight(crosswordDom, eventCell);
+          moveRight(controller, eventCell);
           break;
         case DOWN:
-          moveDown(crosswordDom, eventCell);
+          moveDown(controller, eventCell);
           break;
         //  No action needed for any other keys.
         default:
@@ -585,4 +602,4 @@ class CrosswordDOM {
   }
 }
 
-module.exports = CrosswordDOM;
+module.exports = CrosswordController;

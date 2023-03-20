@@ -1,35 +1,31 @@
 var sampleapp = angular.module('sampleapp', []);
 
-sampleapp.controller('MainController', function($scope, $http) {
+sampleapp.controller("MainController", function ($scope, $http) {
+  var crosswordModel = null;
+  var crosswordController = null;
 
-  var crossword = null;
-  var crosswordDom = null;
+  $http.get("crosswords/ftimes_17095.json").success(function (jsonCrossword) {
+    //  Set the crossword info.
+    $scope.info = jsonCrossword.info;
 
-  //$http.get('crosswords/quiptic89.json').success(function(crosswordDefinition) {
-  $http.get('crosswords/albreich_4.json').success(function(crosswordDefinition) {
+    //  Create the crossword model.
+    crosswordModel = CrosswordsJS.newCrosswordModel(jsonCrossword);
+    cwController = new CrosswordsJS.controller(
+      crosswordModel,
+      document.getElementById("crossword1"),
+    );
+    $scope.cwController = cwController;
+    $scope.acrossClues = crosswordModel.acrossClues;
+    $scope.downClues = crosswordModel.downClues;
 
-      //  Create the crossword model.
-      crosswordModel = CrosswordsJS.compileCrossword(crosswordDefinition);
-      crosswordDom = new CrosswordsJS.CrosswordDOM(
-        crosswordModel,
-        document.getElementById("crossword1"),
-      );
-      $scope.crosswordDom = crosswordDom;
-      $scope.acrossClues = crosswordModel.acrossClues;
-      $scope.downClues = crosswordModel.downClues;
+    cwController.currentClue = crosswordModel.acrossClues[0];
+    $scope.currentClue = crosswordModel.acrossClues[0];
 
-    $scope.acrossClues = crossword.acrossClues;
-    $scope.downClues = crossword.downClues;
-
-    crosswordDom.selectClue(crossword.acrossClues[0]);
-    $scope.currentClue = crossword.acrossClues[0];
-
-    crosswordDom.onStateChanged = function(message) {
-
-      if(message.message === "clueSelected") {
-        $scope.currentClue = crosswordDom.currentClue;
-        $scope.$apply();
-      }
+    cwController.onStateChanged = function (message) {
+      $scope.currentClue = cwController.currentClue;
+      $scope.$apply();
+    };
+  });
 
     };
 
@@ -53,34 +49,34 @@ sampleapp.controller('MainController', function($scope, $http) {
   };
 
   $scope.selectClue = function (clue) {
-    $scope.crosswordDom.currentClue = clue;
+    $scope.cwController.currentClue = clue;
   };
 
   $scope.revealCell = function () {
-    $scope.crosswordDom.revealCell;
+    $scope.cwController.revealCell;
   };
 
   $scope.checkClue = function () {
-    $scope.crosswordDom.checkClue;
+    $scope.cwController.checkClue;
   };
 
   $scope.revealClue = function () {
-    $scope.crosswordDom.revealClue;
+    $scope.cwController.revealClue;
   };
 
   $scope.clearClue = function () {
-    $scope.crosswordDom.clearClue;
+    $scope.cwController.clearClue;
   };
 
   $scope.checkCrossword = function () {
-    $scope.crosswordDom.checkCrossword;
+    $scope.cwController.checkCrossword;
   };
 
   $scope.revealCrossword = function () {
-    $scope.crosswordDom.revealCrossword;
+    $scope.cwController.revealCrossword;
   };
 
   $scope.clearCrossword = function () {
-    $scope.crosswordDom.clearCrossword;
+    $scope.cwController.clearCrossword;
   };
 });
