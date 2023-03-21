@@ -1,3 +1,11 @@
 .nyc_output/
 node_modules/
 artifacts/
+.DS_Store
+
+# Generated artefacts
+crosswords.css
+
+# VS Code artifacts
+*.code-workspace
+.vscode/

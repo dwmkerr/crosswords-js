@@ -6,6 +6,7 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "connect-livereload": "^0.6.1",
+    "cspell": "^6.30.2",
     "css-loader": "^6.7.3",
     "eslint": "^8.33.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -25,15 +26,19 @@
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "lint": "eslint *.js src/**/*.js sample/*.js",
-    "lint:fix": "eslint --fix *.js src/**/*.js sample/*.js",
-    "prettier": "prettier --check src/**/*.less *.md docs/**/*.md sample/*.html",
-    "prettier:fix": "prettier --write src/**/*.less *.md docs/**/*.md sample/*.html",
+    "lint": "eslint *.js src/**/*.js *sample/*.js",
+    "lint:fix": "eslint --fix *.js src/**/*.js *sample/*.js",
+    "prettier": "prettier --check *.{html,js,json,less,md} docs/*.{html,js,json,less,md} src/**/*.{html,js,json,less,md} *sample/*.{html,js,json,less,md}",
+    "prettier:fix": "prettier --write *.{html,js,json,less,md} docs/*.{html,js,json,less,md} src/**/*.{html,js,json,less,md} *sample/*.{html,js,json,less,md}",
+    "release": "standard-version",
+    "spell": "git diff --cached --name-only | npx cspell --file-list stdin",
+    "spell:all": "cspell *.{html,js,less,md} docs/**/*.{html,js,json,less,md} src/**/*.{html,js,json,less,md} *sample/*.{html,js,json,less,md}",
     "start": "webpack-dev-server",
+    "start:angular": "webpack-dev-server",
+    "start:node": "npx lessc src/crosswords.less sample-node/crosswords.css && node sample-node/server.js",
     "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
     "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
-    "test:debug": "mocha --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.js",
-    "release": "standard-version"
+    "test:debug": "mocha --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.js"
   },
   "keywords": [
     "crossword"

@@ -6,11 +6,12 @@ const { dirname } = require("path");
 const fs = require("fs").promises;
 
 const host = "localhost";
-const port = 8080;
+const port = 8082;
 
 const cachedFilePaths = [
   "index.html",
   "index.css",
+  "crosswords.css",
   "vendor/jquery/jquery.min.js",
   "vendor/jquery/jquery.min.map",
 ];
@@ -46,7 +47,11 @@ const requestListener = function (req, res) {
       res.writeHead(200, { "Content-Type": "text/css" });
       res.end(cache["index.css"]);
       break;
-    case "/vendor/jquery/jquery.min.js":
+      case "/crossword.css":
+        res.writeHead(200, { "Content-Type": "text/css" });
+        res.end(cache["crosswords.css"]);
+        break;
+      case "/vendor/jquery/jquery.min.js":
       res.writeHead(200, { "Content-Type": "text/javascript" });
       res.end(cache["vendor/jquery/jquery.min.js"]);
       break;

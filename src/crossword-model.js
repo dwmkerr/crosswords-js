@@ -63,7 +63,7 @@ function newCrosswordModel(jsonCrossword) {
     throw new Error("The crossword bounds are invalid.");
   }
 
-  //  Create the array of cells. Each element has a refence back to the crosswordModel
+  //  Create the array of cells. Each element has a reference back to the crosswordModel
   //  for convenience.
   crosswordModel.cells = buildCellGrid(crosswordModel);
 
