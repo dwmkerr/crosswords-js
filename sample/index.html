@@ -66,22 +66,30 @@
       <p class="small">Original source: <a href="{{info.source}}">{{info.source}}</a>.</p>
       <hr />
       <div id="cell-buttons">
-        <button id="reveal-cell" (click)="revealCell()">Show Letter</button>
+        <button id="reveal-cell" (click)="revealCurrentCell()">
+          Reveal Cell
+        </button>
       </div>
       <div id="clue-buttons">
-        <button id="check-clue" (click)="checkClue()">Check Clue</button>
-        <button id="reveal-clue" (click)="revealClue()">Show Clue</button>
-        <button id="clear-clue" (click)="clearClue()">Clear Clue</button>
+        <button id="test-clue" (click)="testCurrentClue()">Test Clue</button>
+        <button id="clean-clue" (click)="cleanCurrentClue()">Clean Clue</button>
+        <button id="reveal-clue" (click)="revealCurrentClue()">
+          Reveal Clue
+        </button>
+        <button id="reset-clue" (click)="resetCurrentClue()">Reset Clue</button>
       </div>
       <div id="grid-buttons">
-        <button id="check-crossword" (click)="checkCrossword()">
-          Check Crossword
+        <button id="test-crossword" (click)="testCrossword()">
+          Test Crossword
+        </button>
+        <button id="clean-crossword" (click)="cleanCrossword()">
+          Clean Crossword
         </button>
         <button id="reveal-crossword" (click)="revealCrossword()">
-          Show Crossword
+          Reveal Crossword
         </button>
-        <button id="clear-crossword" (click)="clearCrossword()">
-          Clear Crossword
+        <button id="reset-crossword" (click)="resetCrossword()">
+          Reset Crossword
         </button>
       </div>
       <hr />

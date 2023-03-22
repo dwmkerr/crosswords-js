@@ -1,6 +1,5 @@
-const compileCrossword = require("./crossword-model");
-const CrosswordController = require("./crossword-controller");
-const css = require("./crosswords.less");
+const compileCrossword = require("../src/crossword-model");
+const CrosswordController = require("../src/crossword-controller");
 
 //  Define our public API.
 const CrosswordsJS = {

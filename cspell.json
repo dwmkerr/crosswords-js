@@ -2,7 +2,7 @@
   "enabled": true,
   "language": "en-GB",
   "allowCompoundWords": true,
-  "ignorePaths": ["node_modules", "vendor", ".*", "cspell.json"],
+  "ignorePaths": ["node_modules", "vendor", ".*"],
   "enabledLanguageIds": [
     "css",
     "html",
@@ -36,6 +36,7 @@
     "Moley",
     "quiptic",
     "relfile",
+    "relpath",
     "swappable"
   ]
 }

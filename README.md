@@ -35,87 +35,138 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 
 ## Quickstart
 
-Install:
+1. Install the package:
 
-```sh
-npm install crosswords-js
-```
+   ```bash
+   npm install crosswords-js
+   ```
 
-Include the JavaScript and CSS:
+2. Include the minified JavaScript package source and CSS in your webpage:
 
-```html
-<link href="node_modules/crosswords-js/dist/crosswords.css" rel="stylesheet">
-<script src="node_modules/crosswords-js/dist/crosswords.js"></script>
-```
+   ```html
+   <link
+     href="node_modules/crosswords-js/dist/crosswords.css"
+     rel="stylesheet"
+   />
+   <script src="node_modules/crosswords-js/dist/crosswords.js"></script>
+   ```
 
-To create a crossword, you start with a _Crossword Definition_, which is a simple JSON representation of a crossword:
+3. To create a crossword, locate or edit a **CrosswordDefinition**, which is a simple JSON file:
 
-```js
-{
-  "width": 15,
-  "height": 15,
-  "acrossClues": [
-    {
-      "x": 2, "y": 1,
-      "clue": "1. Conspicuous influence exerted by active troops (8,5)"
-    },
-    {
-      "x": 1, "y": 3,
-      "clue": "10. A coy sort of miss pointlessly promoting lawlessness (9)"
-    }
-  ]
-}
-```
+   ```json
+   {
+     "width": 15,
+     "height": 15,
+     "acrossClues": [
+       {
+         "x": 1,
+         "y": 1,
+         "clue": "1. Conspicuous influence exerted by active troops (8,5)"
+       },
 
-This definition needs to be compiled into a _Crossword Model_. The model is a two dimensional array of cells. This model is used as the input to create the DOM. Compiling the model validates it, making sure that there are no incongruities in the structure (such as overlapping clues, clues which don't fit in the bounds and so on):
+   ...
 
-```js
-//  Load the crosswords.js API and the crossword definition.
-const CrosswordsJS = require('crosswords-js');
-const crosswordJSON = require('./my-crossword.json');
+     ],
+     "downClues": [
+       {
+         "x": 3,
+         "y": 1,
+         "clue": "1. A coy sort of miss pointlessly promoting lawlessness (9)"
+       },
 
-//  Compile the crossword.
-try {
-  const crosswordModel = CrosswordsJS.newCrosswordModel(crosswordJSON);
-} catch (err) {
-  console.log(`Error compiling crossword: ${err}`);
-}
-```
+   ...
 
-The model can be used to build the DOM for a crossword:
+     ]
+   }
+   ```
 
-```js
-//  Create the crossword Controller object, and attach the crossword HTML to the webpage DOM as a child of the document.body element.
-var crosswordController = new CrosswordsJS.controller(
-  crosswordModel,
-  document.body
-);
-```
+   Complete _CrosswordDefinition_ examples can be found [here][21] and [there][22].
 
-Use the Controller object to call the methods of the package API
+   Further on, the _CrosswordDefinition_ needs to be compiled into a **CrosswordModel**. Compiling validates the the _CrosswordDefinition_ , making sure that there are no incongruities in the structure, for example:
 
-```js
-// Reveal the currently highlighted letter in the solution.
-crosswordController.revealCurrentCell();
+   - overlapping clues
+   - clues which don't fit in the grid bounds
+   - ...and so on.
 
-// Remove incorrect letters in the currently highlighted answer in the grid.
-crosswordController.cleanCurrentClue();
-// Check the currently highlighted answer in the crossword grid against the clue solution.
-crosswordController.testCurrentClue();
-// Reveal the solution for the currently highlighted answer.
-crosswordController.revealCurrentClue();
-// Clear the currently highlighted answer in the grid.
-crosswordController.resetCurrentClue();
+4. In your JavaScript code, load the **crosswords-js** package and a _CrosswordDefinition_:
 
-// Remove incorrect letters for the whole crossword grid.
-crosswordController.cleanCrossword();
-// Check the whole crossword grid against the solution.
-crosswordController.testCrossword();
-// Reveal the solution for the whole crossword grid.
-crosswordController.revealCrossword();
-// Clear the whole crossword grid.
-crosswordController.resetCrossword();
-```
+   ```js
+   const crosswordsJS = require('crosswords-js');
+   const crosswordJSON = require('./my-crossword.json');
+   ```
+
+5. Compile `crosswordJSON` - creating the **Model** (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordJSON` will generate an exception:
+
+   ```js
+   try {
+     const model = crosswordsJS.compileCrossword(crosswordJSON);
+   } catch (err) {
+     console.log(`Error compiling crossword: ${err}`);
+   }
+   ```
+
+6. Now get the [DOM][20] element which will be the parent for the crossword:
+
+   > For example, if we have a placeholder `div` element somewhere in our webpage:
+   >
+   > ```html
+   > ...
+   > <div id="crossword" />
+   > ...
+   > ```
+   >
+   > We locate the element via the webpage [DOM][20]:
+   >
+   > ```js
+   > const parent = document.getElementById('crossword');
+   > ```
+
+7. And pass the `model` and the `parent` into the **Controller** constructor:
+
+   ```js
+   let controller = new crosswordsJS.Controller(model, parent);
+   ```
+
+   This binds the crossword **View** into the webpage [DOM][20].
+
+8. You can use the `controller` to programmatically manipulate the crossword [DOM][20] element, for example, in `button` click events.
+
+   The following methods are available:
+
+   - For the **currently selected clue** in the crossword grid
+
+     ```js
+     // Check the answer against the solution.
+     controller.testCurrentClue();
+     // Remove incorrect letters in the answer after testing.
+     controller.cleanCurrentClue();
+     // Reveal the current letter from the solution.
+     controller.revealCurrentCell();
+     // Reveal the solution.
+     controller.revealCurrentClue();
+     // Clear out the answer.
+     controller.resetCurrentClue();
+     ```
+
+   - For the **whole crossword grid**...
+
+     ```js
+     // Check all the answers against the solutions.
+     controller.testCrossword();
+     // Remove incorrect letters after testing.
+     controller.cleanCrossword();
+     // Reveal all the solutions.
+     controller.revealCrossword();
+     // Clear out all the answers.
+     controller.resetCrossword();
+     ```
+
+9. You can find an **Angular** sample application in the `sample` directory. To run the application:
+
+   ```bash
+   # Run the Angular sample app
+   npm start
+   ```
 
 ## Developer Guide
 
@@ -129,11 +180,18 @@ nvm use --lts
 
 Check out the code, then run:
 
-```sh
-make serve
+```bash
+# Fetch all dependent packages
+npm install
+# Start the development server
+npm run dev
 ```
 
-The sample will run at the address [localhost:8080](http://localhost:3000/).
+- The development server webpage is visible at [http://localhost:8081/][11]
+  - _The webpage will dynamically refresh whenever you save your source edits_
+- Edit the development webpage HTML: [dev/index.html][23]
+- Edit the development webpage CSS: [dev/index.css][25]
+- Edit the styles for the **crosswords-js** package via the [**less**][24] source: [src/crosswords.less][24]. _This is dynamically compiled to CSS for the development server_.
 
 Run the tests with:
 
@@ -141,7 +199,7 @@ Run the tests with:
 npm test
 ```
 
-Linting is provided by `eslint`, which is configured to use `prettier`:
+Linting is provided by `eslint`, which is also configured to use `prettier` for code formatting:
 
 ```bash
 # Lint the code.
@@ -162,8 +220,10 @@ npm run prettier:fix
 Spelling can be checked using `cspell`:
 
 ```bash
-# Check changed files for spelling.
+# Check _staged_ files for spelling.
 npm run spell
+# Check new and changed files for spelling.
+npm run spell:changed
 # Check all files for spelling.
 npm run spell:all
 ```
@@ -261,7 +321,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [8]: https://codecov.io/gh/dwmkerr/crosswords-js
 [9]: https://dwmkerr.github.io/crosswords-js/
 [10]: https://github.com/nvm-sh/nvm
-[11]: http://localhost:3000/
+[11]: http://localhost:8081/
 [12]: ./.github/workflows/pull-request.yaml
 [13]: https://github.com/google-github-actions/release-please-action
 [14]: #release-pipeline
@@ -270,3 +330,9 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [17]: https://allcontributors.org/docs/en/bot/usage
 [18]: https://www.theguardian.com/crosswords
 [19]: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+[20]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
+[21]: src/test-crosswords/alberich_4.json
+[22]: src/test-crosswords/ftimes_17095.json
+[23]: dev/index.html
+[24]: https://lesscss.org/functions/
+[25]: dev/index.css

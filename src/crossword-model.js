@@ -30,12 +30,12 @@ function getAnswerSegment(answerSegments, letterIndex) {
 }
 
 /**
- * **newCrosswordModel**: build a crossword model from a crossword object read from JSON.
+ * **compileCrossword**: build a crossword model from a crossword object read from JSON.
  * - The function compiles a JSON crossword and emits diagnostic exceptions when errors are encountered.
  * @param {*} jsonCrossword the crossword object read from a JSON crossword description.
  * @returns a crossword model object
  */
-function newCrosswordModel(jsonCrossword) {
+function compileCrossword(jsonCrossword) {
   if (!jsonCrossword) {
     throw new Error(
       "The model must be initialised with a JSON crossword definition.",
@@ -225,4 +225,4 @@ function newCrosswordModel(jsonCrossword) {
   return crosswordModel;
 }
 
-module.exports = newCrosswordModel;
+module.exports = compileCrossword;

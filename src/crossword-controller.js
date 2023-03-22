@@ -1,5 +1,5 @@
 const CellMap = require("./cell-map");
-const { addClass, removeClass, trace } = require("./helpers");
+const { addClass, assert, removeClass, trace, tracing } = require("./helpers");
 const {
   anchorSegmentClues,
   cleanCell,
@@ -21,6 +21,9 @@ const {
   setCellContent,
   toggleClueDirection,
 } = require("./cell-element-helpers");
+
+// enable console logging
+tracing(true);
 
 // Keycode values
 const BACKSPACE = 8,
@@ -172,6 +175,7 @@ class CrosswordController {
   //// API methods ////
 
   testCurrentClue() {
+    trace("testCurrentClue");
     testClue(this.currentClue);
     this.#stateChange("clueTested");
   }

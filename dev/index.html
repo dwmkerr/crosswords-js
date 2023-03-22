@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CrosswordJS Sample</title>
+    <title>CrosswordJS Developer Sandbox</title>
 
+    <!-- IE -->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <!-- other browsers -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <!-- PT Serif webfont. -->
     <link
       rel="stylesheet"
@@ -10,11 +14,11 @@
     />
     <!-- Local styles -->
     <link rel="stylesheet" type="text/css" href="index.css" />
-    <link rel="stylesheet" type="text/css" href="crosswords.css" />
-
     <script src="vendor/jquery/jquery.min.js"></script>
     <!-- Rock out some crosswords.js -->
-    <!-- <script src="../src/crosswords.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="crosswords.css" />
+    <script src="crosswords.js"></script>
+    <script src="../src/helpers.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -26,6 +30,13 @@
     <script>
       $(document).ready(function () {
         console.log('DOM loaded');
+
+        const crosswordJSON = require('crosswords/ftimes_17095.json');
+        const model = CrosswordsJS.compileCrossword(crosswordJSON);
+        const parent = document.getElementById('crossword1');
+        const controller = CrosswordsJS.Controller(model, parent);
+        document.getElementById('reveal-cell').onclick =
+          controller.revealCurrentCell();
       });
     </script>
   </head>
@@ -48,6 +59,32 @@
       <p class="small">
         Original source: <a href="{{info.source}}">{{info.source}}</a>.
       </p>
+      <hr />
+      <div id="cell-buttons">
+        <button id="reveal-cell">Reveal Cell</button>
+      </div>
+      <div id="clue-buttons">
+        <button id="test-clue" (click)="testCurrentClue()">Test Clue</button>
+        <button id="clean-clue" (click)="cleanCurrentClue()">Clean Clue</button>
+        <button id="reveal-clue" (click)="revealCurrentClue()">
+          Reveal Clue
+        </button>
+        <button id="reset-clue" (click)="resetCurrentClue()">Reset Clue</button>
+      </div>
+      <div id="grid-buttons">
+        <button id="test-crossword" (click)="testCrossword()">
+          Test Crossword
+        </button>
+        <button id="clean-crossword" (click)="cleanCrossword()">
+          Clean Crossword
+        </button>
+        <button id="reveal-crossword" (click)="revealCrossword()">
+          Reveal Crossword
+        </button>
+        <button id="reset-crossword" (click)="resetCrossword()">
+          Reset Crossword
+        </button>
+      </div>
       <hr />
       <p ng-if="currentClue">
         {{currentClue.clueLabel}} {{currentClue.clueText}}

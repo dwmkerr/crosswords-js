@@ -1,6 +1,3 @@
-// Configure trace logging
-const tracing = true;
-
 // Lightweight helper functions.
 
 /**
@@ -146,23 +143,35 @@ const toHexString = (obj) => {
   );
 };
 
+// module scope variable to toggle log tracing
+let tracingEnabled = false;
+
+/**
+ * **tracing** - enable or disable console logging
+ * @param {*} enabled logging is on/off
+ */
+const tracing = (enabled) => {
+  tracingEnabled = enabled;
+};
+
 /**
  * trace - console logging
  * @param message - string to be logged
  */
 const trace = (message) => {
-  if (tracing) console.log(message);
+  if (tracingEnabled) console.log(message);
 };
 
 module.exports = {
   addClass,
   assert,
   first,
-  replaceStrAt,
   last,
   memoize,
   removeClass,
+  replaceStrAt,
   setLetter,
   toggleClass,
   trace,
+  tracing,
 };

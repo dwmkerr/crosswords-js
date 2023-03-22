@@ -1,10 +1,4 @@
-const {
-  assert,
-  memoize,
-  setLetter,
-  trace,
-  replaceStrAt,
-} = require("./helpers");
+const { assert, memoize, trace, replaceStrAt } = require("./helpers");
 
 //  For a given crossword object, this function sets the appropriate font
 //  size based on the current crossword size.

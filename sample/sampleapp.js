@@ -1,25 +1,25 @@
 var sampleapp = angular.module('sampleapp', []);
 
 sampleapp.controller("MainController", function ($scope, $http) {
-  var crosswordModel = null;
-  var crosswordController = null;
+  var cwModel = null;
+  var cwController = null;
 
   $http.get("crosswords/ftimes_17095.json").success(function (jsonCrossword) {
     //  Set the crossword info.
     $scope.info = jsonCrossword.info;
 
     //  Create the crossword model.
-    crosswordModel = CrosswordsJS.newCrosswordModel(jsonCrossword);
-    cwController = new CrosswordsJS.controller(
-      crosswordModel,
+    cwModel = CrosswordsJS.compileCrossword(jsonCrossword);
+    cwController = new CrosswordsJS.Controller(
+      cwModel,
       document.getElementById("crossword1"),
     );
     $scope.cwController = cwController;
-    $scope.acrossClues = crosswordModel.acrossClues;
-    $scope.downClues = crosswordModel.downClues;
+    $scope.acrossClues = cwModel.acrossClues;
+    $scope.downClues = cwModel.downClues;
 
-    cwController.currentClue = crosswordModel.acrossClues[0];
-    $scope.currentClue = crosswordModel.acrossClues[0];
+    cwController.currentClue = cwModel.acrossClues[0];
+    $scope.currentClue = cwModel.acrossClues[0];
 
     cwController.onStateChanged = function (message) {
       $scope.currentClue = cwController.currentClue;
