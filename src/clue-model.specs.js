@@ -52,6 +52,7 @@ cd["invalid-multi-segment-number"] = { x: 12, y: 9, clue: "9,3b,4. Clue (5)" };
   y: 5,
   clue: "13. Woman who suffered capital loss in Lebanon, beaten by fluctuating yen (4,6)",
   solution: "anne boleyn",
+  // cspell:disable-next-line
   answer: "a nxxxxx n",
   revealed: "a n      n",
 }),
@@ -60,6 +61,7 @@ cd["invalid-multi-segment-number"] = { x: 12, y: 9, clue: "9,3b,4. Clue (5)" };
     y: 5,
     clue: "13. Woman who suffered capital loss in Lebanon, beaten by fluctuating yen (4,6)",
     solution: "catherine parr",
+    // cspell:disable-next-line
     answer: "a nxxxxx n",
     revealed: "a n      n",
   }),
@@ -68,6 +70,7 @@ cd["invalid-multi-segment-number"] = { x: 12, y: 9, clue: "9,3b,4. Clue (5)" };
     y: 5,
     clue: "13. Woman who suffered capital loss in Lebanon, beaten by fluctuating yen (4,6)",
     solution: "anne boleyn",
+    // cspell:disable-next-line
     answer: "a nxxxxx n",
     revealed: "a n    ",
   });
@@ -267,6 +270,7 @@ describe("newClueModel()", () => {
       cd["valid-answer-solution-revealed"],
       isAcrossClue,
     );
+    // cspell:disable-next-line
     expect(clueModel.answer).to.eql("A NXXXXX N");
     expect(clueModel.answerSegments).to.eql([
       { length: 4, terminator: "," },

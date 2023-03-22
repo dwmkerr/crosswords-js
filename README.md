@@ -95,18 +95,24 @@ var crosswordController = new CrosswordsJS.controller(
 Use the Controller object to call the methods of the package API
 
 ```js
-// Check the currently highlighted answer in the crossword grid against the clue solution.
-crosswordController.testCurrentClue();
-// Check the whole crossword grid against the solution.
-crosswordController.testCrossword();
 // Reveal the currently highlighted letter in the solution.
 crosswordController.revealCurrentCell();
+
+// Remove incorrect letters in the currently highlighted answer in the grid.
+crosswordController.cleanCurrentClue();
+// Check the currently highlighted answer in the crossword grid against the clue solution.
+crosswordController.testCurrentClue();
 // Reveal the solution for the currently highlighted answer.
 crosswordController.revealCurrentClue();
+// Clear the currently highlighted answer in the grid.
+crosswordController.resetCurrentClue();
+
+// Remove incorrect letters for the whole crossword grid.
+crosswordController.cleanCrossword();
+// Check the whole crossword grid against the solution.
+crosswordController.testCrossword();
 // Reveal the solution for the whole crossword grid.
 crosswordController.revealCrossword();
-// Clear the currently highlighted answer in the grid.
-crosswordController.resetClue();
 // Clear the whole crossword grid.
 crosswordController.resetCrossword();
 ```
@@ -115,8 +121,9 @@ crosswordController.resetCrossword();
 
 Ensure you are using Node LTS. I recommend using [Node Version Manager](https://github.com/nvm-sh/nvm) for this:
 
-```sh
-nvm install --lts
+```bash
+# Install/update node to latest long-term-support (LTS) version, and install/update npm to latest version.
+nvm install --lts --latest-npm
 nvm use --lts
 ```
 
@@ -137,16 +144,18 @@ npm test
 Linting is provided by `eslint`, which is configured to use `prettier`:
 
 ```bash
-# Lint the code, or lint and fix.
+# Lint the code.
 npm run lint
+# Lint and fix the code.
 npm run lint:fix
 ```
 
 Documentation and HTML can be checked for standard conformance using `prettier`:
 
 ```bash
-# Check html and docs for correctness, or check and fix.
+# Check html and docs for correctness.
 npm run prettier
+# Check and fix html and docs for correctness.
 npm run prettier:fix
 ```
 
@@ -159,10 +168,9 @@ npm run spell
 npm run spell:all
 ```
 
-To automate all these checks on each commit to your local git repository, create a `pre-commit` hook in your repository:
+To automate all these checks on each commit to your local git repository, create a `pre-commit` hook in your repository. From the root directory of your repository:
 
 ```bash
-# From the root directory of the package...
 cat << EOF > .git/hooks/pre-commit
 #!/bin/sh
 npm run spell && \\
@@ -177,10 +185,12 @@ chmod u+x .git/hooks/pre-commit
 
 - Left/Right/Up/Down: Move (if possible) to the cell in the direction specified.
 - Space: Move to the next cell in the focused clue, if one exists.
-- Backspace: Move to the previous cell in the focused clue, if one exists.
+- Delete: Delete the current cell.
+- Backspace: Delete the current cell, and move to the previous cell in the focused clue, if one exists.
 - Tab: Move to the first cell of the next clue, 'wrapping' to the first clue.
+- Shift+Tab: Move to the last cell of the previous clue, 'wrapping' to the last clue.
 - A-Z: Enter the character. Not locale aware!
-- Enter: Switch between across and down.
+- Enter: At a clue intersection, switch between across and down.
 
 ## Crossword Definition Tips
 

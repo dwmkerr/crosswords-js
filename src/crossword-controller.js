@@ -1,7 +1,9 @@
 const CellMap = require("./cell-map");
-const { addClass, assert, last, removeClass, trace } = require("./helpers");
+const { addClass, removeClass, trace } = require("./helpers");
 const {
   anchorSegmentClues,
+  cleanCell,
+  cleanClue,
   hideElement,
   resetCell,
   resetClue,
@@ -209,7 +211,7 @@ class CrosswordController {
     this.#stateChange("crosswordRevealed");
   }
 
-  resetClue() {
+  resetCurrentClue() {
     resetClue(this.currentClue);
     this.#stateChange("clueReset");
   }
@@ -224,6 +226,23 @@ class CrosswordController {
         });
     });
     this.#stateChange("crosswordReset");
+  }
+
+  cleanCurrentClue() {
+    cleanClue(this.currentClue);
+    this.#stateChange("clueCleaned");
+  }
+
+  cleanCrossword() {
+    trace("cleanCrossword");
+    this.#crosswordModel.cells.forEach((row) => {
+      row
+        .filter((x) => x.light)
+        .forEach((cell) => {
+          cleanCell(cell);
+        });
+    });
+    this.#stateChange("crosswordCleaned");
   }
 
   //// Private methods ////

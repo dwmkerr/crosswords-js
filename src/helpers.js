@@ -37,15 +37,26 @@ function first(array) {
 /**
  * replaceStrAt - overlay **str** onto **original** string starting at **index**
  * @param original - the string to be mutated
- * @param index - the index of _original_ to start the overlay
+ * @param index - the index of _original_ to start the overlay. Negative values supported like `string.slice()`.
  * @param str - the overlaying text
  * @returns the mutated _original_. Any null or undefined arguments returns _original_.
  * _index_ outside range [0,_original_.length) returns _original_.
  */
 function replaceStrAt(original, index, str) {
-  return original && index >= 0 && str && original.length > index
-    ? `${original.slice(0, index)}${str}${original.slice(index + str.length)}`
-    : original;
+  let result = original;
+  if (original && index != null && str) {
+    let pos = parseInt(index, 10);
+    if (pos < 0) {
+      // Normalise negative index values
+      pos = original.length + pos;
+    }
+    if (pos >= 0 && str && original.length > pos) {
+      result = `${original.slice(0, pos)}${str}${original.slice(
+        pos + str.length,
+      )}`;
+    }
+  }
+  return result;
 }
 
 /**

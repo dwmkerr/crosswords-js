@@ -12,19 +12,33 @@ describe("replaceStrAt()", () => {
   });
   it("should overlay 'X' at position 0", () => {
     const result = replaceStrAt("hello", 0, "X");
+    // cspell:disable-next-line
     expect(result).to.eql("Xello");
   });
   it("should overlay 'X' at position 2", () => {
     const result = replaceStrAt("hello", 2, "X");
+    // cspell:disable-next-line
     expect(result).to.eql("heXlo");
   });
   it("should overlay 'X' at position (length - 1)", () => {
     const result = replaceStrAt("hello", 4, "X");
+    // cspell:disable-next-line
     expect(result).to.eql("hellX");
   });
-  it("should return [original] for [index] < 0", () => {
+  it("should overlay 'X' at position -1", () => {
     const result = replaceStrAt("hello", -1, "X");
-    expect(result).to.eql("hello");
+    // cspell:disable-next-line
+    expect(result).to.eql("hellX");
+  });
+  it("should overlay 'X' at position -3", () => {
+    const result = replaceStrAt("hello", -3, "X");
+    // cspell:disable-next-line
+    expect(result).to.eql("heXlo");
+  });
+  it("should overlay 'X' at position (-length)", () => {
+    const result = replaceStrAt("hello", -5, "X");
+    // cspell:disable-next-line
+    expect(result).to.eql("Xello");
   });
   it("should return [original] for [index] = [original] length", () => {
     const result = replaceStrAt("hello", 5, "X");
@@ -34,9 +48,19 @@ describe("replaceStrAt()", () => {
     const result = replaceStrAt("hello", 9, "X");
     expect(result).to.eql("hello");
   });
+  it("should return [original] for [index] < - [original] length", () => {
+    const result = replaceStrAt("hello", -6, "X");
+    expect(result).to.eql("hello");
+  });
   it("should extend [original] if overlaying [str] extends beyond current length", () => {
     const result = replaceStrAt("hello", 2, "wotcha");
+    // cspell:disable-next-line
     expect(result).to.eql("hewotcha");
+  });
+  it("should extend [original] if overlaying [str] extends beyond current length for negative [index]", () => {
+    const result = replaceStrAt("hello", -2, "wotcha");
+    // cspell:disable-next-line
+    expect(result).to.eql("helwotcha");
   });
 });
 
