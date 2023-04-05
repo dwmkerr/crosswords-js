@@ -1,4 +1,5 @@
-const { newClueModel } = require("./clue-model");
+import { trace } from './helpers.mjs';
+import { newClueModel } from './clue-model.mjs';
 
 function buildCellGrid(crosswordModel) {
   const width = crosswordModel.width;
@@ -24,21 +25,24 @@ function getAnswerSegment(answerSegments, letterIndex) {
     if (remainingIndex <= answerSegments[i].length) {
       return [answerSegments[i], remainingIndex];
     }
+
     remainingIndex -= answerSegments[i].length;
   }
+
   return null;
 }
 
 /**
- * **compileCrossword**: build a crossword model from a crossword object read from JSON.
+ * **newCrosswordModel**: build a crossword model from a crossword object read from JSON.
  * - The function compiles a JSON crossword and emits diagnostic exceptions when errors are encountered.
  * @param {*} jsonCrossword the crossword object read from a JSON crossword description.
  * @returns a crossword model object
  */
-function compileCrossword(jsonCrossword) {
+function newCrosswordModel(jsonCrossword) {
+  trace('newCrosswordModel');
   if (!jsonCrossword) {
     throw new Error(
-      "The model must be initialised with a JSON crossword definition.",
+      'The model must be initialised with a JSON crossword definition.'
     );
   }
 
@@ -60,7 +64,7 @@ function compileCrossword(jsonCrossword) {
     crosswordModel.height === null ||
     crosswordModel.height < 0
   ) {
-    throw new Error("The crossword bounds are invalid.");
+    throw new Error('The crossword bounds are invalid.');
   }
 
   //  Create the array of cells. Each element has a reference back to the crosswordModel
@@ -74,11 +78,11 @@ function compileCrossword(jsonCrossword) {
     const jsonClue = jsonClues[c];
     const isAcrossClue = c < jsonCrossword.acrossClues.length;
 
-    //  Compile the clue from the clue.
+    //  Compile the clue model from the crossword definition of the clue
     const clueModel = newClueModel(jsonClue, isAcrossClue);
 
     //  Update the crosswordModel.
-    crosswordModel[isAcrossClue ? "acrossClues" : "downClues"].push(clueModel);
+    crosswordModel[isAcrossClue ? 'acrossClues' : 'downClues'].push(clueModel);
 
     //  The clue position must be in the bounds.
     if (
@@ -95,6 +99,7 @@ function compileCrossword(jsonCrossword) {
       if (clueModel.x + clueModel.answerLength > crosswordModel.width) {
         throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
       }
+      // down clue
     } else if (clueModel.y + clueModel.answerLength > crosswordModel.height) {
       throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
     }
@@ -103,47 +108,91 @@ function compileCrossword(jsonCrossword) {
     //  an answer (which is optional), we can validate it
     //  is coherent.
     let { x, y } = clueModel;
+    const cellDefaultAnswer = ' ';
+    const cellDefaultSolution = ' ';
     for (let letter = 0; letter < clueModel.answerLength; letter += 1) {
       const cell = crosswordModel.cells[x][y];
       cell.light = true;
-      cell[isAcrossClue ? "acrossClue" : "downClue"] = clueModel;
-      cell[isAcrossClue ? "acrossClueLetterIndex" : "downClueLetterIndex"] =
+      cell[isAcrossClue ? 'acrossClue' : 'downClue'] = clueModel;
+      cell[isAcrossClue ? 'acrossClueLetterIndex' : 'downClueLetterIndex'] =
         letter;
       clueModel.cells.push(cell);
 
       //  Check if we need to add an answer terminator.
       const [segment, index] = getAnswerSegment(
         clueModel.answerSegments,
-        letter,
+        letter
       );
-      if (index === segment.length - 1 && segment.terminator !== "") {
-        cell[clueModel.isAcross ? "acrossTerminator" : "downTerminator"] =
+      if (index === segment.length - 1 && segment.terminator !== '') {
+        cell[clueModel.isAcross ? 'acrossTerminator' : 'downTerminator'] =
           segment.terminator;
       }
 
-      //  If the clue has an answer we set it in the cell...
-      if (clueModel.answer) {
+      //  If the imported clue has an answer we set it in the cell...
+      if (jsonClue.answer) {
+        // trace(
+        //   `newCrosswordModel(${x},${y}): jsonClue.Answer<${jsonClue.answer}> cell.answer<${cell.answer}> clueModel.answer[letter]<${clueModel.answer[letter]}>`
+        // );
         //  ...but only if it is not different to an existing answer.
         if (
-          cell.answer !== undefined &&
-          cell.answer !== " " &&
+          cell.answer &&
+          // We can overwrite any cells that have default value
+          cell.answer !== cellDefaultAnswer &&
           cell.answer !== clueModel.answer[letter]
         ) {
           throw new Error(
-            `Clue ${clueModel.code} answer at (${x + 1}, ${
-              y + 1
-            }) is not coherent with previous clue (${
+            `Clue ${clueModel.code} answer at (${x + 1},${y + 1}) [${
+              clueModel.answer
+            }[${letter + 1}],${
+              clueModel.answer[letter]
+            }] is not coherent with previous clue (${
               cell.acrossClue.code
-            }) answer.`,
+            }) answer [${cell.acrossClue.answer},${cell.answer}].`
           );
         }
+        // if (cell.answer && cell.answer !== ' '
         cell.answer = clueModel.answer[letter];
+      }
+      // no answer in imported clue, insert default if cell is vacant
+      else {
+        // don't clobber an existing value
+        if (!cell.answer) {
+          cell.answer = cellDefaultAnswer;
+        }
+      }
+
+      //  If the imported clue has a solution we set it in the cell...
+      if (jsonClue.solution) {
+        //  ...but only if it is NOT different to any existing solution.
+        if (
+          cell.solution &&
+          // We can overwrite any cells that have the default value
+          cell.solution !== cellDefaultSolution &&
+          cell.solution !== clueModel.solution[letter]
+        ) {
+          throw new Error(
+            `Clue ${clueModel.code} solution at (${x + 1},${y + 1}) [${
+              clueModel.solution
+            }[${letter + 1}],${
+              clueModel.solution[letter]
+            }] is not coherent with previous clue (${
+              cell.acrossClue.code
+            }) solution [${cell.acrossClue.solution},${cell.solution}].`
+          );
+        }
+        // if (cell.solution && cell.solution !== ' '
+        cell.solution = clueModel.solution[letter];
+      }
+      // no solution in imported clue
+      else {
+        // insert default value (space ' ')
+        cell.solution = cellDefaultSolution;
       }
 
       if (letter === 0) {
         if (cell.clueLabel && cell.clueLabel !== clueModel.number) {
           throw new Error(
-            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`,
+            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`
           );
         }
         cell.clueLabel = clueModel.number;
@@ -167,17 +216,17 @@ function compileCrossword(jsonCrossword) {
     //  Find the connected clues.
     //  eslint-disable-next-line no-param-reassign
     clue.connectedClues = clue.connectedDirectedClues.map((cdc) => {
-      if (cdc.direction === "across") {
+      if (cdc.direction === 'across') {
         return crosswordModel.acrossClues.find(
-          (ac) => ac.number === cdc.number,
+          (ac) => ac.number === cdc.number
         );
       }
-      if (cdc.direction === "down") {
-        return crosswordModel.downClues.find((ac) => ac.number === cdc.number);
+      if (cdc.direction === 'down') {
+        return crosswordModel.downClues.find((dc) => dc.number === cdc.number);
       }
       return (
         crosswordModel.acrossClues.find((ac) => ac.number === cdc.number) ||
-        crosswordModel.downClues.find((ac) => ac.number === cdc.number)
+        crosswordModel.downClues.find((dc) => dc.number === cdc.number)
       );
     });
 
@@ -185,8 +234,8 @@ function compileCrossword(jsonCrossword) {
     //  eslint-disable-next-line no-param-reassign
     clue.answerLengthText = `(${[clue.answerLengthText]
       .concat(clue.connectedClues.map((cc) => cc.answerLengthText))
-      .join(",")
-      .replace(/[()]/g, "")})`;
+      .join(',')
+      .replace(/[()]/g, '')})`;
 
     //  Each clue should know its parent 'master clue' as well as the next and
     //  previous clue segments.
@@ -210,7 +259,7 @@ function compileCrossword(jsonCrossword) {
     //  eslint-disable-next-line no-param-reassign
     clue.clueLabel = `${[clue.number]
       .concat(clue.connectedClues.map((cc) => cc.number))
-      .join(",")}.`;
+      .join(',')}.`;
 
     //  The connected clues need no answer structure, an indicator they are
     //  connected clues and a back link to the master clue.
@@ -225,4 +274,4 @@ function compileCrossword(jsonCrossword) {
   return crosswordModel;
 }
 
-module.exports = compileCrossword;
+export { newCrosswordModel };

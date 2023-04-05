@@ -1,4 +1,4 @@
-const { setLetter, trace } = require("./helpers");
+import { setLetter, trace } from './helpers.mjs';
 
 /**
  * **toggleClueDirection** - toggle  the _clue_ direction (across/down).
@@ -12,7 +12,7 @@ function toggleClueDirection(crosswordController, eventCell) {
   const swappable = eventCell.acrossClue && eventCell.downClue;
   if (swappable) {
     // swap clue direction
-    trace("toggleClueDirection");
+    trace('toggleClueDirection');
     // eslint-disable-next-line no-param-reassign
     crosswordController.currentClue =
       eventCell.acrossClue === crosswordController.currentClue
@@ -36,7 +36,7 @@ function jumpToNextSegment(crosswordController, eventCell) {
   //  If we are at the end of the clue and we have a next segment, select it.
   const jumpable = nextIndex === clue.cells.length && clue.nextClueSegment;
   if (jumpable) {
-    trace("Focussing next answer segment cell index 0");
+    trace('Focussing next answer segment cell index 0');
     // eslint-disable-next-line no-param-reassign
     crosswordController.currentClue = clue.nextClueSegment;
   }
@@ -54,7 +54,7 @@ function jumpToPreviousSegment(crosswordController, eventCell) {
   //  If we are at the start of the clue and we have a previous segment, select it.
   const jumpable = previousIndex === -1 && clue.previousClueSegment;
   if (jumpable) {
-    trace("moveUp: Focussing prev answer segment last cell");
+    trace('moveUp: Focussing prev answer segment last cell');
     // eslint-disable-next-line no-param-reassign
     crosswordController.currentCell = last(clue.previousClueSegment.cells);
   }
@@ -146,18 +146,18 @@ function setCellContent(crosswordController, event, character) {
     eventCell.acrossClue.answer = setLetter(
       eventCell.acrossClue.answer,
       eventCell.acrossClueLetterIndex,
-      character,
+      character
     );
   } else {
     eventCell.downClue.answer = setLetter(
       eventCell.downClue.answer,
       eventCell.downClueLetterIndex,
-      character,
+      character
     );
   }
 }
 
-module.exports = {
+export {
   toggleClueDirection,
   moveDown,
   moveRight,

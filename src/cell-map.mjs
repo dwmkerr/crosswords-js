@@ -30,4 +30,4 @@ class CellMap {
   }
 }
 
-export default CellMap;
+export { CellMap };

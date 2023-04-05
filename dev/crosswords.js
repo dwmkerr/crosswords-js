@@ -1,15 +1,5 @@
-const compileCrossword = require("../src/crossword-model");
-const CrosswordController = require("../src/crossword-controller");
+import { newCrosswordModel as compileCrossword } from "../src/crossword-model.mjs";
+import { CrosswordController as Controller } from "../src/crossword-controller.mjs";
+import { assert, trace, tracing } from "../src/helpers.mjs";
 
-//  Define our public API.
-const CrosswordsJS = {
-  compileCrossword,
-  Controller: CrosswordController,
-};
-
-//  If we are in the browser, add the API to the global scope.
-if (typeof window !== "undefined") {
-  window.CrosswordsJS = CrosswordsJS;
-}
-
-module.exports = CrosswordsJS;
+export { assert, compileCrossword, Controller, trace, tracing };

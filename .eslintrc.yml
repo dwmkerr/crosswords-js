@@ -10,5 +10,8 @@ rules:
   # Sometimes I like a single 'return' statement in a full bloc, e.g. see the
   # tests, so relax the requirement to have single return statements
   arrow-body-style: 0
-  import/no-extraneous-dependencies: [error, { devDependencies: ['**/*.specs.js'] }]
+  # Ignore import of dev packages:
+  # 'chai' in test/spec files and others in webpack config
+  import/no-extraneous-dependencies:
+    [error, { devDependencies: ["**/*.specs.mjs","webpack.config.js"] }]
   no-process-exit: 0

@@ -1,5 +1,4 @@
-const { first, last } = require("./helpers");
-
+import { first, last, trace } from './helpers.mjs';
 // Parse the groups: /^numberGroup\.clueGroup\(answerGroup\)$/
 // const clueRegex = /^(\d+[ad]?[,\dad]*?)\.(\s*.*?\s*)\(([\d,-]+)\)$/;
 const clueRegex = /^(.*?)\.(.*)\((.*?)\)$/;
@@ -10,12 +9,12 @@ const clueGroupRegex = /^\s*(.*?)\s*$/;
 // Parse answerGroup into 1+ single-word or multi-word lengths
 const answerGroupRegex = /^(\d+)(([,-])(\d+.*))*$/;
 
-const cluePattern = "<NumberText>.<ClueText>(<AnswerText>)";
+const cluePattern = '<NumberText>.<ClueText>(<AnswerText>)';
 
 // Helper
 function directionFromClueLabel(clueLabel) {
-  if (/a$/.test(clueLabel)) return "across";
-  if (/d$/.test(clueLabel)) return "down";
+  if (/a$/.test(clueLabel)) return 'across';
+  if (/d$/.test(clueLabel)) return 'down';
   return null;
 }
 
@@ -33,8 +32,8 @@ function directionFromClueLabel(clueLabel) {
  */
 function newClueModel(jsonClue, isAcrossClue) {
   function validateClueStructure(jsonClue) {
-    const required = { x: 1, y: 1, clue: "1. Clue (1)" };
-    const optional = { answer: "", solution: "", revealed: "" };
+    const required = { x: 1, y: 1, clue: '1. Clue (1)' };
+    const optional = { answer: '', solution: '', revealed: '' };
     const requiredKeys = Object.keys(required);
     const optionalKeys = Object.keys(optional);
     const cdKeys = Object.keys(jsonClue);
@@ -51,7 +50,7 @@ function newClueModel(jsonClue, isAcrossClue) {
         throw new Error(
           `'jsonClue.${key} (${jsonClue[key]})' must be a ${typeof required[
             key
-          ]}`,
+          ]}`
         );
       }
     }
@@ -62,7 +61,7 @@ function newClueModel(jsonClue, isAcrossClue) {
         throw new Error(
           `'jsonClue.${key} (${jsonClue[key]})' must be a ${typeof optional[
             key
-          ]}`,
+          ]}`
         );
     }
 
@@ -78,7 +77,7 @@ function newClueModel(jsonClue, isAcrossClue) {
 
     if (difference.size > 0) {
       throw new Error(
-        `'jsonClue' has unexpected properties <${[...difference].join(",")}>`,
+        `'jsonClue' has unexpected properties <${[...difference].join(',')}>`
       );
     }
   }
@@ -97,7 +96,7 @@ function newClueModel(jsonClue, isAcrossClue) {
     throw new Error("'isAcrossClue' can't be null");
   }
 
-  if (typeof isAcrossClue != "boolean") {
+  if (typeof isAcrossClue != 'boolean') {
     throw new Error("'isAcrossClue' must be a boolean (true,false)");
   }
 
@@ -107,7 +106,7 @@ function newClueModel(jsonClue, isAcrossClue) {
   // Test if clue text matches expected pattern
   if (!clueRegex.test(jsonClue.clue)) {
     throw new Error(
-      `Clue '${jsonClue.clue}' does not match the required pattern '${cluePattern}'`,
+      `Clue '${jsonClue.clue}' does not match the required pattern '${cluePattern}'`
     );
   }
 
@@ -118,15 +117,11 @@ function newClueModel(jsonClue, isAcrossClue) {
   const isAcross = isAcrossClue;
   // Initialise array of crossword grid elements - populated as part of crossword DOM
   const cells = [];
-  // Initialise punter's answer for clue
-  const answer = jsonClue.answer
-    ? // Strip out everything from solution except spaces and alphabetical characters
-      jsonClue.answer.toUpperCase().replace(/[^ A-Z]/, "")
-    : undefined;
   // Initialise setter's solution for clue
   const solution = jsonClue.solution
     ? // Strip out everything from solution except spaces and alphabetical characters
-      jsonClue.solution.toUpperCase().replace(/[^A-Z]/, "")
+      // DO NOT substitute spaces
+      jsonClue.solution.toUpperCase().replaceAll(/[^A-Z]/g, '')
     : undefined;
   // Initialise revealed letters for clue
   const revealed = jsonClue.revealed
@@ -152,7 +147,7 @@ function newClueModel(jsonClue, isAcrossClue) {
 
   if (remainingText != undefined) {
     throw new Error(
-      `'${jsonClue.clue}' Error in <numberText> near <${remainingText}>`,
+      `'${jsonClue.clue}' Error in <numberText> near <${remainingText}>`
     );
   }
 
@@ -161,9 +156,9 @@ function newClueModel(jsonClue, isAcrossClue) {
   const clueLabel = number.toString();
   // Code is number followed by 'a' or 'd'...
   // Check last character of anchorSegment and append if required
-  const code = "ad".includes(last(anchorSegment))
+  const code = 'ad'.includes(last(anchorSegment))
     ? anchorSegment
-    : anchorSegment + (isAcrossClue ? "a" : "d");
+    : anchorSegment + (isAcrossClue ? 'a' : 'd');
 
   //  Trim off anchor segment
   let connectedSegments = clueLabelSegments.slice(1);
@@ -188,22 +183,36 @@ function newClueModel(jsonClue, isAcrossClue) {
       answerGroupRegex.exec(remainingText);
     answerSegments.push({
       length: parseInt(length, 10),
-      terminator: terminator ?? "",
+      terminator: terminator ?? '',
     });
     remainingText = residual;
   }
 
   if (remainingText != undefined) {
     throw new Error(
-      `'${jsonClue.clue}' Error in <answerText> near <${remainingText}>`,
+      `'${jsonClue.clue}' Error in <answerText> near <${remainingText}>`
     );
   }
 
   //  Calculate the total length of the answer.
   const answerLength = answerSegments.reduce(
     (current, as) => current + as.length,
-    0,
+    0
   );
+
+  // trace(`jsonClue.answer: <${jsonClue.answer}>`);
+  // Initialise punter's answer for clue
+  const answer = jsonClue.answer
+    ? jsonClue.answer
+        // convert to uppercase and pad out to answerLength with spaces
+        .toUpperCase()
+        // replace illegal characters with spaces
+        .replaceAll(/[^ A-Z]/g, ' ')
+        // pad out if required
+        .padEnd(answerLength)
+    : // pad out null or undefined answer with spaces
+      ''.padEnd(answerLength);
+  // trace(`newClueModel: answer:<${answer}> solution:<${solution}>`);
 
   //  Also create the answer segments as text.
   const answerLengthText = `(${answerGroup})`;
@@ -211,14 +220,14 @@ function newClueModel(jsonClue, isAcrossClue) {
   // Test if clue solution length matches answerLength
   if (solution && solution.length !== answerLength) {
     throw new Error(
-      `Length of clue solution '${solution}' does not match the answer length '${answerLengthText}'`,
+      `Length of clue solution '${solution}' does not match the answer length '${answerLengthText}'`
     );
   }
 
   // Test if clue revealed length matches answerLength
   if (revealed && revealed.length !== answerLength) {
     throw new Error(
-      `Length of clue revealed characters '${revealed}' does not match the answer length: ${answerLength}`,
+      `Length of clue revealed characters '${revealed}' does not match the answer length: ${answerLength}`
     );
   }
 
@@ -241,4 +250,4 @@ function newClueModel(jsonClue, isAcrossClue) {
   };
 }
 
-module.exports = { newClueModel, cluePattern };
+export { newClueModel, cluePattern };

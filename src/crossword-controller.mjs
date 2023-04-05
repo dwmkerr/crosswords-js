@@ -1,6 +1,12 @@
-const CellMap = require("./cell-map");
-const { addClass, assert, removeClass, trace, tracing } = require("./helpers");
-const {
+import { CellMap } from './cell-map.mjs';
+import {
+  addClass,
+  addClasses,
+  assert,
+  removeClass,
+  trace,
+} from './helpers.mjs';
+import {
   anchorSegmentClues,
   cleanCell,
   cleanClue,
@@ -12,18 +18,15 @@ const {
   testCell,
   testClue,
   updateCrosswordFontSize,
-} = require("./crossword-controller-helpers");
-const {
+} from './crossword-controller-helpers.mjs';
+import {
   moveDown,
   moveLeft,
   moveRight,
   moveUp,
   setCellContent,
   toggleClueDirection,
-} = require("./cell-element-helpers");
-
-// enable console logging
-tracing(true);
+} from './cell-element-helpers.mjs';
 
 // Keycode values
 const BACKSPACE = 8,
@@ -50,20 +53,22 @@ class CrosswordController {
   #current;
   #domParentElement;
   #onStateChanged;
+  #elementEventHandlers;
 
   constructor(crosswordModel, domParentElement) {
+    trace('CrosswordController constructor');
     this.#crosswordModel = crosswordModel;
     this.#cellMap = new CellMap();
     this.#domParentElement = domParentElement;
     this.#current = { clue: null, cell: null };
     //  Now build the DOM for the crossword.
-    this.#crosswordView = this.#document.createElement("div");
-    this.crosswordView.className = "crossword";
+    this.#crosswordView = this.#document.createElement('div');
+    addClass(this.#crosswordView, 'crossword');
 
     //  Create each cell.
     for (let y = 0; y < this.#crosswordModel.height; y += 1) {
-      const row = this.#document.createElement("div");
-      row.className = "cwrow";
+      const row = this.#document.createElement('div');
+      addClass(row, 'cwrow');
       this.crosswordView.appendChild(row);
 
       for (let x = 0; x < this.#crosswordModel.width; x += 1) {
@@ -78,12 +83,24 @@ class CrosswordController {
       }
     }
 
+    this.#elementEventHandlers = {
+      'reveal-cell': this.revealCurrentCell.bind(this),
+      'clean-clue': this.cleanCurrentClue.bind(this),
+      'reset-clue': this.resetCurrentClue.bind(this),
+      'reveal-clue': this.revealCurrentClue.bind(this),
+      'test-clue': this.testCurrentClue.bind(this),
+      'clean-crossword': this.cleanCrossword.bind(this),
+      'reset-crossword': this.resetCrossword.bind(this),
+      'reveal-crossword': this.revealCrossword.bind(this),
+      'test-crossword': this.testCrossword.bind(this),
+    };
+
     //  Focus the first clue when the page loads
-    this.#window.addEventListener("onload", this.#onPageLoaded);
+    this.#window.addEventListener('onload', this.#onPageLoaded);
     //  Add the crossword grid to the webpage DOM
     this.#domParentElement.appendChild(this.crosswordView);
     //  Update the font size when the window changes size
-    this.#window.addEventListener("resize", this.#onWindowResize);
+    this.#window.addEventListener('resize', this.#onWindowResize);
     //  Set the font size
     updateCrosswordFontSize(this.crosswordView);
   }
@@ -92,7 +109,7 @@ class CrosswordController {
     //  Clear the map, DOM and state change handler.
     this.#cellMap.removeCrosswordCells(this.#crosswordModel);
     this.#domParentElement.removeChild(this.crosswordView);
-    this.#window.removeEventListener("resize", this.#onWindowResize);
+    this.#window.removeEventListener('resize', this.#onWindowResize);
     this.onStateChanged = null;
   }
 
@@ -109,22 +126,32 @@ class CrosswordController {
   // Helper function to retrieve corresponding inputElement for cell
   inputElement = (cell) => {
     // The input element of a cellElement is the first child element.
-    // Refer to #createCellDOM()
+    // Refer to #newCellElement()
     return this.cellElement(cell).children[0];
   };
 
   // Helper function to retrieve corresponding revealedElement for cell
   revealedElement = (cell) => {
-    // The revealed element of a cellElement is the third child element.
-    // Refer to #createCellDOM()
-    return this.cellElement(cell).children[2];
+    // The revealed element of a cellElement is the second or third child element.
+    // Refer to #newCellElement()
+    const childIndex = cell.clueLabel ? 2 : 1;
+    return this.cellElement(cell).children[childIndex];
   };
   // Helper function to retrieve corresponding incorrectElement for cell
   incorrectElement = (cell) => {
-    // The incorrect element of a cellElement is the fourth child element.
-    // Refer to #createCellDOM()
-    return this.cellElement(cell).children[3];
+    // The incorrect element of a cellElement is the third or fourth child element.
+    // Refer to #newCellElement()
+    const childIndex = cell.clueLabel ? 3 : 2;
+    return this.cellElement(cell).children[childIndex];
   };
+
+  // Helper function to access API event handler functions
+  #elementEventHandler(id) {
+    trace(`elementEventHandler:${id}`);
+    // We dereference elementEventHandlers object like an array to get property 'id'
+    return this.#elementEventHandlers[id];
+  }
+  elementEventHandler = this.#elementEventHandler.bind(this);
 
   //  Helper function to allow the font to be resized programmatically,
   //  useful if something else changes the size of the crossword.
@@ -135,7 +162,7 @@ class CrosswordController {
     return this.#current.cell;
   }
   set currentCell(cell) {
-    trace(`set currentCell`);
+    trace(`set currentCell: (${cell.x},${cell.y})`);
     if (cell !== this.#current.cell) {
       this.#current.cell = cell;
       cell && cell.cellElement.children[0].focus();
@@ -155,7 +182,7 @@ class CrosswordController {
       this.#current.clue = clue;
       this.#activateClue(clue);
       this.currentCell = clue.cells[0];
-      this.#stateChange("clueSelected");
+      this.#stateChange('clueSelected');
     }
   }
 
@@ -175,78 +202,77 @@ class CrosswordController {
   //// API methods ////
 
   testCurrentClue() {
-    trace("testCurrentClue");
-    testClue(this.currentClue);
-    this.#stateChange("clueTested");
+    trace(`testCurrentClue:${this.currentClue.code}`);
+    testClue(this, this.currentClue);
+    this.#stateChange('clueTested');
   }
 
   testCrossword() {
-    trace("testCrossword");
+    trace('testCrossword');
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
         .forEach((cell) => {
-          testCell(cell);
+          testCell(this, cell);
         });
     });
-    this.#stateChange("crosswordTested");
+    this.#stateChange('crosswordTested');
   }
 
   revealCurrentCell() {
-    trace("revealCurrentCell");
-    revealCell(this.currentCell);
-    this.#stateChange("cellRevealed");
+    revealCell(this, this.currentCell);
+    this.#stateChange('cellRevealed');
   }
 
   revealCurrentClue() {
-    revealClue(this.currentClue);
-    this.#stateChange("clueRevealed");
+    revealClue(this, this.currentClue);
+    this.#stateChange('clueRevealed');
   }
 
   revealCrossword() {
-    trace("revealCrossword");
+    trace('revealCrossword');
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
         .forEach((cell) => {
-          revealCell(cell);
+          revealCell(this, cell);
         });
     });
-    this.#stateChange("crosswordRevealed");
+    this.#stateChange('crosswordRevealed');
   }
 
   resetCurrentClue() {
-    resetClue(this.currentClue);
-    this.#stateChange("clueReset");
+    resetClue(this, this.currentClue);
+    this.#stateChange('clueReset');
   }
 
   resetCrossword() {
-    trace("resetCrossword");
+    trace('resetCrossword');
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
         .forEach((cell) => {
-          resetCell(cell);
+          resetCell(this, cell);
         });
     });
-    this.#stateChange("crosswordReset");
+    this.#stateChange('crosswordReset');
   }
 
   cleanCurrentClue() {
-    cleanClue(this.currentClue);
-    this.#stateChange("clueCleaned");
+    cleanClue(this, this.currentClue);
+    this.#stateChange('clueCleaned');
   }
 
   cleanCrossword() {
-    trace("cleanCrossword");
+    trace('cleanCrossword');
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
         .forEach((cell) => {
-          cleanCell(cell);
+          cleanCell(this, cell);
         });
     });
-    this.#stateChange("crosswordCleaned");
+    this.#stateChange('crosswordCleaned');
   }
 
   //// Private methods ////
@@ -261,15 +287,15 @@ class CrosswordController {
   }
 
   #onWindowResize() {
-    trace("window.event:resize");
+    trace('window.event:resize');
     // We must retrieve the crosswordView by querying the global DOM object, "document".
     // https://developer.mozilla.org/en-US/docs/Web/API/Document
-    const crosswordView = document.querySelector(".crossword");
+    const crosswordView = document.querySelector('.crossword');
     updateCrosswordFontSize(crosswordView);
   }
 
   #onPageLoaded() {
-    trace("window.event:onload");
+    trace('window.event:onload');
     // Select the first "across" clue when the page loads
     this.currentClue = this.#crosswordModel.acrossClues[0];
   }
@@ -286,11 +312,11 @@ class CrosswordController {
       this.currentClue &&
       (this.currentClue === across || this.currentClue === down)
     ) {
-      context = "in CurrentClue";
+      context = 'in CurrentClue';
     } else if ((across && !down) || (!across && down)) {
       //  If we have an across clue XOR a down clue, pick the one we have.
       this.currentClue = across || down;
-      context = `${this.currentClue === across ? "across" : "down"} (xor)`;
+      context = `${this.currentClue === across ? 'across' : 'down'} (xor)`;
     } else if (
       across &&
       this.currentClue &&
@@ -300,7 +326,7 @@ class CrosswordController {
       //  We've got across. If we are moving between clue segments,
       //  prefer to choose the next/previous segment...
       this.currentClue = across;
-      context = "across (multi-segment)";
+      context = 'across (multi-segment)';
     } else if (
       down &&
       this.currentClue &&
@@ -310,7 +336,7 @@ class CrosswordController {
       //  We've got down. If we are moving between clue segments,
       //  prefer to choose the next/previous segment...
       this.currentClue = down;
-      context = "down (multi-segment)";
+      context = 'down (multi-segment)';
     } else {
       //  ...otherwise, Prefer across, unless we're on the first letter of a down clue only
       this.currentClue =
@@ -319,7 +345,7 @@ class CrosswordController {
           ? down
           : across;
       context = `${
-        this.currentClue === across ? "across" : "down"
+        this.currentClue === across ? 'across' : 'down'
       } (first letter of down only or default across)`;
     }
 
@@ -351,13 +377,13 @@ class CrosswordController {
    */
   #newCellElement(document, cell) {
     const controller = this;
-    const cellElement = document.createElement("div");
-    cellElement.className = "cwcell";
+    const cellElement = document.createElement('div');
+    addClass(cellElement, 'cwcell');
     //  eslint-disable-next-line no-param-reassign
     cell.cellElement = cellElement;
 
     //  Add a class.
-    cellElement.className += cell.light ? " light" : " dark";
+    addClass(cellElement, cell.light ? 'light' : 'dark');
 
     //  If the cell is dark, we are done.
     if (!cell.light) {
@@ -365,7 +391,7 @@ class CrosswordController {
     }
 
     //  Light cells also need an input.
-    const inputElement = document.createElement("input");
+    const inputElement = document.createElement('input');
     inputElement.maxLength = 1;
     if (cell.answer) {
       inputElement.value = cell.answer;
@@ -374,54 +400,54 @@ class CrosswordController {
 
     //  We may need to add a clue label.
     if (cell.clueLabel) {
-      const clueLabel = document.createElement("div");
-      clueLabel.className = "cwclue-label";
+      const clueLabel = document.createElement('div');
+      addClass(clueLabel, 'cwclue-label');
       clueLabel.innerHTML = cell.clueLabel;
       cellElement.appendChild(clueLabel);
     }
 
-    const revealedIndicator = document.createElement("div");
+    const revealedIndicator = document.createElement('div');
     // Remove 'hidden' div class to reveal
-    revealedIndicator.className = "cwcell-revealed hidden";
+    addClasses(revealedIndicator, ['cwcell-revealed', 'hidden']);
     cellElement.appendChild(revealedIndicator);
 
-    const incorrectIndicator = document.createElement("div");
+    const incorrectIndicator = document.createElement('div');
     // Toggle 'hidden' div class to reveal/hide
-    incorrectIndicator.className = "cwcell-incorrect hidden";
+    addClasses(incorrectIndicator, ['cwcell-incorrect', 'hidden']);
     cellElement.appendChild(incorrectIndicator);
 
     //  Check to see whether we need to add an across clue answer segment terminator.
-    if (cell.acrossTerminator === ",") {
-      inputElement.className += " cw-across-word-separator";
-    } else if (cell.acrossTerminator === "-") {
-      const acrossTerminator = document.createElement("div");
-      acrossTerminator.className = "cw-across-terminator";
-      acrossTerminator.innerHTML = "|";
+    if (cell.acrossTerminator === ',') {
+      addClass(inputElement, 'cw-across-word-separator');
+    } else if (cell.acrossTerminator === '-') {
+      const acrossTerminator = document.createElement('div');
+      addClass(acrossTerminator, 'cw-across-terminator');
+      acrossTerminator.innerHTML = '|';
       cellElement.appendChild(acrossTerminator);
-    } else if (cell.downTerminator === ",") {
-      inputElement.className += " cw-down-word-separator";
-    } else if (cell.downTerminator === "-") {
-      const acrossTerminator = document.createElement("div");
-      acrossTerminator.className = "cw-down-terminator";
-      acrossTerminator.innerHTML = "|";
+    } else if (cell.downTerminator === ',') {
+      addClass(inputElement, 'cw-down-word-separator');
+    } else if (cell.downTerminator === '-') {
+      const acrossTerminator = document.createElement('div');
+      addClass(acrossTerminator, 'cw-down-terminator');
+      acrossTerminator.innerHTML = '|';
       cellElement.appendChild(acrossTerminator);
     }
 
     //// Event handlers
 
     //  Listen for focus events.
-    inputElement.addEventListener("focus", (event) => {
-      trace("event:focus");
+    inputElement.addEventListener('focus', (event) => {
+      trace('event:focus');
       //  Get the cell data.
       const eventCell = controller.cell(event.target.parentNode);
       if (controller.#currentClueChanged(eventCell)) {
-        this.#stateChange("clueSelected");
+        this.#stateChange('clueSelected');
       }
     });
 
     //  Listen for click events.
-    inputElement.addEventListener("click", (event) => {
-      trace("event:click");
+    inputElement.addEventListener('click', (event) => {
+      trace('event:click');
       const eventCell = controller.cell(event.target.parentNode);
       // Test for second click on same cell
       if (eventCell === controller.currentCell) {
@@ -432,7 +458,7 @@ class CrosswordController {
     });
 
     //  Listen for keydown events.
-    cellElement.addEventListener("keydown", (event) => {
+    cellElement.addEventListener('keydown', (event) => {
       trace(`event:keydown keycode=${event.keyCode}`);
 
       //  Get the cell element and cell data.
@@ -444,7 +470,7 @@ class CrosswordController {
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
-        setCellContent(controller, event, " ");
+        setCellContent(controller, event, ' ');
         // remove any visual flag in cell that letter is incorrect
         hideElement(controller.incorrectElement(eventCell));
 
@@ -461,13 +487,13 @@ class CrosswordController {
           controller.currentCell = clue.cells[previousIndex];
         } else if (previousIndex === -1 && clue.previousClueSegment) {
           //  If we are at the start of the clue and we have a previous segment, select it.
-          trace("Focussing previous segment last cell");
+          trace('Focussing previous segment last cell');
           controller.currentCell = last(clue.previousClueSegment.cells);
         }
       } else if (event.keyCode === TAB) {
         //  We don't want default behaviour.
         event.preventDefault();
-        trace("TAB");
+        trace('TAB');
 
         // get anchor segment of multi-segment clue
         if (clue.parentClue) {
@@ -480,14 +506,14 @@ class CrosswordController {
           : anchorSegmentClues(model.downClues);
 
         trace(
-          `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
+          `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`
         );
 
         let newClue = null;
         const currentIndex = searchClues.indexOf(clue);
         assert(
           currentIndex !== -1,
-          `keydown(TAB): clue '${clue.code}' not found in searchClues`,
+          `keydown(TAB): clue '${clue.code}' not found in searchClues`
         );
 
         if (event.shiftKey) {
@@ -514,21 +540,21 @@ class CrosswordController {
       } else if (event.keyCode === ENTER) {
         //  We don't want default behaviour.
         event.preventDefault();
-        trace("ENTER");
+        trace('ENTER');
         toggleClueDirection(controller, eventCell);
       } else if (event.keyCode === DELETE) {
         //  We don't want default behaviour.
         event.preventDefault();
         // Fill cell with SPACE
-        setCellContent(controller, event, " ");
+        setCellContent(controller, event, ' ');
         // remove any visual flag in cell that letter is incorrect
         hideElement(controller.incorrectElement(eventCell));
       }
     });
 
     //  Listen for keypress events.
-    cellElement.addEventListener("keypress", (event) => {
-      trace("event:keypress");
+    cellElement.addEventListener('keypress', (event) => {
+      trace('event:keypress');
       // We've just pressed a key that generates a character.
       // Stop default handling for input component
       event.preventDefault();
@@ -551,7 +577,7 @@ class CrosswordController {
 
       if (advancingKeyPressCharacters.test(character)) {
         //  Move to the next cell in the clue.
-        trace("Advancing to next cell");
+        trace('Advancing to next cell');
         const currentIndex =
           eventCell.acrossClue === clue
             ? eventCell.acrossClueLetterIndex
@@ -565,15 +591,15 @@ class CrosswordController {
           controller.currentCell = clue.cells[nextIndex];
         } else if (clue.nextClueSegment) {
           //  We are at the end of the clue segment and there is a next segment.
-          trace("Focussing next answer segment cell index 0");
+          trace('Focussing next answer segment cell index 0');
           controller.currentClue = clue.nextClueSegment;
         }
       }
     });
 
     //  Listen for keyup events.
-    cellElement.addEventListener("keyup", (event) => {
-      trace("event:keyup");
+    cellElement.addEventListener('keyup', (event) => {
+      trace('event:keyup');
       const eventCell = controller.cell(event.target.parentNode);
 
       switch (event.keyCode) {
@@ -606,7 +632,7 @@ class CrosswordController {
       : [clue];
     clues.forEach((c) => {
       c.cells.forEach((cell) => {
-        addClass(this.inputElement(cell), "active");
+        addClass(this.inputElement(cell), 'active');
       });
     });
   }
@@ -619,10 +645,10 @@ class CrosswordController {
       : [clue];
     clues.forEach((c) => {
       c.cells.forEach((cell) => {
-        removeClass(this.inputElement(cell), "active");
+        removeClass(this.inputElement(cell), 'active');
       });
     });
   }
 }
 
-module.exports = CrosswordController;
+export { CrosswordController };

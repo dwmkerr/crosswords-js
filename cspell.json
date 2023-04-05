@@ -37,6 +37,7 @@
     "quiptic",
     "relfile",
     "relpath",
-    "swappable"
+    "swappable",
+    "woctopus"
   ]
 }

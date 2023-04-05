@@ -1,8 +1,13 @@
 import { expect } from 'chai';
-import { compileCrossword } from './index.mjs';
+import CrosswordsJS from './index.mjs';
+// import { compileCrossword } from './index.mjs';
 
-describe('index', () => {
+describe('index.js', () => {
   it('should export a compileCrossword function', () => {
-    expect(compileCrossword).to.be.a('Function');
+    expect(CrosswordsJS.compileCrossword).to.be.a('Function');
+    // expect(compileCrossword).to.be.a('Function');
+  });
+  it('should export a controller object', () => {
+    expect(Controller).to.be.a('Function');
   });
 });

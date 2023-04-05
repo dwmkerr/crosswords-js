@@ -1,15 +1,15 @@
 .crossword {
-  --cell-border: #000000;
-  --cell-dark-background: #000000;
-  --cell-light-background: #ffffff;
+  @cell-border: #000000;
+  @cell-dark-background: #000000;
+  @cell-light-background: #ffffff;
 
-  --clue-active-background: #b0b0b0;
-  --cell-active-background: #f7f469;
+  @clue-active-background: #b0b0b0;
+  @cell-active-background: #f7f469;
 
-  --cell-revealed: green;
-  --cell-incorrect: red;
+  @cell-revealed: green;
+  @cell-incorrect: red;
 
-  --word-separator: var(--cell-border);
+  @word-separator: @cell-border;
 
   display: inline-block;
 
@@ -23,20 +23,20 @@
       // All cells are the same size.
       flex: 1;
 
-      border-top: 1px solid var(--cell-border);
-      border-left: 1px solid var(--cell-border);
+      border-top: 1px solid @cell-border;
+      border-left: 1px solid @cell-border;
 
       &.light {
-        background: var(--cell-light-background);
+        background: @cell-light-background;
 
         input:focus {
           caret-color: transparent;
-          background: var(--cell-active-background);
+          background: @cell-active-background;
         }
       }
 
       &.dark {
-        background: var(--cell-dark-background);
+        background: @cell-dark-background;
       }
 
       .cwclue-label {
@@ -66,7 +66,7 @@
         bottom: 0;
         right: 0;
         border-left: 0.5em solid transparent;
-        border-bottom: 0.5em solid var(--cell-revealed);
+        border-bottom: 0.5em solid @cell-revealed;
       }
 
       // diagonal stripe bottom-left to top-right
@@ -77,11 +77,12 @@
         z-index: 1;
         width: 100%;
         height: 100%;
+        bottom: 0;
         background-image: linear-gradient(
           135deg,
           transparent 45%,
-          var(--cell-incorrect) 47%,
-          var(--cell-incorrect) 53%,
+          @cell-incorrect 47%,
+          @cell-incorrect 53%,
           transparent 53%
         );
         background-repeat: no-repeat;
@@ -123,35 +124,35 @@
         width: 100%;
 
         &.active {
-          background: var(--clue-active-background);
+          background: @clue-active-background;
         }
       }
     }
 
     //  This CSS hack ensures our variable-width cells have the same height
     //  as their width - i.e. they stay square!
-    .cwcell:after {
-      content: '';
-      float: left;
-      display: block;
-      padding-top: 100%;
-    }
+    // .cwcell:after {
+    //   content: '';
+    //   float: left;
+    //   display: block;
+    //   padding-top: 100%;
+    // }
 
     .cwcell:last-child {
-      border-right: 1px solid var(--cell-border);
+      border-right: 1px solid @cell-border;
     }
 
     .cw-across-word-separator {
-      box-shadow: inset -2px 0px 0px 0px var(--word-separator);
+      box-shadow: inset -2px 0px 0px 0px @word-separator;
     }
 
     .cw-down-word-separator {
-      box-shadow: inset 0px -2px 0px 0px var(--word-separator);
+      box-shadow: inset 0px -2px 0px 0px @word-separator;
     }
 
     &:last-child {
       .cwcell {
-        border-bottom: 1px solid var(--cell-border);
+        border-bottom: 1px solid @cell-border;
       }
     }
   }

@@ -15,7 +15,7 @@
       "y": 1,
       "clue": "1. Married woman shows animosity (6)",
       "solution": "MALICE",
-      "answer": "MALICE"
+      "answer": "wotcha"
     },
     {
       "x": 8,
@@ -114,7 +114,8 @@
       "x": 1,
       "y": 1,
       "clue": "1. Ordered risotto after introduction to Minnie Driver (8)",
-      "solution": "MOTORIST"
+      "solution": "MOTORIST",
+      "answer": "woctopus"
     },
     {
       "x": 3,
@@ -202,7 +203,7 @@
     },
     {
       "x": 11,
-      "y": 11,
+      "y": 12,
       "clue": "27.  A drop in rent (4)",
       "solution": "TEAR"
     }

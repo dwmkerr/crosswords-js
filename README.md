@@ -241,6 +241,14 @@ EOF
 chmod u+x .git/hooks/pre-commit
 ```
 
+Please install our git commit template. This enables project commit guidelines to be prefixed to the standard git commit message.
+
+From the root directory of your repository:
+
+```bash
+git config --local commit.template ./.git-commit-template.txt
+```
+
 ## Keyboard Functionality
 
 - Left/Right/Up/Down: Move (if possible) to the cell in the direction specified.

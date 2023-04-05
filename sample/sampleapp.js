@@ -53,19 +53,19 @@ sampleapp.controller("MainController", function ($scope, $http) {
   };
 
   $scope.revealCell = function () {
-    $scope.cwController.revealCell;
+    $scope.cwController.revealCurrentCell;
   };
 
   $scope.checkClue = function () {
-    $scope.cwController.checkClue;
+    $scope.cwController.checkCurrentClue;
   };
 
   $scope.revealClue = function () {
-    $scope.cwController.revealClue;
+    $scope.cwController.revealCurrentClue;
   };
 
   $scope.clearClue = function () {
-    $scope.cwController.clearClue;
+    $scope.cwController.clearCurrentClue;
   };
 
   $scope.checkCrossword = function () {

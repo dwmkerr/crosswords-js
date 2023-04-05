@@ -3,6 +3,7 @@
   "version": "0.1.11",
   "description": "Tiny, lightweight crosswords for HTML5/JS/CSS.",
   "main": "src/index.js",
+  "type": "module",
   "devDependencies": {
     "chai": "^4.3.7",
     "connect-livereload": "^0.6.1",
@@ -11,36 +12,39 @@
     "eslint": "^8.33.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
     "esm": "^3.2.25",
     "ignore-styles": "^5.0.1",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
     "mini-css-extract-plugin": "^2.7.2",
     "mocha": "^10.2.0",
-    "nodemon": "^2.0.22",
     "nyc": "^15.1.0",
     "open": "^8.4.0",
     "standard-version": "^9.5.0",
     "style-loader": "^3.3.1",
+    "vite": "^4.2.1",
     "webpack": "^5.76.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "lint": "eslint *.js src/**/*.js sample/*.js dev/*.js",
-    "lint:fix": "eslint --fix *.js src/**/*.js sample*/*.js dev/*.js",
-    "prettier": "prettier --check *.{html,js,json,less,md} docs/*.{html,js,json,less,md} src/**/*.{html,js,json,less,md} sample/*.{html,js,json,less,md} dev/*.{html,js,json,less,md}",
-    "prettier:fix": "prettier --write *.{html,js,json,less,md} docs/*.{html,js,json,less,md} src/**/*.{html,js,json,less,md} sample/*.{html,js,json,less,md} dev/*.{html,js,json,less,md}",
+    "lint": "eslint *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample/*.{js,mjs}",
+    "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
+    "prettier": "prettier --check *.{html,js,json,less,md,mjs} docs/*.{html,js,json,less,md,mjs} sample/*.{html,js,json,less,md,mjs}",
+    "prettier:fix": "prettier --write *.{html,js,json,less,md,mjs} docs/*.{html,js,json,less,md,mjs} src/**/*.{html,js,json,less,md,mjs} {dev,test}/*.{html,js,json,less,md,mjs} sample/*.{html,js,json,less,md,mjs}",
     "release": "standard-version",
     "spell": "git diff --staged --diff-filter=AM --name-only | npx cspell --file-list stdin",
     "spell:changed": "git diff --diff-filter=AMU --name-only | npx cspell --file-list stdin",
-    "spell:all": "cspell *.{html,js,less,md} docs/**/*.{html,js,json,less,md} src/**/*.{html,js,json,less,md} sample/*.{html,js,json,less,md} dev/*.{html,js,json,less,md}",
+    "spell:all": "cspell *.{html,js,less,md,mjs} docs/**/*.{html,js,json,less,md,mjs} src/**/*.{html,js,json,less,md,mjs} {dev,test}/*.{html,js,json,less,md,mjs} sample/*.{html,js,json,less,md,mjs}",
     "start": "webpack-dev-server",
     "start:angular": "webpack-dev-server",
-    "dev": "nodemon dev/server.js",
-    "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
-    "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
-    "test:debug": "mocha --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.js"
+    "dev": "vite serve dev",
+    "dev:preview": "vite preview dev",
+    "dev:build": "vite build dev",
+    "test": "mocha",
+    "test:cov": "nyc mocha",
+    "test:debug": "mocha --inspect-brk -w"
   },
   "keywords": [
     "crossword"
@@ -62,10 +66,10 @@
   "nyc": {
     "all": true,
     "include": [
-      "src/**/*.js"
+      "src/**/*.{js,mjs}"
     ],
     "exclude": [
-      "src/**/*.specs.js"
+      "src/**/*.specs.{js,mjs}"
     ],
     "reporter": [
       "text",
