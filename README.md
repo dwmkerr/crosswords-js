@@ -135,29 +135,32 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 
    - For the **currently selected clue** in the crossword grid
 
-     ```js
-     // Check the answer against the solution.
-     controller.testCurrentClue();
-     // Remove incorrect letters in the answer after testing.
-     controller.cleanCurrentClue();
-     // Reveal the current letter from the solution.
-     controller.revealCurrentCell();
-     // Reveal the solution.
-     controller.revealCurrentClue();
-     // Clear out the answer.
-     controller.resetCurrentClue();
-     ```
+```js
+// Check the current clue answer against the solution.
+controller.testCurrentClue();
+// Remove incorrect letters in the answer for the current clue
+// after testing.
+controller.cleanCurrentClue();
+// Reveal solution for current letter in answer.
+// All revealed cells have distinct styling which remains for the
+// duration of the puzzle. Public shaming is strictly enforced!
+controller.revealCurrentCell();
+// Reveal the solution for the current clue.
+controller.revealCurrentClue();
+// Clear out the answer for the current clue.
+controller.resetCurrentClue();
+```
 
-   - For the **whole crossword grid**...
+     - For the **whole crossword grid**...
 
      ```js
      // Check all the answers against the solutions.
      controller.testCrossword();
-     // Remove incorrect letters after testing.
+     // Clear incorrect letters for the entire crossword after testing.
      controller.cleanCrossword();
-     // Reveal all the solutions.
+     // Reveal the solutions for the entire crossword.
      controller.revealCrossword();
-     // Clear out all the answers.
+     // Clear out the entire crossword.
      controller.resetCrossword();
      ```
 
@@ -274,7 +277,7 @@ This is a little fiddly. I have tried to ensure the syntax is as close to what a
   }],
   "acrossClues": [{
     "x": 1, "y": 11,
-    "clue": "21 See 4 (3,5)"
+    "clue": "21. See 4 (3,5)"
   }]
 }
 ```
@@ -294,6 +297,85 @@ This project is currently a work in progress. The overall design goals are:
 1. This should be _agnostic_ to the type of crossword. It shouldn't depend on any proprietary formats or structures used by specific publications.
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
+
+## Build Pipelines
+
+There are two pipelines that run for the project:
+
+### Pull Request Pipeline
+
+Whenever a pull request is raised, the [Pull Request Workflow][12] is run. This will:
+
+- Install dependencies
+- Lint
+- Run Tests
+- Upload Coverage
+
+Each stage is run on all recent Node versions, except for the **upload coverage** stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please][13] will open a Release Pull Request. When this request is merged, the [Release Pipeline][14] is run.
+
+### Release Pipeline
+
+When a [Release Please][15] pull request is merged to main, the [Release Please Workflow][16] is run. This will:
+
+- Install dependencies
+- Lint
+- Run Tests
+- Upload Coverage
+- Deploy to NPM if the `NPM_TOKEN` secret is set
+
+Each stage is run on all recent Node versions, except for the **upload coverage** stage which only runs for the Node.js LTS version.
+
+> ⚠️ Note that the NPM Publish step sets the package to public - don't forget to change this if you have a private module.
+
+## Adding Contributors
+
+To add contributors, use a comment like the below in any pull request:
+
+```
+@all-contributors please add @<username> for docs, code, tests
+```
+
+More detailed documentation is available at:
+
+[allcontributors.org/docs/en/bot/usage][17]
+
+## Managing Releases
+
+When changes to `main` are made, the **Release Please** stage of the pipeline will work out whether a new release should be generated (by checking if there are user facing changes) and also what the new version number should be (by checking the log of conventional commits). Once this is done, if a release is required, a new pull request is opened that will create the release.
+
+Force a specific release version with this command:
+
+```bash
+# Specify your version. We use Semantic Versioning.
+version="0.1.0"
+git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${version}"
+```
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.dwmkerr.com"><img src="https://avatars.githubusercontent.com/u/1926984?v=4?s=100" width="100px;" alt="Dave Kerr"/><br /><sub><b>Dave Kerr</b></sub></a><br /><a href="https://github.com/dwmkerr/crosswords-js/commits?author=dwmkerr" title="Documentation">📖</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=dwmkerr" title="Code">💻</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=dwmkerr" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pvspain"><img src="https://avatars.githubusercontent.com/u/716363?v=4?s=100" width="100px;" alt="Paul Spain"/><br /><sub><b>Paul Spain</b></sub></a><br /><a href="https://github.com/dwmkerr/crosswords-js/commits?author=pvspain" title="Documentation">📖</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=pvspain" title="Code">💻</a> <a href="https://github.com/dwmkerr/crosswords-js/commits?author=pvspain" title="Tests">⚠️</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## TODO
 

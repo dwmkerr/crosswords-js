@@ -44,7 +44,8 @@
     "dev:build": "vite build dev",
     "test": "mocha",
     "test:cov": "nyc mocha",
-    "test:debug": "mocha --inspect-brk -w"
+    "test:debug": "mocha --inspect-brk -w",
+    "cssgrid": "vite serve test"
   },
   "keywords": [
     "crossword"

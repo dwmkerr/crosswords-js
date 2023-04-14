@@ -1,0 +1,185 @@
+.crossword {
+  // visibility: hidden;
+
+  @dark-color: black;
+  @light-color: white;
+  @incorrect-color: red;
+  @revealed-color: green;
+  @focus-outline-color: red;
+
+  @grid-background-color: @dark-color;
+  @grid-line-color: @dark-color;
+  @text-color: @dark-color;
+
+  @cell-background-dark-color: @dark-color;
+  @cell-background-light-color: @light-color;
+  @cell-background-highlighted-color: #f7f469;
+  @cell-incorrect-color: @incorrect-color;
+  @cell-revealed-color: @revealed-color;
+
+  @clue-background-active-color: #b0b0b0;
+
+  @word-separator-color: @grid-line-color;
+
+  // @row-count: @import url();
+  // @column-count: @import url();
+  @row-count: 15;
+  @column-count: 15;
+
+  @grid-line-size: 2px;
+  @grid-cell-size: 1.3em;
+  @letter-size: 1.14em;
+  @label-size: 0.3em;
+  @revealed-size: 0.5 * @letter-size;
+  @letter-weight: bold;
+
+  display: grid;
+  grid-template-rows: repeat(@row-count, @grid-cell-size);
+  grid-template-columns: repeat(@column-count, @grid-cell-size);
+  gap: @grid-line-size;
+  padding: @grid-line-size;
+  // border: @grid-line-size;
+  // border-color: @grid-line-color;
+  width: min-content;
+  justify-items: center;
+  align-items: center;
+
+  background-color: @grid-background-color;
+  font-family: sans-serif;
+  font-size: large;
+
+
+  .cwcell {
+    // visibility: hidden;
+    aspect-ratio: 1;
+    z-index: 0;
+    display: grid;
+    justify-self: center;
+    align-self: center;
+    justify-items: start;
+    align-items: start;
+
+    &.dark {
+      background-color: @cell-background-dark-color;
+    }
+
+    &.light {
+      background-color: @cell-background-light-color;
+    }
+  }
+
+  input {
+    // visibility: hidden;
+    font-size: @letter-size;
+    color: @text-color;
+    font-weight: @letter-weight;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    border: none;
+    height: 100%;
+    width: 100%;
+    background-color: @cell-background-light-color;
+
+    &.active {
+      background-color: @clue-background-active-color;
+    }
+
+    &.highlighted {
+      background-color: @cell-background-highlighted-color;
+    }
+  }
+
+  input:focus {
+    outline-width: medium;
+    outline-color: @focus-outline-color;
+    outline-style: dotted;
+    outline-offset: -2px;
+    caret-color: transparent;
+  }
+
+  .cwclue-label {
+    // visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    font-size: @label-size;
+    color: @text-color;
+  }
+
+  // 0.5em right-triangle in bottom right corner
+  .cwcell-revealed {
+    visibility: hidden;
+    position: absolute;
+    // click events must pass through to input element
+    pointer-events: none;
+    z-index: 1;
+    width: 0;
+    height: 0;
+    bottom: 0;
+    right: 0;
+    border-left: @revealed-size solid transparent;
+    border-bottom: @revealed-size solid @cell-revealed-color;
+  }
+
+  // diagonal stripe bottom-left to top-right
+  .cwcell-incorrect {
+    visibility: hidden;
+    // click events need to pass through to input element
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    background-image: linear-gradient(
+      135deg,
+      transparent 45%,
+      @cell-incorrect-color 47%,
+      @cell-incorrect-color 53%,
+      transparent 53%
+    );
+    background-repeat: no-repeat;
+    /* To avoid multiple instances */
+  }
+
+  .cw-across-terminator {
+    visibility: hidden;
+    position: absolute;
+    font-size: 19px;
+    font-weight: 'bold';
+    width: 10px;
+    height: 10px;
+    right: -6px;
+    top: 0px;
+    z-index: 1;
+  }
+
+  .cw-down-terminator {
+    visibility: hidden;
+    position: absolute;
+    transform-origin: top left;
+    transform: rotate(-90deg);
+    font-size: 19px;
+    font-weight: 'bold';
+    width: 10px;
+    height: 10px;
+    bottom: -14px;
+    z-index: 1;
+  }
+
+  .cw-across-word-separator {
+    visibility: hidden;
+    box-shadow: inset -2px 0px 0px 0px @word-separator-color;
+  }
+
+  .cw-down-word-separator {
+    visibility: hidden;
+    box-shadow: inset 0px -2px 0px 0px @word-separator-color;
+  }
+
+  .hidden {
+    visibility: hidden;
+    opacity: 0;
+    // transition: visibility 0s linear 300ms, opacity 300ms;
+  }
+}

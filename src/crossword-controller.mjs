@@ -67,16 +67,17 @@ class CrosswordController {
 
     //  Create each cell.
     for (let y = 0; y < this.#crosswordModel.height; y += 1) {
-      const row = this.#document.createElement('div');
-      addClass(row, 'cwrow');
-      this.crosswordView.appendChild(row);
+      // const row = this.#document.createElement('div');
+      // addClass(row, 'cwrow');
+      // this.crosswordView.appendChild(row);
 
       for (let x = 0; x < this.#crosswordModel.width; x += 1) {
         const cell = this.#crosswordModel.cells[x][y];
 
+        // const row = this.#document.createElement('div');
         //  Build the cell element and add it to the row.
         const cellElement = this.#newCellElement(this.#document, cell);
-        row.appendChild(cellElement);
+        this.#crosswordView.appendChild(cellElement);
 
         //  Update the map of cells
         this.#cellMap.add(cell, cellElement);
@@ -164,8 +165,12 @@ class CrosswordController {
   set currentCell(cell) {
     trace(`set currentCell: (${cell.x},${cell.y})`);
     if (cell !== this.#current.cell) {
+      if (this.#current.cell) {
+        this.#deHighlightCell(this.#current.cell);
+      }
       this.#current.cell = cell;
       cell && cell.cellElement.children[0].focus();
+      this.#highlightCell(cell);
     }
   }
 
@@ -181,7 +186,11 @@ class CrosswordController {
       trace(`set currentClue: '${clue.code}'`);
       this.#current.clue = clue;
       this.#activateClue(clue);
-      this.currentCell = clue.cells[0];
+      // check if new current clue includes current cell
+      if (!this.currentClue.cells.includes(this.currentCell)) {
+        // switch to first cell of new current clue
+        this.currentCell = this.currentClue.cells[0];
+      }
       this.#stateChange('clueSelected');
     }
   }
@@ -376,6 +385,7 @@ class CrosswordController {
    * @returns the DOM element for the _cell_
    */
   #newCellElement(document, cell) {
+    trace(`newCellElement(${cell.x},${cell.y})`);
     const controller = this;
     const cellElement = document.createElement('div');
     addClass(cellElement, 'cwcell');
@@ -452,9 +462,8 @@ class CrosswordController {
       // Test for second click on same cell
       if (eventCell === controller.currentCell) {
         toggleClueDirection(controller, eventCell);
-      } else {
-        controller.currentCell = eventCell;
       }
+      controller.currentCell = eventCell;
     });
 
     //  Listen for keydown events.
@@ -648,6 +657,18 @@ class CrosswordController {
         removeClass(this.inputElement(cell), 'active');
       });
     });
+  }
+
+  #highlightCell(cell) {
+    assert(cell, '#highLightCell: cell is undefined');
+    trace('#highlightCell');
+    addClass(this.inputElement(cell), 'highlighted');
+  }
+
+  #deHighlightCell(cell) {
+    trace('#deHighlightCell');
+    assert(cell, '#deHighLightCell: cell is undefined');
+    removeClass(this.inputElement(cell), 'highlighted');
   }
 }
 

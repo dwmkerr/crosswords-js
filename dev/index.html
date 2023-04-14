@@ -2,97 +2,11 @@
 <html lang="en">
   <head>
     <title>CrosswordJS Developer Sandbox</title>
-
-    <!-- IE -->
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <!-- other browsers -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <!-- PT Serif webfont. -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=PT+Serif:400,700i&display=swap"
-    />
-    <!-- Local styles -->
-    <!-- <script type="module" src="crosswords.js"></script> -->
+    <!-- Application entry point -->
     <script type="module" src="index.js"></script>
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
 
   <body>
-    <div class="container">
-      <h1>Crosswords.js</h1>
-      <p>Simple, fast, framework-free crosswords for the web.</p>
-      <p>
-        Find out more on
-        <a href="https://github.com/dwmkerr/crosswords-js"
-          >github.com/dwmkerr/crosswords-js</a
-        >
-      </p>
-      <hr />
-      <h3>
-        {{info.title}} <small><em>Set by {{info.setter.title}}</em></small>
-      </h3>
-      <h4></h4>
-      <p class="small">
-        Original source: <a href="{{info.source}}">{{info.source}}</a>.
-      </p>
-      <hr />
-      <div id="cell-buttons">
-        <button id="reveal-cell">Reveal Cell</button>
-      </div>
-      <div id="clue-buttons">
-        <button id="test-clue">Test Clue</button>
-        <button id="clean-clue">Clean Clue</button>
-        <button id="reveal-clue">Reveal Clue</button>
-        <button id="reset-clue">Reset Clue</button>
-      </div>
-      <div id="grid-buttons">
-        <button id="test-crossword">Test Crossword</button>
-        <button id="clean-crossword">Clean Crossword</button>
-        <button id="reveal-crossword">Reveal Crossword</button>
-        <button id="reset-crossword">Reset Crossword</button>
-      </div>
-      <hr />
-      <p ng-if="currentClue">
-        {{currentClue.clueLabel}} {{currentClue.clueText}}
-        {{currentClue.answerStructureText}}
-      </p>
-      <div id="crossword1"></div>
-      <table>
-        <tr>
-          <td>
-            <p><strong>Across</strong></p>
-            <div
-              ng-repeat="clue in acrossClues"
-              ng-click="selectClue(clue)"
-              ng-class="{selectedClue: isHighlightedClue(clue)}"
-            >
-              <p>
-                {{clue.clueLabel}} {{clue.clueText}}
-                {{clue.answerStructureText}}
-              </p>
-            </div>
-          </td>
-          <td>
-            <p><strong>Down</strong></p>
-            <div
-              ng-repeat="clue in downClues"
-              ng-click="selectClue(clue)"
-              ng-class="{selectedClue: isHighlightedClue(clue)}"
-            >
-              <p>
-                {{clue.clueLabel}} {{clue.clueText}}
-                {{clue.answerStructureText}}
-              </p>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
+    <div id="crossword-grid"></div>
   </body>
 </html>

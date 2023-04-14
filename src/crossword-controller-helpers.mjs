@@ -13,7 +13,7 @@ const updateCrosswordFontSize = (crosswordView) => {
   //  Get the width of a cell (first child of first row).
   const cellWidth = crosswordView.children[0].children[0].clientWidth;
   //  eslint-disable-next-line no-param-reassign
-  crosswordView.style.fontSize = `${cellWidth * 0.6}px`;
+  // crosswordView.style.fontSize = `${cellWidth * 0.6}px`;
 };
 
 const hideElement = (element) => {

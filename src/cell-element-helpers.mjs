@@ -18,9 +18,6 @@ function toggleClueDirection(crosswordController, eventCell) {
       eventCell.acrossClue === crosswordController.currentClue
         ? eventCell.downClue
         : eventCell.acrossClue;
-    // Re-focus eventCell - we haven't moved
-    // eslint-disable-next-line no-param-reassign
-    crosswordController.currentCell = eventCell;
   }
   return swappable;
 }

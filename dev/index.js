@@ -8,8 +8,11 @@ import {
 
 // import { assert, trace, tracing } from "../src/helpers.mjs";
 
+// Eric Meyer's browser reset styles
+import "../style/reset.css";
+
 // ViteJS will compile to CSS
-import "../src/crosswords.less";
+import "../style/crosswords.less";
 
 // hack: this should be done after DOM loaded in window
 import crosswordJSON from "./crosswords/ftimes_17095.json";
@@ -23,37 +26,69 @@ assert(window != null && document != null, "Not in browser!");
 // Execute once DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
   trace("DOM loaded");
-  const model = compileCrossword(crosswordJSON);
-  const parent = document.getElementById("crossword1");
-  const controller = new Controller(model, parent);
+  // Compile a crossword
+  const crosswordModel = compileCrossword(crosswordJSON);
+  // Locate the parent element for the crossword-grid
+  const crosswordGridParent = document.getElementById("crossword-grid");
+  // Create the Controller and load the crossword grid into the web page.
+  const controller = new Controller(crosswordModel, crosswordGridParent);
 
+  // Helper function to bind Controller event listener function to webpage
+  // DOM elementId.
   const addControllerListener = (eventName, elementId) => {
-    document
-      .getElementById(elementId)
-      .addEventListener(eventName, controller.elementEventHandler(elementId));
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.addEventListener(
+        eventName,
+        controller.elementEventHandler(elementId),
+      );
+    }
   };
 
+  // Helper function to add logging of event handler.
   const addLogListener = (eventName, elementId) => {
-    document.getElementById(elementId).addEventListener(eventName, (event) => {
-      trace(`${elementId}:${eventName}`);
-    });
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.addEventListener(eventName, (event) => {
+        trace(`${elementId}:${eventName}`);
+      });
+    }
   };
 
-  // The elementIds provide the linkage between the HTML and the controller API
-  // The elementIds are originally defined in the CrosswordController class
-  // Give the ids to the elements where the associated behaviour is expected.
+  // The DOM elementIds provide the linkage between the HTML and the Controller
+  // event listeners. The elementIds are originally defined in the
+  // CrosswordController class. Assign the ids to the DOM element events
+  // (e.g. button click events in this example) where the associated behaviour
+  // is expected.
+
+  // All available event handers
   const apiElementIds = [
+    // Reveal solution for current letter in answer. All revealed cells have
+    // distinct styling which remains for the duration of the puzzle.
+    // Public shaming is strictly enforced!
     "reveal-cell",
+    // Remove incorrect letters in the answer after testing.
     "clean-clue",
+    // Clear out the answer for the current clue
     "reset-clue",
+    // Reveal solution for current clue
     "reveal-clue",
+    // Test the current clue answer against the solution. Incorrect letters
+    // have distinct styling which is removed when 'cleared' or a new letter
+    // entered in the cell.
     "test-clue",
+    // Clear out all incorrect letters in the entire crossword
     "clean-crossword",
+    // Clear out the entire crossword
     "reset-crossword",
+    // Reveal solutions for the entire crossword.
     "reveal-crossword",
+    // Test the answers for the entire against the solutions
     "test-crossword",
   ];
 
+  // Bind all the Controller event listeners to the click event of the element
+  // (ids) in the apiElementIds array above.
   apiElementIds.forEach((id) => {
     addLogListener("click", id);
     addControllerListener("click", id);
