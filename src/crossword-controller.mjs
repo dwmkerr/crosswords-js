@@ -17,7 +17,6 @@ import {
   revealClue,
   testCell,
   testClue,
-  updateCrosswordFontSize,
 } from './crossword-controller-helpers.mjs';
 import {
   moveDown,
@@ -57,6 +56,14 @@ class CrosswordController {
 
   constructor(crosswordModel, domParentElement) {
     trace('CrosswordController constructor');
+    assert(
+      crosswordModel,
+      'CrosswordController: crosswordModel is null or undefined'
+    );
+    assert(
+      domParentElement,
+      'CrosswordController: domParentElement is null or undefined'
+    );
     this.#crosswordModel = crosswordModel;
     this.#cellMap = new CellMap();
     this.#domParentElement = domParentElement;
@@ -96,21 +103,17 @@ class CrosswordController {
       'test-crossword': this.testCrossword.bind(this),
     };
 
-    //  Focus the first clue when the page loads
-    this.#window.addEventListener('onload', this.#onPageLoaded);
     //  Add the crossword grid to the webpage DOM
     this.#domParentElement.appendChild(this.crosswordView);
-    //  Update the font size when the window changes size
-    this.#window.addEventListener('resize', this.#onWindowResize);
-    //  Set the font size
-    updateCrosswordFontSize(this.crosswordView);
+    // Select the first "across" clue when the grid is complete and visible.
+    this.currentClue = this.#crosswordModel.acrossClues[0];
   }
+
   //  Completely cleans up the crossword.
   destroy() {
     //  Clear the map, DOM and state change handler.
     this.#cellMap.removeCrosswordCells(this.#crosswordModel);
     this.#domParentElement.removeChild(this.crosswordView);
-    this.#window.removeEventListener('resize', this.#onWindowResize);
     this.onStateChanged = null;
   }
 
@@ -153,10 +156,6 @@ class CrosswordController {
     return this.#elementEventHandlers[id];
   }
   elementEventHandler = this.#elementEventHandler.bind(this);
-
-  //  Helper function to allow the font to be resized programmatically,
-  //  useful if something else changes the size of the crossword.
-  updateFontSize = () => updateCrosswordFontSize(this.crosswordView);
 
   // Accessors for public property currentCell
   get currentCell() {
@@ -295,20 +294,6 @@ class CrosswordController {
     return this.#document.defaultView;
   }
 
-  #onWindowResize() {
-    trace('window.event:resize');
-    // We must retrieve the crosswordView by querying the global DOM object, "document".
-    // https://developer.mozilla.org/en-US/docs/Web/API/Document
-    const crosswordView = document.querySelector('.crossword');
-    updateCrosswordFontSize(crosswordView);
-  }
-
-  #onPageLoaded() {
-    trace('window.event:onload');
-    // Select the first "across" clue when the page loads
-    this.currentClue = this.#crosswordModel.acrossClues[0];
-  }
-
   #currentClueChanged(eventCell) {
     const across = eventCell.acrossClue;
     const down = eventCell.downClue;
@@ -385,7 +370,7 @@ class CrosswordController {
    * @returns the DOM element for the _cell_
    */
   #newCellElement(document, cell) {
-    trace(`newCellElement(${cell.x},${cell.y})`);
+    // trace(`newCellElement(${cell.x},${cell.y})`);
     const controller = this;
     const cellElement = document.createElement('div');
     addClass(cellElement, 'cwcell');

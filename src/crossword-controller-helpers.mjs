@@ -1,21 +1,5 @@
 import { assert, memoize, trace, setLetter } from './helpers.mjs';
 
-//  For a given crossword object, this function sets the appropriate font
-//  size based on the current crossword size.
-const updateCrosswordFontSize = (crosswordView) => {
-  trace('updateCrosswordFontSize');
-  assert(crosswordView, 'crosswordView is null or undefined');
-  assert(crosswordView.children[0], 'crossword row[0] is null or undefined');
-  assert(
-    crosswordView.children[0].children[0],
-    'crossword cell[0,0] is null or undefined'
-  );
-  //  Get the width of a cell (first child of first row).
-  const cellWidth = crosswordView.children[0].children[0].clientWidth;
-  //  eslint-disable-next-line no-param-reassign
-  // crosswordView.style.fontSize = `${cellWidth * 0.6}px`;
-};
-
 const hideElement = (element) => {
   element && element.classList.add('hidden');
 };
@@ -206,5 +190,4 @@ export {
   showElement,
   testCell,
   testClue,
-  updateCrosswordFontSize,
 };

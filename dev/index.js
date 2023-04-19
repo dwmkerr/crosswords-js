@@ -6,15 +6,10 @@ import {
   tracing,
 } from "./crosswords.js";
 
-// import { assert, trace, tracing } from "../src/helpers.mjs";
-
-// Eric Meyer's browser reset styles
-import "../style/reset.css";
-
 // ViteJS will compile to CSS
 import "../style/crosswords.less";
 
-// hack: this should be done after DOM loaded in window
+// TODO: Load crossword dynamically form the user's choice.
 import crosswordJSON from "./crosswords/ftimes_17095.json";
 
 // Enable console logging

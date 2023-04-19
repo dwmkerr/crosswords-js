@@ -1,32 +1,24 @@
 body {
+    display: flexbox;
+    flex-direction: row;
+    background-color:grey;
+    font-family: 'PT Sans', sans-serif;
     font-size: 20px; /* the only pixels we will use, the rest will be in ems */
   }
 
   h1 {
-    font-family: 'PT Serif', serif;
     font-weight: 700;
-    font-style: italic;
-    font-size: 3em;
+    font-size: 4rem;
   }
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: 'PT Serif', serif;
-  }
-  p {
-    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Lucida Grande',
-      sans-serif;
+  h2 {
+    font-size: 2rem;
   }
   .small {
-    font-size: 0.9em;
+    font-size: 0.9rem;
     color: #bebebe;
   }
   .selectedClue {
     background-color: #fff7b2;
     font-weight: bold;
   }
-  #crossword1 {
-    max-width: 640px;
-  }
+
