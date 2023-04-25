@@ -24,9 +24,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Compile a crossword
   const crosswordModel = compileCrossword(crosswordJSON);
   // Locate the parent element for the crossword-grid
-  const crosswordGridParent = document.getElementById("crossword-grid");
+  const crosswordGridParent = document.getElementById("crossword-grid-wrapper");
+  trace(`crosswordGridParent: ${crosswordGridParent}`);
+  const crosswordCluesParent = document.getElementById(
+    "crossword-clues-wrapper",
+  );
+  trace(`crosswordCluesParent: ${crosswordCluesParent}`);
   // Create the Controller and load the crossword grid into the web page.
-  const controller = new Controller(crosswordModel, crosswordGridParent);
+  const controller = new Controller(
+    crosswordModel,
+    crosswordGridParent,
+    crosswordCluesParent,
+  );
 
   // Helper function to bind Controller event listener function to webpage
   // DOM elementId.

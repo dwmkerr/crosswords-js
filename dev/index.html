@@ -10,31 +10,36 @@
   </head>
 
   <body>
-    <div id="first-group">
-      <div id="title-block">
-        <template data-type="pug" data-src="title-block.pug" />
-      </div>
-      <div id="api-block">
-        <div id="cell-buttons">
-          <button id="reveal-cell">Reveal Cell</button>
-        </div>
-        <div id="clue-buttons">
-          <button id="test-clue">Test Clue</button>
-          <button id="clean-clue">Clean Clue</button>
-          <button id="reveal-clue">Reveal Clue</button>
-          <button id="reset-clue">Reset Clue</button>
-        </div>
-        <div id="grid-buttons">
-          <button id="test-crossword">Test Crossword</button>
-          <button id="clean-crossword">Clean Crossword</button>
-          <button id="reveal-crossword">Reveal Crossword</button>
-          <button id="reset-crossword">Reset Crossword</button>
-        </div>
-      </div>
-      <div id="crossword-grid"></div>
+    <div id="title-block">
+      <h1>CrosswordsJS</h1>
     </div>
-    <div id="second-group">
-      <div id="clue-block"></div>
+    <div id="columns">
+      <div id="first-column">
+        <div id="crossword-grid-wrapper"></div>
+        <div id="current-clue">{{ Current Clue }}</div>
+      </div>
+      <div id="second-column">
+        <div id="api-block">
+          <div id="cell-buttons">
+            <button id="reveal-cell">Reveal Cell</button>
+          </div>
+          <div id="clue-buttons">
+            <button id="test-clue">Test Clue</button>
+            <button id="clean-clue">Clean Clue</button>
+            <button id="reveal-clue">Reveal Clue</button>
+            <button id="reset-clue">Reset Clue</button>
+          </div>
+          <div id="grid-buttons">
+            <button id="test-crossword">Test Crossword</button>
+            <button id="clean-crossword">Clean Crossword</button>
+            <button id="reveal-crossword">Reveal Crossword</button>
+            <button id="reset-crossword">Reset Crossword</button>
+          </div>
+        </div>
+      </div>
+      <div id="third-column">
+        <div id="crossword-clues-wrapper"></div>
+      </div>
     </div>
   </body>
 </html>

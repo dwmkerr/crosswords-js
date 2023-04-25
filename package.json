@@ -33,8 +33,8 @@
   "scripts": {
     "lint": "eslint *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample/*.{js,mjs}",
     "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
-    "prettier": "prettier --check *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs} {dev,test}/*.{html,js,json,md,mjs} style/*.less",
-    "prettier:fix": "prettier --write *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less",
+    "prettier": "prettier --check *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} style/*.less",
+    "prettier:fix": "prettier --write *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less",
     "release": "standard-version",
     "spell": "git diff --staged --diff-filter=AM --name-only | npx cspell --file-list stdin",
     "spell:changed": "git diff --diff-filter=AMU --name-only | npx cspell --file-list stdin",

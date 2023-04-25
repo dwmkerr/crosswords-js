@@ -1,24 +1,61 @@
 body {
-    display: flexbox;
-    flex-direction: row;
-    background-color:grey;
-    font-family: 'PT Sans', sans-serif;
-    font-size: 20px; /* the only pixels we will use, the rest will be in ems */
-  }
+  background-color: grey;
+  padding: 5px;
+}
 
-  h1 {
-    font-weight: 700;
-    font-size: 4rem;
-  }
-  h2 {
-    font-size: 2rem;
-  }
-  .small {
-    font-size: 0.9rem;
-    color: #bebebe;
-  }
-  .selectedClue {
-    background-color: #fff7b2;
-    font-weight: bold;
-  }
+#title-block {
+  padding-bottom: 5px;
+}
 
+#columns {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: center;
+  align-items: stretch;
+
+  font-family: 'PT Sans', sans-serif;
+}
+
+#first-column {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: stretch;
+}
+
+#second-column {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: space-evenly;
+  width: min-content;
+}
+
+#third-column {
+  order: 3;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#crossword-grid-wrapper {
+  order: 1;
+}
+
+#current-clue {
+  order: 2;
+  padding: 5px 0px;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 3rem;
+}
+h2 {
+  font-size: 2rem;
+}

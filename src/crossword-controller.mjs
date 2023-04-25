@@ -47,44 +47,52 @@ const advancingKeyPressCharacters = /^[ A-Z]$/;
  */
 class CrosswordController {
   #cellMap;
-  #crosswordView;
+  #crosswordGridView;
+  #crosswordCluesView;
   #crosswordModel;
   #current;
-  #domParentElement;
+  #domGridParentElement;
+  #domCluesParentElement;
   #onStateChanged;
   #elementEventHandlers;
 
-  constructor(crosswordModel, domParentElement) {
+  constructor(crosswordModel, domGridParentElement, domCluesParentElement) {
     trace('CrosswordController constructor');
     assert(
       crosswordModel,
       'CrosswordController: crosswordModel is null or undefined'
     );
     assert(
-      domParentElement,
-      'CrosswordController: domParentElement is null or undefined'
+      domGridParentElement,
+      'CrosswordController: domGridParentElement is null or undefined'
     );
     this.#crosswordModel = crosswordModel;
     this.#cellMap = new CellMap();
-    this.#domParentElement = domParentElement;
+    this.#domGridParentElement = domGridParentElement;
+    this.#domCluesParentElement = domCluesParentElement;
     this.#current = { clue: null, cell: null };
-    //  Now build the DOM for the crossword.
-    this.#crosswordView = this.#document.createElement('div');
-    addClass(this.#crosswordView, 'crossword');
+    //  Build the DOM for the crossword grid.
+    this.#crosswordGridView = this.#document.createElement('div');
+    addClass(this.#crosswordGridView, 'crossword-grid');
+
+    // Build the DOM for the crossword clues.
+    if (domCluesParentElement) {
+      this.#crosswordCluesView = this.#newCrosswordCluesView(
+        this.#document,
+        this
+      );
+      //  Add the crossword clues to the webpage DOM
+      domCluesParentElement.appendChild(this.#crosswordCluesView);
+    }
 
     //  Create each cell.
     for (let y = 0; y < this.#crosswordModel.height; y += 1) {
-      // const row = this.#document.createElement('div');
-      // addClass(row, 'cwrow');
-      // this.crosswordView.appendChild(row);
-
       for (let x = 0; x < this.#crosswordModel.width; x += 1) {
         const cell = this.#crosswordModel.cells[x][y];
 
-        // const row = this.#document.createElement('div');
         //  Build the cell element and add it to the row.
         const cellElement = this.#newCellElement(this.#document, cell);
-        this.#crosswordView.appendChild(cellElement);
+        this.#crosswordGridView.appendChild(cellElement);
 
         //  Update the map of cells
         this.#cellMap.add(cell, cellElement);
@@ -104,7 +112,8 @@ class CrosswordController {
     };
 
     //  Add the crossword grid to the webpage DOM
-    this.#domParentElement.appendChild(this.crosswordView);
+    this.#domGridParentElement.appendChild(this.crosswordGridView);
+
     // Select the first "across" clue when the grid is complete and visible.
     this.currentClue = this.#crosswordModel.acrossClues[0];
   }
@@ -113,7 +122,8 @@ class CrosswordController {
   destroy() {
     //  Clear the map, DOM and state change handler.
     this.#cellMap.removeCrosswordCells(this.#crosswordModel);
-    this.#domParentElement.removeChild(this.crosswordView);
+    this.#domGridParentElement.removeChild(this.crosswordGridView);
+    this.#domCluesParentElement.removeChild(this.crosswordCluesView);
     this.onStateChanged = null;
   }
 
@@ -194,6 +204,12 @@ class CrosswordController {
     }
   }
 
+  // Accessor for crosswordModel
+
+  get crosswordModel() {
+    return this.#crosswordModel;
+  }
+
   // Accessors for public event publisher onStateChanged
   get onStateChanged() {
     return this.#onStateChanged;
@@ -202,11 +218,15 @@ class CrosswordController {
     this.#onStateChanged = eventHandler;
   }
 
-  // Accessor for crosswordView
-  get crosswordView() {
-    return this.#crosswordView;
+  // Accessor for crosswordGridView
+  get crosswordGridView() {
+    return this.#crosswordGridView;
   }
 
+  // Accessor for crosswordCluesView
+  get crosswordCluesView() {
+    return this.#crosswordCluesView;
+  }
   //// API methods ////
 
   testCurrentClue() {
@@ -287,7 +307,7 @@ class CrosswordController {
 
   // Accessor for document associated with DOM
   get #document() {
-    return this.#domParentElement.ownerDocument;
+    return this.#domGridParentElement.ownerDocument;
   }
   // Accessor for window associated with DOM
   get #window() {
@@ -360,6 +380,66 @@ class CrosswordController {
         message,
         data,
       });
+  }
+
+  #newCrosswordCluesView(document, controller) {
+    trace('newCrosswordCluesView');
+    assert(document, '#newCrosswordCluesView: [document] is null or undefined');
+    assert(
+      controller,
+      '#newCrosswordCluesView: [controller] is null or undefined'
+    );
+    // Build the DOM for the crossword clues.
+    let view = {
+      // block: document.createElement('div'),
+      wrapper: document.createElement('div'),
+      acrossClues: document.createElement('div'),
+      downClues: document.createElement('div'),
+    };
+
+    // view.block.id = 'crossword-clues-block';
+    // view.block.innerHTML = 'Clues';
+
+    view.wrapper.id = 'crossword-clues-wrapper';
+    // view.block.appendChild(view.wrapper);
+
+    view.acrossClues.id = 'crossword-across-clues';
+    view.acrossClues.innerHTML = 'Across';
+    view.wrapper.appendChild(view.acrossClues);
+
+    view.downClues.id = 'crossword-down-clues';
+    view.downClues.innerHTML = 'Down';
+    view.wrapper.appendChild(view.downClues);
+
+    controller.crosswordModel.acrossClues.forEach((ac) => {
+      let clueElement = document.createElement('div');
+      view.acrossClues.appendChild(clueElement);
+      clueElement.innerHTML = `<pre>${ac.clueLabel.padEnd(4)} ${ac.clueText} ${
+        ac.answerLengthText
+      }</pre>`;
+      addClass(clueElement, 'crossword-across-clue');
+      clueElement.addEventListener('click', (element) => {
+        trace(`clue(${ac.clueLabel}):click`);
+        // eslint-disable-next-line no-param-reassign
+        controller.currentClue = ac;
+      });
+    });
+
+    controller.crosswordModel.downClues.forEach((dc) => {
+      let clueElement = document.createElement('div');
+      view.downClues.appendChild(clueElement);
+      clueElement.innerHTML = `<pre>${dc.clueLabel.padEnd(4)} ${dc.clueText} ${
+        dc.answerLengthText
+      }</pre>`;
+      addClass(clueElement, 'crossword-down-clue');
+      clueElement.addEventListener('click', (element) => {
+        trace(`clue(${dc.clueLabel}):click`);
+        // eslint-disable-next-line no-param-reassign
+        controller.currentClue = dc;
+      });
+    });
+
+    return view.wrapper;
   }
 
   /**
