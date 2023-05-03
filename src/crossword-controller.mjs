@@ -66,6 +66,10 @@ class CrosswordController {
       domGridParentElement,
       'CrosswordController: domGridParentElement is null or undefined'
     );
+    assert(
+      domCluesParentElement,
+      'CrosswordController: domCluesParentElement is null or undefined'
+    );
     this.#crosswordModel = crosswordModel;
     this.#cellMap = new CellMap();
     this.#domGridParentElement = domGridParentElement;
@@ -389,55 +393,57 @@ class CrosswordController {
       controller,
       '#newCrosswordCluesView: [controller] is null or undefined'
     );
+
+    function addClueElements(controller, viewClues, modelClues) {
+      modelClues.forEach((mc) => {
+        let clueElement = document.createElement('div');
+        addClass(clueElement, 'crossword-across-clue');
+
+        let labelElement = document.createElement('span');
+        addClass(labelElement, 'clue-label');
+        labelElement.innerHTML = `${mc.clueLabel}`;
+        clueElement.appendChild(labelElement);
+
+        let textElement = document.createElement('span');
+        addClass(textElement, 'clue-text');
+        textElement.innerHTML = `${mc.clueText} ${mc.answerLengthText}`;
+        clueElement.appendChild(textElement);
+
+        viewClues.appendChild(clueElement);
+        clueElement.addEventListener('click', (element) => {
+          trace(`clue(${mc.clueLabel}):click`);
+          // eslint-disable-next-line no-param-reassign
+          controller.currentClue = mc;
+        });
+      });
+    }
+
     // Build the DOM for the crossword clues.
     let view = {
-      // block: document.createElement('div'),
       wrapper: document.createElement('div'),
       acrossClues: document.createElement('div'),
       downClues: document.createElement('div'),
     };
 
-    // view.block.id = 'crossword-clues-block';
-    // view.block.innerHTML = 'Clues';
-
-    view.wrapper.id = 'crossword-clues-wrapper';
-    // view.block.appendChild(view.wrapper);
+    addClass(view.wrapper, 'crossword-clues');
 
     view.acrossClues.id = 'crossword-across-clues';
     view.acrossClues.innerHTML = 'Across';
+    addClueElements(
+      controller,
+      view.acrossClues,
+      controller.crosswordModel.acrossClues
+    );
     view.wrapper.appendChild(view.acrossClues);
 
     view.downClues.id = 'crossword-down-clues';
     view.downClues.innerHTML = 'Down';
+    addClueElements(
+      controller,
+      view.downClues,
+      controller.crosswordModel.downClues
+    );
     view.wrapper.appendChild(view.downClues);
-
-    controller.crosswordModel.acrossClues.forEach((ac) => {
-      let clueElement = document.createElement('div');
-      view.acrossClues.appendChild(clueElement);
-      clueElement.innerHTML = `<pre>${ac.clueLabel.padEnd(4)} ${ac.clueText} ${
-        ac.answerLengthText
-      }</pre>`;
-      addClass(clueElement, 'crossword-across-clue');
-      clueElement.addEventListener('click', (element) => {
-        trace(`clue(${ac.clueLabel}):click`);
-        // eslint-disable-next-line no-param-reassign
-        controller.currentClue = ac;
-      });
-    });
-
-    controller.crosswordModel.downClues.forEach((dc) => {
-      let clueElement = document.createElement('div');
-      view.downClues.appendChild(clueElement);
-      clueElement.innerHTML = `<pre>${dc.clueLabel.padEnd(4)} ${dc.clueText} ${
-        dc.answerLengthText
-      }</pre>`;
-      addClass(clueElement, 'crossword-down-clue');
-      clueElement.addEventListener('click', (element) => {
-        trace(`clue(${dc.clueLabel}):click`);
-        // eslint-disable-next-line no-param-reassign
-        controller.currentClue = dc;
-      });
-    });
 
     return view.wrapper;
   }

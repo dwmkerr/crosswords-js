@@ -127,7 +127,7 @@
   }
 }
 
-#crossword-clues-wrapper {
+.crossword-clues {
   @import url('../style/cwcolors.less');
   @import url('../style/cwdimensions.less');
 
@@ -136,7 +136,6 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   align-content: flex-start;
-  // gap: 10px;
   text-align: left;
 
   #crossword-across-clues,
@@ -149,6 +148,11 @@
     .crossword-down-clue {
       font-size: small;
       font-weight: 100;
+
+      .clue-label {
+        display: inline-block;
+        width: 1.5rem;
+      }
     }
   }
 }
