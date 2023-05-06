@@ -97,4 +97,13 @@ document.addEventListener("DOMContentLoaded", () => {
     addLogListener("click", id);
     addControllerListener("click", id);
   });
+
+  const currentClueElement = document.getElementById("current-clue");
+  // Initialise content of #current-clue
+  const cc = controller.currentClue;
+  currentClueElement.innerHTML = `${cc.clueLabel} ${cc.clueText} ${cc.answerLengthText}`;
+  // Update content of #current-clue when current clue changes
+  controller.addEventListener("clueSelected", (clue) => {
+    currentClueElement.innerHTML = `${clue.clueLabel} ${clue.clueText}  ${clue.answerLengthText}`;
+  });
 });

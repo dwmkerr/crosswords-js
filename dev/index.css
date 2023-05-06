@@ -50,6 +50,9 @@ body {
 #current-clue {
   order: 2;
   padding: 5px 0px;
+  background-color: #b0b0b0;
+  padding: 3px;
+  margin-top: 2px;
 }
 
 h1 {

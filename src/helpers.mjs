@@ -167,6 +167,40 @@ const trace = (message) => {
   if (tracingEnabled) console.log(message);
 };
 
+// https://dev.to/adancarrasco/implementing-pub-sub-in-javascript-3l2e
+// Topics should only be modified from the eventRouter itself (return value of newPubSub)
+const newPubSub = () => {
+  const topics = {};
+  const hOP = topics.hasOwnProperty;
+
+  return {
+    publish: (topic, info) => {
+      // No topics
+      if (!hOP.call(topics, topic)) return;
+
+      // Emit the message to any of the receivers
+      topics[topic].forEach((item) => {
+        // Send any arguments if specified
+        item(info !== undefined ? info : {});
+      });
+    },
+    subscribe: (topic, callback) => {
+      // Create the array of topics if not initialized yet
+      if (!hOP.call(topics, topic)) topics[topic] = [];
+
+      // We define the index where this receiver is stored in the topics array
+      const index = topics[topic].push(callback) - 1;
+
+      // When we subscribe we return an object to later remove the subscription
+      return {
+        remove: () => {
+          delete topics[topic][index];
+        },
+      };
+    },
+  };
+};
+
 export {
   addClass,
   addClasses,
@@ -174,6 +208,7 @@ export {
   first,
   last,
   memoize,
+  newPubSub,
   removeClass,
   replaceStrAt,
   setLetter,

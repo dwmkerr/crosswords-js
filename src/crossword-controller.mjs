@@ -3,6 +3,7 @@ import {
   addClass,
   addClasses,
   assert,
+  newPubSub,
   removeClass,
   trace,
 } from './helpers.mjs';
@@ -37,6 +38,20 @@ const BACKSPACE = 8,
   DOWN = 40,
   DELETE = 46;
 
+// Events published by the CrosswordController
+const controllerEvents = [
+  'clueSelected',
+  'clueTested',
+  'crosswordTested',
+  'cellRevealed',
+  'clueRevealed',
+  'crosswordRevealed',
+  'clueReset',
+  'crosswordReset',
+  'clueCleaned',
+  'crosswordCleaned',
+];
+
 // Regular expressions for keypress processing.
 // All pressed keys are upper-cased before testing.
 const echoingKeyPressCharacters = /^[A-Z]$/;
@@ -46,14 +61,15 @@ const advancingKeyPressCharacters = /^[ A-Z]$/;
  * _Controller_ class for the _CrosswordsJS_ package. Use this class to access the package API.
  */
 class CrosswordController {
-  #cellMap;
+  #cellMap = new CellMap();
+  #current = { clue: null, cell: null };
+  #pubSub = newPubSub();
+  #subscribers = [];
   #crosswordGridView;
   #crosswordCluesView;
   #crosswordModel;
-  #current;
   #domGridParentElement;
   #domCluesParentElement;
-  #onStateChanged;
   #elementEventHandlers;
 
   constructor(crosswordModel, domGridParentElement, domCluesParentElement) {
@@ -71,10 +87,8 @@ class CrosswordController {
       'CrosswordController: domCluesParentElement is null or undefined'
     );
     this.#crosswordModel = crosswordModel;
-    this.#cellMap = new CellMap();
     this.#domGridParentElement = domGridParentElement;
     this.#domCluesParentElement = domCluesParentElement;
-    this.#current = { clue: null, cell: null };
     //  Build the DOM for the crossword grid.
     this.#crosswordGridView = this.#document.createElement('div');
     addClass(this.#crosswordGridView, 'crossword-grid');
@@ -128,7 +142,9 @@ class CrosswordController {
     this.#cellMap.removeCrosswordCells(this.#crosswordModel);
     this.#domGridParentElement.removeChild(this.crosswordGridView);
     this.#domCluesParentElement.removeChild(this.crosswordCluesView);
-    this.onStateChanged = null;
+    this.#subscribers.forEach((s) => {
+      s.remove();
+    });
   }
 
   // Helper function to retrieve corresponding cell for cellElement
@@ -171,6 +187,11 @@ class CrosswordController {
   }
   elementEventHandler = this.#elementEventHandler.bind(this);
 
+  // Helper function to subscribe to CrosswordController events
+  #addEventListener = (eventName, callback) => {
+    this.#subscribers.push(this.#pubSub.subscribe(eventName, callback));
+  };
+
   // Accessors for public property currentCell
   get currentCell() {
     return this.#current.cell;
@@ -204,7 +225,7 @@ class CrosswordController {
         // switch to first cell of new current clue
         this.currentCell = this.currentClue.cells[0];
       }
-      this.#stateChange('clueSelected');
+      this.#stateChange('clueSelected', clue);
     }
   }
 
@@ -214,12 +235,9 @@ class CrosswordController {
     return this.#crosswordModel;
   }
 
-  // Accessors for public event publisher onStateChanged
-  get onStateChanged() {
-    return this.#onStateChanged;
-  }
-  set onStateChanged(eventHandler) {
-    this.#onStateChanged = eventHandler;
+  // Accessors for public event publisher
+  get addEventListener() {
+    return this.#addEventListener;
   }
 
   // Accessor for crosswordGridView
@@ -379,11 +397,7 @@ class CrosswordController {
    */
   #stateChange(message, data) {
     trace(`stateChange: ${message}`);
-    this.#onStateChanged &&
-      this.#onStateChanged({
-        message,
-        data,
-      });
+    this.#pubSub.publish(message, data);
   }
 
   /**
@@ -475,29 +489,23 @@ class CrosswordController {
 
     // Handle when current clue has changed in controller
     // eslint-disable-next-line no-param-reassign
-    controller.onStateChanged = function (arg) {
-      assert(arg, 'arg is null or undefined');
-      assert(view, 'view is null or undefined');
-      trace(`CrosswordCluesView:onStateChanged(${arg.message})`);
-
-      if (arg.message === 'clueSelected') {
-        for (const vac of view.acrossClues.children) {
-          if (isCurrentClueSegment(vac.modelClue)) {
-            addClass(vac, 'current-clue-segment');
-          } else {
-            removeClass(vac, 'current-clue-segment');
-          }
-        }
-
-        for (const vdc of view.downClues.children) {
-          if (isCurrentClueSegment(vdc.modelClue)) {
-            addClass(vdc, 'current-clue-segment');
-          } else {
-            removeClass(vdc, 'current-clue-segment');
-          }
+    controller.addEventListener('clueSelected', (data) => {
+      for (const vac of view.acrossClues.children) {
+        if (isCurrentClueSegment(vac.modelClue)) {
+          addClass(vac, 'current-clue-segment');
+        } else {
+          removeClass(vac, 'current-clue-segment');
         }
       }
-    };
+
+      for (const vdc of view.downClues.children) {
+        if (isCurrentClueSegment(vdc.modelClue)) {
+          addClass(vdc, 'current-clue-segment');
+        } else {
+          removeClass(vdc, 'current-clue-segment');
+        }
+      }
+    });
 
     return view.wrapper;
   }

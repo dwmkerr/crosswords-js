@@ -21,10 +21,10 @@ sampleapp.controller("MainController", function ($scope, $http) {
     cwController.currentClue = cwModel.acrossClues[0];
     $scope.currentClue = cwModel.acrossClues[0];
 
-    cwController.onStateChanged = function (message) {
+    cwController.addEventListener("clueSelected", (data) => {
       $scope.currentClue = cwController.currentClue;
       $scope.$apply();
-    };
+    });
   });
 
     };
