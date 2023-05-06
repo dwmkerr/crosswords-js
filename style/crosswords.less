@@ -1,7 +1,7 @@
-.crossword-grid {
-  @import url('../style/cwdimensions.less');
-  @import url('../style/cwcolors.less');
+@import url('../style/cwdimensions.less');
+@import url('../style/cwcolors.less');
 
+.crossword-grid {
   @letter-weight: bold;
 
   display: grid;
@@ -148,11 +148,16 @@
     .crossword-down-clue {
       font-size: small;
       font-weight: 100;
-
-      .clue-label {
-        display: inline-block;
-        width: 1.5rem;
-      }
+      padding: 3px;
     }
+  }
+
+  .clue-label {
+    display: inline-block;
+    width: @clue-label-width;
+  }
+
+  .current-clue-segment {
+    background-color: @clue-background-current-color;
   }
 }

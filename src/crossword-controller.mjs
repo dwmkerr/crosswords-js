@@ -386,6 +386,13 @@ class CrosswordController {
       });
   }
 
+  /**
+   * **newCrosswordCluesView**: build a crossword clues DOM element
+   * with separate blocks for across and down clues.
+   * @param {*} document the root node of the [DOM](https://en.wikipedia.org/wiki/Document_Object_Model#DOM_tree_structure)
+   * @param {*} controller the crossword controller object
+   * @returns the clues DOM element
+   */
   #newCrosswordCluesView(document, controller) {
     trace('newCrosswordCluesView');
     assert(document, '#newCrosswordCluesView: [document] is null or undefined');
@@ -398,6 +405,7 @@ class CrosswordController {
       modelClues.forEach((mc) => {
         let clueElement = document.createElement('div');
         addClass(clueElement, 'crossword-across-clue');
+        clueElement.modelClue = mc;
 
         let labelElement = document.createElement('span');
         addClass(labelElement, 'clue-label');
@@ -409,13 +417,33 @@ class CrosswordController {
         textElement.innerHTML = `${mc.clueText} ${mc.answerLengthText}`;
         clueElement.appendChild(textElement);
 
-        viewClues.appendChild(clueElement);
+        // add handler for click event
         clueElement.addEventListener('click', (element) => {
           trace(`clue(${mc.clueLabel}):click`);
           // eslint-disable-next-line no-param-reassign
           controller.currentClue = mc;
         });
+        viewClues.appendChild(clueElement);
       });
+    }
+
+    function isCurrentClueSegment(clue) {
+      const currentClue = controller.currentClue;
+
+      // The trivial case is that the clue is selected.
+      if (clue === currentClue) {
+        return true;
+      } else {
+        //  We might also be a clue which is part of a non-linear clue.
+        const parentClue = currentClue && currentClue.parentClue;
+
+        return currentClue &&
+          parentClue &&
+          (parentClue === clue ||
+            parentClue.connectedClues.indexOf(clue) !== -1)
+          ? true
+          : false;
+      }
     }
 
     // Build the DOM for the crossword clues.
@@ -444,6 +472,32 @@ class CrosswordController {
       controller.crosswordModel.downClues
     );
     view.wrapper.appendChild(view.downClues);
+
+    // Handle when current clue has changed in controller
+    // eslint-disable-next-line no-param-reassign
+    controller.onStateChanged = function (arg) {
+      assert(arg, 'arg is null or undefined');
+      assert(view, 'view is null or undefined');
+      trace(`CrosswordCluesView:onStateChanged(${arg.message})`);
+
+      if (arg.message === 'clueSelected') {
+        for (const vac of view.acrossClues.children) {
+          if (isCurrentClueSegment(vac.modelClue)) {
+            addClass(vac, 'current-clue-segment');
+          } else {
+            removeClass(vac, 'current-clue-segment');
+          }
+        }
+
+        for (const vdc of view.downClues.children) {
+          if (isCurrentClueSegment(vdc.modelClue)) {
+            addClass(vdc, 'current-clue-segment');
+          } else {
+            removeClass(vdc, 'current-clue-segment');
+          }
+        }
+      }
+    };
 
     return view.wrapper;
   }
