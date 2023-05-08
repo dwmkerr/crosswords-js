@@ -55,6 +55,10 @@ body {
   margin-top: 2px;
 }
 
+#title-block {
+  padding: 10px;
+}
+
 h1 {
   font-weight: 700;
   font-size: 3rem;

@@ -559,21 +559,11 @@ class CrosswordController {
     addClasses(incorrectIndicator, ['cwcell-incorrect', 'hidden']);
     cellElement.appendChild(incorrectIndicator);
 
-    //  Check to see whether we need to add an across clue answer segment terminator.
-    if (cell.acrossTerminator === ',') {
+    //  Check for clue answer segment terminator.
+    if (',-'.includes(cell.acrossTerminator)) {
       addClass(inputElement, 'cw-across-word-separator');
-    } else if (cell.acrossTerminator === '-') {
-      const acrossTerminator = document.createElement('div');
-      addClass(acrossTerminator, 'cw-across-terminator');
-      acrossTerminator.innerHTML = '|';
-      cellElement.appendChild(acrossTerminator);
-    } else if (cell.downTerminator === ',') {
+    } else if (',-'.includes(cell.downTerminator)) {
       addClass(inputElement, 'cw-down-word-separator');
-    } else if (cell.downTerminator === '-') {
-      const acrossTerminator = document.createElement('div');
-      addClass(acrossTerminator, 'cw-down-terminator');
-      acrossTerminator.innerHTML = '|';
-      cellElement.appendChild(acrossTerminator);
     }
 
     //// Event handlers
@@ -584,7 +574,7 @@ class CrosswordController {
       //  Get the cell data.
       const eventCell = controller.cell(event.target.parentNode);
       if (controller.#currentClueChanged(eventCell)) {
-        this.#stateChange('clueSelected');
+        this.#stateChange('clueSelected', controller.currentClueq);
       }
     });
 

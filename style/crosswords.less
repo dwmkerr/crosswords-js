@@ -120,6 +120,12 @@
     box-shadow: inset 0px -1px 0px 0px @word-separator-color;
   }
 
+  // A combination of separators on a single element
+  .cw-across-word-separator + .cw-down-word-separator,
+  .cw-down-word-separator + .cw-across-word-separator {
+    box-shadow: inset -1px -1px 0px 0px @word-separator-color;
+  }
+
   .hidden {
     visibility: hidden;
     opacity: 0;
