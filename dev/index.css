@@ -53,6 +53,18 @@ body {
   background-color: #b0b0b0;
   padding: 3px;
   margin-top: 2px;
+  max-width: 20em;
+}
+
+#current-clue-label {
+  display: inline-block;
+  width: 1.5em;
+  vertical-align: top;
+}
+
+#current-clue-text {
+  display: inline-block;
+  max-width: 18em;
 }
 
 #title-block {

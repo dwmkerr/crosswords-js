@@ -574,7 +574,7 @@ class CrosswordController {
       //  Get the cell data.
       const eventCell = controller.cell(event.target.parentNode);
       if (controller.#currentClueChanged(eventCell)) {
-        this.#stateChange('clueSelected', controller.currentClueq);
+        this.#stateChange('clueSelected', controller.currentClue);
       }
     });
 

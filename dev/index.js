@@ -102,13 +102,16 @@ document.addEventListener("DOMContentLoaded", () => {
     addControllerListener("click", id);
   });
 
-  const currentClueElement = eid("current-clue");
+  const currentClueLabel = eid("current-clue-label");
+  const currentClueText = eid("current-clue-text");
   // Initialise content of #current-clue
   const cc = controller.currentClue;
-  currentClueElement.innerHTML = `${cc.clueLabel} ${cc.clueText} ${cc.answerLengthText}`;
+  currentClueLabel.innerHTML = cc.clueLabel;
+  currentClueText.innerHTML = `${cc.clueText} ${cc.answerLengthText}`;
   // Update content of #current-clue when current clue changes
   controller.addEventListener("clueSelected", (clue) => {
-    currentClueElement.innerHTML = `${clue.clueLabel} ${clue.clueText}  ${clue.answerLengthText}`;
+    currentClueLabel.innerHTML = clue.clueLabel;
+    currentClueText.innerHTML = `${clue.clueText} ${clue.answerLengthText}`;
   });
 
   // Populate title block with crossword info
