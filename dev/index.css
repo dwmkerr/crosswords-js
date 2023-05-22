@@ -71,6 +71,11 @@ body {
   padding: 10px;
 }
 
+button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 h1 {
   font-weight: 700;
   font-size: 3rem;
