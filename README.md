@@ -151,18 +151,18 @@ controller.revealCurrentClue();
 controller.resetCurrentClue();
 ```
 
-     - For the **whole crossword grid**...
+  - For the **whole crossword grid**...
 
-     ```js
-     // Check all the answers against the solutions.
-     controller.testCrossword();
-     // Clear incorrect letters for the entire crossword after testing.
-     controller.cleanCrossword();
-     // Reveal the solutions for the entire crossword.
-     controller.revealCrossword();
-     // Clear out the entire crossword.
-     controller.resetCrossword();
-     ```
+  ```js
+  // Check all the answers against the solutions.
+  controller.testCrossword();
+  // Clear incorrect letters for the entire crossword after testing.
+  controller.cleanCrossword();
+  // Reveal the solutions for the entire crossword.
+  controller.revealCrossword();
+  // Clear out the entire crossword.
+  controller.resetCrossword();
+  ```
 
 9. You can find an **Angular** sample application in the `sample` directory. To run the application:
 
