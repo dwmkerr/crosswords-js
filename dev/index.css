@@ -24,6 +24,7 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-content: stretch;
+  width: min-content;
 }
 
 #second-column {
@@ -44,16 +45,19 @@ body {
 }
 
 #crossword-grid-wrapper {
-  order: 1;
+  order: 2;
 }
 
 #current-clue {
-  order: 2;
-  padding: 5px 0px;
-  background-color: #b0b0b0;
-  padding: 3px;
-  margin-top: 2px;
-  max-width: 20em;
+  order: 1;
+  padding: 5px 5px;
+  background-color: #50d3a1;
+  padding: 10px;
+  margin: 5px 0px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 0.8rem;
+  height: 3.5em;
 }
 
 #current-clue-label {
@@ -64,7 +68,7 @@ body {
 
 #current-clue-text {
   display: inline-block;
-  max-width: 18em;
+  max-width: 22em;
 }
 
 #title-block {
