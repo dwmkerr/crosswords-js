@@ -8,12 +8,14 @@
   grid-template-rows: repeat(@row-count, @grid-cell-size);
   grid-template-columns: repeat(@column-count, @grid-cell-size);
   gap: @grid-line-size;
+  border-collapse: collapse;
+  box-sizing: border-box;
   padding: @grid-line-size;
   width: min-content;
 
   background-color: @grid-background-color;
   font-family: sans-serif;
-  font-size: large;
+  font-size: x-large;
 
 
   .cwcell {
@@ -43,7 +45,7 @@
     // Padding must be disabled
     padding: 0;
     // Border must be disabled
-    border: none;
+    border: 0;
     //fix to bottom
     align-self: end;
     height: 100%;
@@ -57,17 +59,18 @@
     &.highlighted {
       background-color: @cell-background-current-color;
     }
-  }
 
-  input:focus {
-    outline-width: medium;
-    outline-color: @focus-outline-color;
-    outline-style: dotted;
-    outline-offset: -2px;
-    caret-color: transparent;
+    &:focus {
+      outline-width: medium;
+      outline-color: @focus-outline-color;
+      outline-style: dotted;
+      outline-offset: -2px;
+      caret-color: transparent;
+    }
   }
 
   .cwclue-label {
+    margin: 1px 0px 0px 1px;
     position: absolute;
     font-size: @label-size;
     color: @text-color;
@@ -113,17 +116,17 @@
   }
 
   .cw-across-word-separator {
-    box-shadow: inset -1px 0px 0px 0px @word-separator-color;
+    box-shadow: inset -2px 0px 0px 0px @word-separator-color;
   }
 
   .cw-down-word-separator {
-    box-shadow: inset 0px -1px 0px 0px @word-separator-color;
+    box-shadow: inset 0px -2px 0px 0px @word-separator-color;
   }
 
-  // A combination of separators on a single element
+  // Combinations of across and down separators on a single element
   .cw-across-word-separator + .cw-down-word-separator,
   .cw-down-word-separator + .cw-across-word-separator {
-    box-shadow: inset -1px -1px 0px 0px @word-separator-color;
+    box-shadow: inset -2px -2px 0px 0px @word-separator-color;
   }
 
   .hidden {
@@ -149,9 +152,9 @@
 
     .crossword-across-clue,
     .crossword-down-clue {
-      font-size: small;
+      font-size: medium;
       font-weight: 100;
-      padding: 3px;
+      padding: 4px;
     }
   }
 

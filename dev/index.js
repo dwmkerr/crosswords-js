@@ -7,6 +7,7 @@ import {
 } from "./crosswords.js";
 
 // ViteJS will compile to CSS
+import "./index.less";
 import "../style/crosswords.less";
 
 // TODO: Load crossword dynamically form the user's choice.
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     crosswordCluesParent,
   );
 
-  // event listeners. The elementIds are originally defined in the
+  // Event listeners. The elementIds are originally defined in the
   // CrosswordController class. Assign the ids to the DOM element events
   // (e.g. button click events in this example) where the associated behaviour
   // is expected.

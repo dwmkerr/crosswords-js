@@ -2,20 +2,19 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="stylesheet" href="reset.css" />
+    <!-- <link rel="stylesheet" href="reset.css" /> -->
     <title>CrosswordJS Developer Sandbox</title>
 
     <!-- Application entry point -->
     <script type="module" src="index.js"></script>
-    <link rel="stylesheet" href="index.css" />
   </head>
 
   <body>
     <h1>Crosswords.js</h1>
     <div id="title-block">
       <ul>
-        <li>Source: <a href="" id="info-source-url"></a></li>
-        <li>Setter: <a href="" id="info-setter-url"></a></li>
+        <li>Source: <a href="" target="_blank" id="info-source-url"></a></li>
+        <li>Setter: <a href="" target="_blank" id="info-setter-url"></a></li>
       </ul>
       <p>Simple, fast, framework-free crosswords for the web.</p>
       <p>
@@ -35,6 +34,7 @@
       </div>
       <div id="second-column">
         <div id="api-block">
+          <p id="api-block-title">Hints</p>
           <div id="cell-buttons">
             <p>Cell</p>
             <button id="reveal-cell">Reveal</button>

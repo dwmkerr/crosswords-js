@@ -1,0 +1,174 @@
+@import url('reset.css');
+
+@text-color: darken(white, 10%);
+@highlight-color: #04aa6d;
+@background-color: lighten(black, 45%);
+@shadow-color: darken(@background-color, 10%);
+@highlight-text-color: @text-color;
+@font-family: 'PT Sans', sans-serif;
+@text-font-size: large;
+@box-shadow: 5px 5px 5px @shadow-color;
+@link-color: lighten(@highlight-color, 10%);
+@link-hover-color: lighten(@highlight-color, 20%);
+@link-visited-color: darken(@highlight-color, 20%);
+
+body {
+  color: @text-color;
+  background-color: @background-color;
+  padding: 5px;
+  font-family: @font-family;
+  h1 {
+    background-color: @highlight-color;
+    color: @highlight-text-color;
+    padding: 10px;
+    box-shadow: @box-shadow;
+  }
+}
+
+#title-block {
+  padding-bottom: 5px;
+}
+
+#columns {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: center;
+  align-items: stretch;
+}
+
+#first-column {
+  order: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: stretch;
+  width: min-content;
+}
+
+#second-column {
+  order: 2;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: space-evenly;
+  width: min-content;
+}
+
+#third-column {
+  order: 3;
+  flex-wrap: wrap;
+}
+
+#crossword-grid-wrapper {
+  order: 2;
+}
+
+.crossword-across-clue,
+.crossword-down-clue {
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: @box-shadow;
+  }
+}
+
+#current-clue {
+  order: 1;
+  color: @highlight-text-color;
+  background-color: @highlight-color;
+  padding: 10px;
+  margin: 5px 0px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: @text-font-size;
+  height: 3.2em;
+  overflow-wrap: break-word;
+}
+
+#current-clue-label {
+  display: inline-block;
+  width: 1.5em;
+  vertical-align: top;
+}
+
+#current-clue-text {
+  display: inline-block;
+  max-width: 18em;
+}
+
+#title-block {
+  font-weight: 100;
+  font-size: @text-font-size;
+  padding: 10px;
+}
+
+#api-block-title {
+  font-size: @text-font-size;
+  font-weight: 600;
+  padding: 0px 10px 10px 10px;
+}
+
+#api-block {
+  padding: 10px 10px;
+  font-weight: 100;
+  font-size: @text-font-size;
+  text-align: center;
+}
+
+#cell-buttons,
+#clue-buttons,
+#grid-buttons {
+  padding: 5px;
+  p {
+    padding-bottom: 5px;
+  }
+}
+
+button {
+  width: 100%;
+  box-sizing: border-box;
+  color: @highlight-text-color;
+  background-color: @highlight-color;
+  border: none;
+  padding: 4px;
+  text-align: center;
+  text-decoration: none;
+  font-family: @font-family;
+  font-size: @text-font-size;
+  margin: 3px 2px;
+  border-radius: 12px;
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: @box-shadow;
+  }
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 3rem;
+}
+h2 {
+  font-weight: 500;
+  font-size: 2rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  &:link {
+    color: @link-color;
+    text-decoration: none;
+  }
+
+  &:hover {
+    color: @link-hover-color;
+    // transform: scale(1.25);
+    box-shadow: @box-shadow;
+    padding: 0px 5px;
+  }
+  &:visited {
+    color: @link-visited-color;
+  }
+}
