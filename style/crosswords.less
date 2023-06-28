@@ -10,6 +10,7 @@
   gap: @grid-line-size;
   border-collapse: collapse;
   box-sizing: border-box;
+  // border around outside of grid
   padding: @grid-line-size;
   width: min-content;
 
@@ -92,8 +93,6 @@
     border-bottom: @revealed-size solid @cell-revealed-color;
     // click events must pass through to input element
     pointer-events: none;
-    opacity: 0.5;
-    transition: visibility 0s linear 500ms, opacity 500ms;
   }
 
   // diagonal stripe bottom-left to top-right
@@ -144,29 +143,17 @@
   align-content: flex-start;
   text-align: left;
 
-  #crossword-across-clues,
-  #crossword-down-clues {
-    font-size: medium;
-    font-weight: 600;
-    padding: 10px 10px 0px 10px;
-
-    .crossword-across-clue,
-    .crossword-down-clue {
-      font-size: medium;
-      font-weight: 100;
-      padding: 4px;
-    }
-  }
-
-  .clue-label {
+  .crossword-clue-label {
     display: inline-block;
     width: @clue-label-width;
     vertical-align: top;
   }
-  .clue-text {
+
+  .crossword-clue-text {
     display: inline-block;
     max-width: @clue-text-width;
   }
+
   .current-clue-segment {
     background-color: @clue-background-current-color;
   }

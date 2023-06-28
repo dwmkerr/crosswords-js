@@ -6,27 +6,33 @@ import {
   tracing,
 } from "./crosswords.js";
 
-// ViteJS will compile to CSS
-import "./index.less";
+//// Apply content styling
+//// ViteJS will convert LESS files to CSS
+
+// Set styling baseline for all browsers and devices
+import "../style/reset.css";
+// Base styles for crossword grid and clue blocks
 import "../style/crosswords.less";
+// Dev environment styles and overrides
+import "./index.less";
 
 // TODO: Load crossword dynamically form the user's choice.
 import crosswordJSON from "./crosswords/ftimes_17095.json";
 
-// Enable console logging
+// Enable console logging for crosswords.js
 tracing(true);
 
 // Check for browser context
 assert(window != null && document != null, "Not in browser!");
 
+// shortcut function
+const eid = (id) => {
+  return document.getElementById(id);
+};
+
 // Execute once DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
   trace("DOM loaded");
-
-  // shortcut function
-  const eid = (id) => {
-    return document.getElementById(id);
-  };
 
   // Helper function to bind Controller event listener function to webpage
   // DOM elementId.
@@ -122,4 +128,26 @@ document.addEventListener("DOMContentLoaded", () => {
   let infoSetter = eid("info-setter-url");
   infoSetter.innerHTML = crosswordJSON.info.setter.title;
   infoSetter.setAttribute("href", crosswordJSON.info.setter.url);
+
+  //// Respond to crossword completion
+
+  let modalOverlay = eid("crossword-modal-overlay");
+  let closeModal = eid("crossword-complete-close");
+
+  controller.addEventListener("crosswordCompleted", (clue) => {
+    trace("CrosswordCompleted");
+    modalOverlay.style.display = "block";
+  });
+  // Setup crossword completed display UI event handlers
+  // When the user clicks anywhere outside of the modal dialog,
+  // close/hide it
+  window.onclick = (event) => {
+    if (event.target == modalOverlay) {
+      modalOverlay.style.display = "none";
+    }
+  };
+  // When the user clicks on the modal close element (x), close the modal
+  closeModal.addEventListener("click", () => {
+    modalOverlay.style.display = "none";
+  });
 });

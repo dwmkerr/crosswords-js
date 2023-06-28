@@ -50,6 +50,7 @@ const controllerEvents = [
   'crosswordReset',
   'clueCleaned',
   'crosswordCleaned',
+  'crosswordCompleted',
 ];
 
 // Regular expressions for keypress processing.
@@ -81,10 +82,6 @@ class CrosswordController {
     assert(
       domGridParentElement,
       'CrosswordController: domGridParentElement is null or undefined'
-    );
-    assert(
-      domCluesParentElement,
-      'CrosswordController: domCluesParentElement is null or undefined'
     );
     this.#crosswordModel = crosswordModel;
     this.#domGridParentElement = domGridParentElement;
@@ -249,34 +246,42 @@ class CrosswordController {
   get crosswordCluesView() {
     return this.#crosswordCluesView;
   }
+
   //// API methods ////
 
   testCurrentClue() {
     trace(`testCurrentClue:${this.currentClue.code}`);
-    testClue(this, this.currentClue);
+    const showIncorrect = true;
+    const success = testClue(this, this.currentClue, showIncorrect);
     this.#stateChange('clueTested');
+    return success;
   }
 
   testCrossword() {
     trace('testCrossword');
+    const showIncorrect = true;
+    let success = true;
     this.#crosswordModel.cells.forEach((row) => {
       row
         .filter((x) => x.light)
         .forEach((cell) => {
-          testCell(this, cell);
+          success = testCell(this, cell, showIncorrect) && success;
         });
     });
     this.#stateChange('crosswordTested');
+    return success;
   }
 
   revealCurrentCell() {
     revealCell(this, this.currentCell);
     this.#stateChange('cellRevealed');
+    this.testCrosswordCompletion();
   }
 
   revealCurrentClue() {
     revealClue(this, this.currentClue);
     this.#stateChange('clueRevealed');
+    this.testCrosswordCompletion();
   }
 
   revealCrossword() {
@@ -289,6 +294,7 @@ class CrosswordController {
         });
     });
     this.#stateChange('crosswordRevealed');
+    this.testCrosswordCompletion();
   }
 
   resetCurrentClue() {
@@ -323,6 +329,15 @@ class CrosswordController {
         });
     });
     this.#stateChange('crosswordCleaned');
+  }
+
+  testCrosswordCompletion() {
+    if (this.#isCrosswordCompleted()) {
+      // allow other events to complete before the tadah! moment
+      setTimeout(() => {
+        this.#stateChange('crosswordCompleted');
+      }, 5);
+    }
   }
 
   //// Private methods ////
@@ -393,11 +408,27 @@ class CrosswordController {
    * **#stateChange**: Publish crossword events to the handler allocated/subscribed to _onStateChange_.
    * @param {*} message The name of the event to be published
    * @param {*} data not used
-   * - Events: _cellRevealed_,_clueReset_,_clueRevealed_,_clueSelected_,_clueTested_,_crosswordReset_,_crosswordRevealed_,_crosswordTested_
+   * - Events:  _cellRevealed_,_clueReset_,_clueRevealed_,
+   *            _clueSelected_,_clueTested_,_crosswordReset_,
+   *            _crosswordRevealed_,_crosswordTested_
    */
   #stateChange(message, data) {
     trace(`stateChange: ${message}`);
     this.#pubSub.publish(message, data);
+  }
+
+  #isCrosswordCompleted() {
+    trace('isCrosswordCompleted');
+    const showIncorrect = false;
+    let success = true;
+    this.#crosswordModel.cells.forEach((row) => {
+      row
+        .filter((x) => x.light)
+        .forEach((cell) => {
+          success = testCell(this, cell, showIncorrect) && success;
+        });
+    });
+    return success;
   }
 
   /**
@@ -415,19 +446,30 @@ class CrosswordController {
       '#newCrosswordCluesView: [controller] is null or undefined'
     );
 
-    function addClueElements(controller, viewClues, modelClues) {
-      modelClues.forEach((mc) => {
+    function newClueBlockElement(id, title) {
+      let cbElement = document.createElement('div');
+      addClass(cbElement, 'crossword-clue-block');
+      cbElement.id = id;
+      let titleElement = document.createElement('p');
+      titleElement.innerHTML = title;
+      addClass(titleElement, 'crossword-clue-block-title');
+      cbElement.appendChild(titleElement);
+      return cbElement;
+    }
+
+    function addClueElements(controller, clueBlockElement, cluesModel) {
+      cluesModel.forEach((mc) => {
         let clueElement = document.createElement('div');
-        addClass(clueElement, 'crossword-across-clue');
+        addClass(clueElement, 'crossword-clue');
         clueElement.modelClue = mc;
 
         let labelElement = document.createElement('span');
-        addClass(labelElement, 'clue-label');
+        addClass(labelElement, 'crossword-clue-label');
         labelElement.innerHTML = `${mc.clueLabel}`;
         clueElement.appendChild(labelElement);
 
         let textElement = document.createElement('span');
-        addClass(textElement, 'clue-text');
+        addClass(textElement, 'crossword-clue-text');
         textElement.innerHTML = `${mc.clueText} ${mc.answerLengthText}`;
         clueElement.appendChild(textElement);
 
@@ -437,7 +479,7 @@ class CrosswordController {
           // eslint-disable-next-line no-param-reassign
           controller.currentClue = mc;
         });
-        viewClues.appendChild(clueElement);
+        clueBlockElement.appendChild(clueElement);
       });
     }
 
@@ -463,14 +505,12 @@ class CrosswordController {
     // Build the DOM for the crossword clues.
     let view = {
       wrapper: document.createElement('div'),
-      acrossClues: document.createElement('div'),
-      downClues: document.createElement('div'),
+      acrossClues: newClueBlockElement('crossword-across-clues', 'Across'),
+      downClues: newClueBlockElement('crossword-down-clues', 'Down'),
     };
 
     addClass(view.wrapper, 'crossword-clues');
 
-    view.acrossClues.id = 'crossword-across-clues';
-    view.acrossClues.innerHTML = 'Across';
     addClueElements(
       controller,
       view.acrossClues,
@@ -478,8 +518,6 @@ class CrosswordController {
     );
     view.wrapper.appendChild(view.acrossClues);
 
-    view.downClues.id = 'crossword-down-clues';
-    view.downClues.innerHTML = 'Down';
     addClueElements(
       controller,
       view.downClues,
@@ -705,6 +743,9 @@ class CrosswordController {
         setCellContent(controller, event, character);
         // remove any visual flag in cell that letter is incorrect
         hideElement(controller.incorrectElement(eventCell));
+
+        // test for crossword completeness
+        this.testCrosswordCompletion();
       }
 
       if (advancingKeyPressCharacters.test(character)) {

@@ -45,7 +45,7 @@ function revealClue(controller, clue) {
   });
 }
 
-function testCell(controller, cell) {
+function testCell(controller, cell, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
 
@@ -61,14 +61,14 @@ function testCell(controller, cell) {
   const success = answerLetter === solutionLetter;
   // trace(`testCell(${cell.x},${cell.y}): ${success}`);
 
-  if (!success) {
+  if (!(success || answerLetter === ' ') && showIncorrect) {
     // set visual flag in cell that answer letter is incorrect
     showElement(controller.incorrectElement(cell));
   }
   return success;
 }
 
-function testClue(controller, clue) {
+function testClue(controller, clue, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
   assert(clue, '<clue> is null or undefined');
   trace(`testClue: '${clue.code}'`);
@@ -79,7 +79,7 @@ function testClue(controller, clue) {
     : [clue];
   clues.forEach((c) => {
     c.cells.forEach((cell) => {
-      testCell(controller, cell);
+      success = testCell(controller, cell, showIncorrect) && success;
     });
   });
   return success;
