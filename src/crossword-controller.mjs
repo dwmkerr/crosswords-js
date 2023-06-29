@@ -59,7 +59,8 @@ const echoingKeyPressCharacters = /^[A-Z]$/;
 const advancingKeyPressCharacters = /^[ A-Z]$/;
 
 /** **CrosswordController** - an [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
- * _Controller_ class for the _CrosswordsJS_ package. Use this class to access the package API.
+ * _Controller_ class for the _CrosswordsJS_ package.
+ * Use this class to access the package API.
  */
 class CrosswordController {
   #cellMap = new CellMap();
@@ -269,6 +270,9 @@ class CrosswordController {
         });
     });
     this.#stateChange('crosswordTested');
+    if (success) {
+      this.testCrosswordCompletion();
+    }
     return success;
   }
 
@@ -743,8 +747,7 @@ class CrosswordController {
         setCellContent(controller, event, character);
         // remove any visual flag in cell that letter is incorrect
         hideElement(controller.incorrectElement(eventCell));
-
-        // test for crossword completeness
+        // test for crossword completion
         this.testCrosswordCompletion();
       }
 

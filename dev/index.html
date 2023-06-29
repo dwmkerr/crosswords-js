@@ -2,9 +2,15 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <!-- <link rel="stylesheet" href="reset.css" /> -->
     <title>CrosswordJS Developer Sandbox</title>
-
+    <!-- Stop flash of unstyled content 
+      https://stackoverflow.com/a/53364612/1090683 -->
+    <style>
+      html {
+        visibility: hidden;
+        opacity: 0;
+      }
+    </style>
     <!-- Application entry point -->
     <script type="module" src="index.js"></script>
   </head>
@@ -24,7 +30,7 @@
           </ul>
           <p>
             Simple, fast, framework-free crosswords for the web. Find out more
-            at
+            at:
             <a href="https://github.com/dwmkerr/crosswords-js"
               >github.com/dwmkerr/crosswords-js</a
             >
@@ -34,13 +40,13 @@
           <span id="current-clue-label"></span>
           <span id="current-clue-text"></span>
         </div>
-        <div id="crossword-grid-wrapper"></div>
+        <div id="crossword-grid-placeholder"></div>
       </div>
       <div id="second-column">
+        <p id="api-block-title">Menu</p>
         <div id="api-block">
-          <p id="api-block-title">Hints</p>
           <div id="cell-buttons">
-            <p>Cell</p>
+            <p>Letter</p>
             <button id="reveal-cell">Reveal</button>
           </div>
           <div id="clue-buttons">
@@ -60,7 +66,7 @@
         </div>
       </div>
       <div id="third-column">
-        <div id="crossword-clues-wrapper"></div>
+        <div id="crossword-clues-placeholder"></div>
       </div>
     </div>
     <!-- Crossword completed elements -->
@@ -70,5 +76,7 @@
         <h3>Crossword completed!</h3>
       </div>
     </div>
+    <!-- Preload styles to avoid flash of unstyled content -->
+    <link rel="stylesheet" href="./index.less" />
   </body>
 </html>

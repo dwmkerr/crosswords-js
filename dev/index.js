@@ -9,13 +9,6 @@ import {
 //// Apply content styling
 //// ViteJS will convert LESS files to CSS
 
-// Set styling baseline for all browsers and devices
-import "../style/reset.css";
-// Base styles for crossword grid and clue blocks
-import "../style/crosswords.less";
-// Dev environment styles and overrides
-import "./index.less";
-
 // TODO: Load crossword dynamically form the user's choice.
 import crosswordJSON from "./crosswords/ftimes_17095.json";
 
@@ -60,9 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Compile a crossword
   const crosswordModel = compileCrossword(crosswordJSON);
   // Locate the parent element for the crossword-grid
-  const crosswordGridParent = eid("crossword-grid-wrapper");
+  const crosswordGridParent = eid("crossword-grid-placeholder");
   trace(`crosswordGridParent: ${crosswordGridParent}`);
-  const crosswordCluesParent = eid("crossword-clues-wrapper");
+  const crosswordCluesParent = eid("crossword-clues-placeholder");
   trace(`crosswordCluesParent: ${crosswordCluesParent}`);
   // Create the Controller and load the crossword grid into the web page.
   const controller = new Controller(

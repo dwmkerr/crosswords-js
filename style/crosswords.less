@@ -15,6 +15,7 @@
   width: min-content;
 
   background-color: @grid-background-color;
+  color: @grid-text-color;
   font-family: sans-serif;
   font-size: x-large;
 
@@ -41,7 +42,6 @@
   input {
     text-align: center;
     font-size: @letter-size;
-    color: @text-color;
     font-weight: @letter-weight;
     // Padding must be disabled
     padding: 0;
@@ -74,7 +74,6 @@
     margin: 1px 0px 0px 1px;
     position: absolute;
     font-size: @label-size;
-    color: @text-color;
     // click events need to pass through to input element
     pointer-events: none;
   }
@@ -137,11 +136,7 @@
 
 .crossword-clues {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  text-align: left;
 
   .crossword-clue-label {
     display: inline-block;
