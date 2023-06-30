@@ -5,6 +5,7 @@ artifacts/
 
 # Generated artefacts
 crosswords.css
+dev/dist/
 
 # VS Code artifacts
 *.code-workspace

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>CrosswordJS Developer Sandbox</title>
+    <title>Crosswords-JS Developer Sandbox</title>
     <!-- Stop flash of unstyled content 
       https://stackoverflow.com/a/53364612/1090683 -->
     <style>
@@ -11,12 +11,17 @@
         opacity: 0;
       }
     </style>
+    <!-- PT Serif webfont. -->
+    <link
+      href="https://fonts.googleapis.com/css?family=PT+Serif:400,700i&display=swap"
+      rel="stylesheet"
+    />
     <!-- Application entry point -->
     <script type="module" src="index.js"></script>
   </head>
 
   <body>
-    <h1>Crosswords.js</h1>
+    <h1>Crosswords-JS</h1>
     <div id="columns">
       <div id="first-column">
         <div id="title-block">
@@ -70,13 +75,15 @@
       </div>
     </div>
     <!-- Crossword completed elements -->
-    <div id="crossword-modal-overlay">
+    <div id="crossword-complete-overlay">
       <div id="crossword-complete-dialog">
         <span id="crossword-complete-close">&times;</span>
-        <h3>Crossword completed!</h3>
+        <h3><em>Congratulations!</em> You've completed the crossword</h3>
       </div>
     </div>
+
     <!-- Preload styles to avoid flash of unstyled content -->
+    <!-- Bundler (ViteJS) will convert LESS files to CSS -->
     <link rel="stylesheet" href="./index.less" />
   </body>
 </html>

@@ -72,7 +72,7 @@ class CrosswordController {
   #crosswordModel;
   #domGridParentElement;
   #domCluesParentElement;
-  #elementEventHandlers;
+  #userEventHandlers;
 
   constructor(crosswordModel, domGridParentElement, domCluesParentElement) {
     trace('CrosswordController constructor');
@@ -115,7 +115,8 @@ class CrosswordController {
       }
     }
 
-    this.#elementEventHandlers = {
+    // Mapping of end-user-initiated events to handler methods
+    this.#userEventHandlers = {
       'reveal-cell': this.revealCurrentCell.bind(this),
       'clean-clue': this.cleanCurrentClue.bind(this),
       'reset-clue': this.resetCurrentClue.bind(this),
@@ -178,12 +179,12 @@ class CrosswordController {
   };
 
   // Helper function to access API event handler functions
-  #elementEventHandler(id) {
+  #userEventHandler(id) {
     trace(`elementEventHandler:${id}`);
-    // We dereference elementEventHandlers object like an array to get property 'id'
-    return this.#elementEventHandlers[id];
+    // We dereference userEventHandlers object like an array to get property 'id'
+    return this.#userEventHandlers[id];
   }
-  elementEventHandler = this.#elementEventHandler.bind(this);
+  userEventHandler = this.#userEventHandler.bind(this);
 
   // Helper function to subscribe to CrosswordController events
   #addEventListener = (eventName, callback) => {

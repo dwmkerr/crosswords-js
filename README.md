@@ -91,49 +91,53 @@ Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js
 4. In your JavaScript code, load the **crosswords-js** package and a _CrosswordDefinition_:
 
    ```js
-   const crosswordsJS = require('crosswords-js');
-   const crosswordJSON = require('./my-crossword.json');
+   import { compileCrossword, Controller } from './crosswords.js';
+   import crosswordJSON from './crosswords/ftimes_17095.json';
    ```
 
 5. Compile `crosswordJSON` - creating the **Model** (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordJSON` will generate an exception:
 
    ```js
    try {
-     const model = crosswordsJS.compileCrossword(crosswordJSON);
+     const model = compileCrossword(crosswordJSON);
    } catch (err) {
      console.log(`Error compiling crossword: ${err}`);
    }
    ```
 
-6. Now get the [DOM][20] element which will be the parent for the crossword:
+6. Now get the [DOM][20] elements which will be the parents for the crossword grid and clues block:
 
-   > For example, if we have a placeholder `div` element somewhere in our webpage:
+   > For example, if we have placeholder `div` elements somewhere in our webpage:
    >
    > ```html
    > ...
-   > <div id="crossword" />
+   > <div id="crossword-grid-placeholder" />
    > ...
+   > <div id="crossword-clues-placeholder" />
    > ```
    >
    > We locate the element via the webpage [DOM][20]:
    >
    > ```js
-   > const parent = document.getElementById('crossword');
+   > const gridParent = document.getElementById('crossword-grid-placeholder');
+   > const cluesParent = document.getElementById('crossword-clues-placeholder');
    > ```
 
-7. And pass the `model` and the `parent` into the **Controller** constructor:
+7. And pass the `model`, `gridParent` and `viewParent` elements into the **Controller** constructor:
 
    ```js
-   let controller = new crosswordsJS.Controller(model, parent);
+   let controller = new Controller(model, gridParent, cluesParent);
    ```
 
-   This binds the crossword **View** into the webpage [DOM][20].
+   This binds the crossword **gridView** anf **cluesView** into the webpage [DOM][20].
 
 8. You can use the `controller` to programmatically manipulate the crossword [DOM][20] element, for example, in `button` click events.
 
-   The following methods are available:
+<!-- TODO: Down to here... -->
 
-   - For the **currently selected clue** in the crossword grid
+The following methods are available:
+
+- For the **currently selected clue** in the crossword grid
 
 ```js
 // Check the current clue answer against the solution.

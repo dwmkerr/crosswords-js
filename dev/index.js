@@ -6,9 +6,6 @@ import {
   tracing,
 } from "./crosswords.js";
 
-//// Apply content styling
-//// ViteJS will convert LESS files to CSS
-
 // TODO: Load crossword dynamically form the user's choice.
 import crosswordJSON from "./crosswords/ftimes_17095.json";
 
@@ -27,14 +24,14 @@ const eid = (id) => {
 document.addEventListener("DOMContentLoaded", () => {
   trace("DOM loaded");
 
-  // Helper function to bind Controller event listener function to webpage
+  // Helper function to bind Controller user-event-handler to webpage
   // DOM elementId.
   const addControllerListener = (eventName, elementId) => {
     const element = eid(elementId);
     if (element) {
       element.addEventListener(
         eventName,
-        controller.elementEventHandler(elementId),
+        controller.userEventHandler(elementId),
       );
     }
   };
@@ -64,12 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
     crosswordCluesParent,
   );
 
-  // Event listeners. The elementIds are originally defined in the
+  // User-event handlers. The elementIds are originally defined in the
   // CrosswordController class. Assign the ids to the DOM element events
   // (e.g. button click events in this example) where the associated behaviour
   // is expected.
 
-  // All available event handers
+  // Controller user-event handers
   const apiElementIds = [
     // Reveal solution for current letter in answer. All revealed cells have
     // distinct styling which remains for the duration of the puzzle.
@@ -91,16 +88,18 @@ document.addEventListener("DOMContentLoaded", () => {
     "reset-crossword",
     // Reveal solutions for the entire crossword.
     "reveal-crossword",
-    // Test the answers for the entire against the solutions
+    // Test the answers for the entire crossword against the solutions
     "test-crossword",
   ];
 
-  // Bind all the Controller event listeners to the click event of the element
+  // Bind all the Controller user-event handlers to the click event of the element
   // (ids) in the apiElementIds array above.
   apiElementIds.forEach((id) => {
     addLogListener("click", id);
     addControllerListener("click", id);
   });
+
+  // Wire up current-clue elements
 
   const currentClueLabel = eid("current-clue-label");
   const currentClueText = eid("current-clue-text");
@@ -124,23 +123,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //// Respond to crossword completion
 
-  let modalOverlay = eid("crossword-modal-overlay");
-  let closeModal = eid("crossword-complete-close");
+  let completeOverlay = eid("crossword-complete-overlay");
+  let closeCompletedDialog = eid("crossword-complete-close");
 
   controller.addEventListener("crosswordCompleted", (clue) => {
     trace("CrosswordCompleted");
-    modalOverlay.style.display = "block";
+    completeOverlay.style.display = "block";
   });
   // Setup crossword completed display UI event handlers
-  // When the user clicks anywhere outside of the modal dialog,
+  // When the user clicks anywhere outside of the complete dialog,
   // close/hide it
   window.onclick = (event) => {
-    if (event.target == modalOverlay) {
-      modalOverlay.style.display = "none";
+    if (event.target == completeOverlay) {
+      completeOverlay.style.display = "none";
     }
   };
-  // When the user clicks on the modal close element (x), close the modal
-  closeModal.addEventListener("click", () => {
-    modalOverlay.style.display = "none";
+  // When the user clicks on the complete close element (x), close the modal
+  closeCompletedDialog.addEventListener("click", () => {
+    completeOverlay.style.display = "none";
   });
 });
