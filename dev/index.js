@@ -15,36 +15,19 @@ tracing(true);
 // Check for browser context
 assert(window != null && document != null, "Not in browser!");
 
-// shortcut function
+//// Shortcut functions
+
 const eid = (id) => {
   return document.getElementById(id);
+};
+// Returns an array of elements
+const ecs = (className) => {
+  return document.getElementsByClassName(className);
 };
 
 // Execute once DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
   trace("DOM loaded");
-
-  // Helper function to bind Controller user-event-handler to webpage
-  // DOM elementId.
-  const addControllerListener = (eventName, elementId) => {
-    const element = eid(elementId);
-    if (element) {
-      element.addEventListener(
-        eventName,
-        controller.userEventHandler(elementId),
-      );
-    }
-  };
-
-  // Helper function to add logging of event handler.
-  const addLogListener = (eventName, elementId) => {
-    const element = eid(elementId);
-    if (element) {
-      element.addEventListener(eventName, (event) => {
-        trace(`${elementId}:${eventName}`);
-      });
-    }
-  };
 
   // The DOM elementIds provide the linkage between the HTML and the Controller
   // Compile a crossword
@@ -61,42 +44,49 @@ document.addEventListener("DOMContentLoaded", () => {
     crosswordCluesParent,
   );
 
-  // User-event handlers. The elementIds are originally defined in the
-  // CrosswordController class. Assign the ids to the DOM element events
+  // User-event handlers. The handlers are defined in the
+  // CrosswordController class. Assign the handler ids as DOM element ids
   // (e.g. button click events in this example) where the associated behaviour
-  // is expected.
+  // is desired.
 
-  // Controller user-event handers
-  const apiElementIds = [
-    // Reveal solution for current letter in answer. All revealed cells have
-    // distinct styling which remains for the duration of the puzzle.
-    // Public shaming is strictly enforced!
-    "reveal-cell",
-    // Remove incorrect letters in the answer after testing.
-    "clean-clue",
-    // Clear out the answer for the current clue
-    "reset-clue",
-    // Reveal solution for current clue
-    "reveal-clue",
-    // Test the current clue answer against the solution. Incorrect letters
-    // have distinct styling which is removed when 'cleared' or a new letter
-    // entered in the cell.
-    "test-clue",
-    // Clear out all incorrect letters in the entire crossword
-    "clean-crossword",
-    // Clear out the entire crossword
-    "reset-crossword",
-    // Reveal solutions for the entire crossword.
-    "reveal-crossword",
-    // Test the answers for the entire crossword against the solutions
-    "test-crossword",
-  ];
+  // Helper function to bind Controller user-event-handler to webpage
+  // DOM elementId.
+  const bindControllerEventHandlerToId = (eventName, elementId) => {
+    const element = eid(elementId);
+    if (element) {
+      element.addEventListener(
+        eventName,
+        controller.userEventHandler(elementId),
+      );
+    }
+  };
 
-  // Bind all the Controller user-event handlers to the click event of the element
-  // (ids) in the apiElementIds array above.
-  apiElementIds.forEach((id) => {
+  // Helper function to bind Controller user-event-handler to webpage
+  // DOM element class. Using element class names rather than element Ids
+  // allows us to add controller user-event-handler to more than one
+  // DOM element
+  const bindControllerEventHandlerToClass = (eventName, elementClass) => {
+    const elements = ecs(elementClass);
+    elements
+      .filter((e) => Boolean(e))
+      .addEventListener(eventName, controller.userEventHandler(elementClass));
+  };
+
+  // Helper function to log controller user event handler execution.
+  const addLogListener = (eventName, elementId) => {
+    const element = eid(elementId);
+    if (element) {
+      element.addEventListener(eventName, (event) => {
+        trace(`${elementId}:${eventName}`);
+      });
+    }
+  };
+
+  // Bind all the Controller user-event handlers by their ids to the
+  // click event of the matching DOM element (ids) in this example application.
+  controller.userEventHandlerIds.forEach((id) => {
     addLogListener("click", id);
-    addControllerListener("click", id);
+    bindControllerEventHandlerToId("click", id);
   });
 
   // Wire up current-clue elements
@@ -108,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
   currentClueLabel.innerHTML = cc.clueLabel;
   currentClueText.innerHTML = `${cc.clueText} ${cc.answerLengthText}`;
   // Update content of #current-clue when current clue changes
-  controller.addEventListener("clueSelected", (clue) => {
+  controller.addEventsListener(["clueSelected"], (clue) => {
     currentClueLabel.innerHTML = clue.clueLabel;
     currentClueText.innerHTML = `${clue.clueText} ${clue.answerLengthText}`;
   });
@@ -123,23 +113,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //// Respond to crossword completion
 
-  let completeOverlay = eid("crossword-complete-overlay");
-  let closeCompletedDialog = eid("crossword-complete-close");
+  let crosswordSolvedOverlay = eid("crossword-solved-overlay");
+  // let closeCompletedDialog = eid("crossword-complete-close");
 
-  controller.addEventListener("crosswordCompleted", (clue) => {
-    trace("CrosswordCompleted");
-    completeOverlay.style.display = "block";
+  controller.addEventsListener(["crosswordSolved"], (clue) => {
+    trace("CrosswordSolvedHandler");
+    crosswordSolvedOverlay.style.display = "block";
   });
   // Setup crossword completed display UI event handlers
-  // When the user clicks anywhere outside of the complete dialog,
+  // When the user types or clicks anywhere outside of the complete dialog,
   // close/hide it
   window.onclick = (event) => {
-    if (event.target == completeOverlay) {
-      completeOverlay.style.display = "none";
-    }
+    crosswordSolvedOverlay.style.display = "none";
+    return true;
   };
-  // When the user clicks on the complete close element (x), close the modal
-  closeCompletedDialog.addEventListener("click", () => {
-    completeOverlay.style.display = "none";
+  window.onkeydown = window.onclick;
+
+  //// Respond to clue solved
+
+  let clueSolvedNotification = eid("clue-solved-notification");
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animations/Tips
+  controller.addEventsListener(["clueSolved"], (clue) => {
+    trace("clueSolvedHandler");
+    // Make notification visible - hidden initially.
+    clueSolvedNotification.style.display = "block";
+    requestAnimationFrame((time) => {
+      clueSolvedNotification.className = "";
+      requestAnimationFrame((time) => {
+        clueSolvedNotification.className = "fade-out";
+      });
+    });
   });
 });

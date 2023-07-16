@@ -9,15 +9,18 @@ import {
 } from './helpers.mjs';
 import {
   anchorSegmentClues,
-  cleanCell,
+  checkSolved,
   cleanClue,
+  cleanCrossword,
   hideElement,
-  resetCell,
+  Outcome,
   resetClue,
+  resetCrossword,
   revealCell,
   revealClue,
-  testCell,
+  revealCrossword,
   testClue,
+  testCrossword,
 } from './crossword-controller-helpers.mjs';
 import {
   moveDown,
@@ -38,25 +41,13 @@ const BACKSPACE = 8,
   DOWN = 40,
   DELETE = 46;
 
-// Events published by the CrosswordController
-const controllerEvents = [
-  'clueSelected',
-  'clueTested',
-  'crosswordTested',
-  'cellRevealed',
-  'clueRevealed',
-  'crosswordRevealed',
-  'clueReset',
-  'crosswordReset',
-  'clueCleaned',
-  'crosswordCleaned',
-  'crosswordCompleted',
-];
-
 // Regular expressions for keypress processing.
 // All pressed keys are upper-cased before testing.
 const echoingKeyPressCharacters = /^[A-Z]$/;
 const advancingKeyPressCharacters = /^[ A-Z]$/;
+
+// Allow DOM event flushing after clue or crossword solution.
+const SOLUTION_TIMEOUT = 5;
 
 /** **CrosswordController** - an [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
  * _Controller_ class for the _CrosswordsJS_ package.
@@ -73,6 +64,22 @@ class CrosswordController {
   #domGridParentElement;
   #domCluesParentElement;
   #userEventHandlers;
+
+  // Events published by the CrosswordController
+  #controllerEventNames = [
+    'cellRevealed',
+    'clueCleaned',
+    'clueReset',
+    'clueRevealed',
+    'clueSelected',
+    'clueSolved',
+    'clueTested',
+    'crosswordCleaned',
+    'crosswordReset',
+    'crosswordRevealed',
+    'crosswordSolved',
+    'crosswordTested',
+  ];
 
   constructor(crosswordModel, domGridParentElement, domCluesParentElement) {
     trace('CrosswordController constructor');
@@ -117,15 +124,28 @@ class CrosswordController {
 
     // Mapping of end-user-initiated events to handler methods
     this.#userEventHandlers = {
-      'reveal-cell': this.revealCurrentCell.bind(this),
-      'clean-clue': this.cleanCurrentClue.bind(this),
-      'reset-clue': this.resetCurrentClue.bind(this),
-      'reveal-clue': this.revealCurrentClue.bind(this),
-      'test-clue': this.testCurrentClue.bind(this),
-      'clean-crossword': this.cleanCrossword.bind(this),
-      'reset-crossword': this.resetCrossword.bind(this),
-      'reveal-crossword': this.revealCrossword.bind(this),
-      'test-crossword': this.testCrossword.bind(this),
+      // Reveal solution for current letter in answer. All revealed cells have
+      // distinct styling which remains for the duration of the puzzle.
+      // Public shaming is strictly enforced!
+      'reveal-cell': this.revealCurrentCell,
+      // Remove incorrect letters in the answer after testing.
+      'clean-clue': this.cleanCurrentClue,
+      // Clear out the answer for the current clue
+      'reset-clue': this.resetCurrentClue,
+      // Reveal solution for current clue
+      'reveal-clue': this.revealCurrentClue,
+      // Test the current clue answer against the solution. Incorrect letters
+      // have distinct styling which is removed when 'cleared' or a new letter
+      // entered in the cell.
+      'test-clue': this.testCurrentClue,
+      // Clear out all incorrect letters in the entire crossword
+      'clean-crossword': this.cleanCrossword,
+      // Clear out the entire crossword
+      'reset-crossword': this.resetCrossword,
+      // Reveal solutions for the entire crossword.
+      'reveal-crossword': this.revealCrossword,
+      // Test the answers for the entire crossword against the solutions
+      'test-crossword': this.testCrossword,
     };
 
     //  Add the crossword grid to the webpage DOM
@@ -179,17 +199,21 @@ class CrosswordController {
   };
 
   // Helper function to access API event handler functions
-  #userEventHandler(id) {
+  userEventHandler(id) {
     trace(`elementEventHandler:${id}`);
+    assert(
+      this.#userEventHandlers.hasOwnProperty(id),
+      `userEventHandler: [${id}] is not a CrosswordController event handler.`
+    );
     // We dereference userEventHandlers object like an array to get property 'id'
-    return this.#userEventHandlers[id];
+    // We bind the controller object as the context for 'this' references in the event handler,
+    // otherwise event.currentTarget is the context
+    return this.#userEventHandlers[id].bind(this);
   }
-  userEventHandler = this.#userEventHandler.bind(this);
 
-  // Helper function to subscribe to CrosswordController events
-  #addEventListener = (eventName, callback) => {
-    this.#subscribers.push(this.#pubSub.subscribe(eventName, callback));
-  };
+  get userEventHandlerIds() {
+    return Object.keys(this.#userEventHandlers);
+  }
 
   // Accessors for public property currentCell
   get currentCell() {
@@ -229,14 +253,13 @@ class CrosswordController {
   }
 
   // Accessor for crosswordModel
-
   get crosswordModel() {
     return this.#crosswordModel;
   }
 
   // Accessors for public event publisher
-  get addEventListener() {
-    return this.#addEventListener;
+  get addEventsListener() {
+    return this.#addEventsListener;
   }
 
   // Accessor for crosswordGridView
@@ -249,57 +272,61 @@ class CrosswordController {
     return this.#crosswordCluesView;
   }
 
-  //// API methods ////
+  // Accessor for controllerEventNames
+  get controllerEventNames() {
+    return this.#controllerEventNames;
+  }
+
+  //// methods ////
 
   testCurrentClue() {
     trace(`testCurrentClue:${this.currentClue.code}`);
     const showIncorrect = true;
-    const success = testClue(this, this.currentClue, showIncorrect);
-    this.#stateChange('clueTested');
-    return success;
+    const outcome = testClue(this, this.currentClue, showIncorrect);
+    this.#stateChange('clueTested', outcome);
+    if (outcome === Outcome.Correct) {
+      // allow other events to complete before the tadah! moment
+      setTimeout(() => {
+        this.#stateChange('clueSolved', this.currentClue);
+      }, SOLUTION_TIMEOUT);
+    }
+    return outcome;
   }
 
   testCrossword() {
     trace('testCrossword');
     const showIncorrect = true;
-    let success = true;
-    this.#crosswordModel.cells.forEach((row) => {
-      row
-        .filter((x) => x.light)
-        .forEach((cell) => {
-          success = testCell(this, cell, showIncorrect) && success;
-        });
-    });
-    this.#stateChange('crosswordTested');
-    if (success) {
-      this.testCrosswordCompletion();
+    // call the crossword-controller-helper testCrossword
+    const outcome = testCrossword(this, showIncorrect);
+    this.#stateChange('crosswordTested', outcome);
+    if (outcome === Outcome.Correct) {
+      // allow other events to complete before the tadah! moment
+      setTimeout(() => {
+        this.#stateChange('crosswordSolved', this.crosswordModel);
+      }, SOLUTION_TIMEOUT);
     }
-    return success;
+    return outcome;
   }
 
   revealCurrentCell() {
+    // trace('revealCurrentCell');
     revealCell(this, this.currentCell);
     this.#stateChange('cellRevealed');
-    this.testCrosswordCompletion();
+    this.#checkSolved();
   }
 
   revealCurrentClue() {
+    // trace('revealCurrentClue');
     revealClue(this, this.currentClue);
     this.#stateChange('clueRevealed');
-    this.testCrosswordCompletion();
+    this.#checkSolved();
   }
 
   revealCrossword() {
     trace('revealCrossword');
-    this.#crosswordModel.cells.forEach((row) => {
-      row
-        .filter((x) => x.light)
-        .forEach((cell) => {
-          revealCell(this, cell);
-        });
-    });
+    revealCrossword(this);
     this.#stateChange('crosswordRevealed');
-    this.testCrosswordCompletion();
+    //No crossword solved notification
   }
 
   resetCurrentClue() {
@@ -309,13 +336,7 @@ class CrosswordController {
 
   resetCrossword() {
     trace('resetCrossword');
-    this.#crosswordModel.cells.forEach((row) => {
-      row
-        .filter((x) => x.light)
-        .forEach((cell) => {
-          resetCell(this, cell);
-        });
-    });
+    resetCrossword(this);
     this.#stateChange('crosswordReset');
   }
 
@@ -326,23 +347,8 @@ class CrosswordController {
 
   cleanCrossword() {
     trace('cleanCrossword');
-    this.#crosswordModel.cells.forEach((row) => {
-      row
-        .filter((x) => x.light)
-        .forEach((cell) => {
-          cleanCell(this, cell);
-        });
-    });
+    cleanCrossword(this);
     this.#stateChange('crosswordCleaned');
-  }
-
-  testCrosswordCompletion() {
-    if (this.#isCrosswordCompleted()) {
-      // allow other events to complete before the tadah! moment
-      setTimeout(() => {
-        this.#stateChange('crosswordCompleted');
-      }, 5);
-    }
   }
 
   //// Private methods ////
@@ -355,6 +361,18 @@ class CrosswordController {
   get #window() {
     return this.#document.defaultView;
   }
+
+  // Helper function to subscribe to CrosswordController events.
+  // Refer to #controllerEventNames for complete list of events.
+  #addEventsListener = (eventNames, callback) => {
+    eventNames.forEach((en) => {
+      assert(
+        this.controllerEventNames.includes(en),
+        `addEventsListener: event [${en}] is not a CrosswordController event.`
+      );
+      this.#subscribers.push(this.#pubSub.subscribe(en, callback));
+    });
+  };
 
   #currentClueChanged(eventCell) {
     const across = eventCell.acrossClue;
@@ -413,27 +431,20 @@ class CrosswordController {
    * **#stateChange**: Publish crossword events to the handler allocated/subscribed to _onStateChange_.
    * @param {*} message The name of the event to be published
    * @param {*} data not used
-   * - Events:  _cellRevealed_,_clueReset_,_clueRevealed_,
-   *            _clueSelected_,_clueTested_,_crosswordReset_,
-   *            _crosswordRevealed_,_crosswordTested_
    */
   #stateChange(message, data) {
     trace(`stateChange: ${message}`);
     this.#pubSub.publish(message, data);
   }
 
-  #isCrosswordCompleted() {
-    trace('isCrosswordCompleted');
-    const showIncorrect = false;
-    let success = true;
-    this.#crosswordModel.cells.forEach((row) => {
-      row
-        .filter((x) => x.light)
-        .forEach((cell) => {
-          success = testCell(this, cell, showIncorrect) && success;
-        });
-    });
-    return success;
+  #checkSolved() {
+    trace('checkSolved');
+    if (checkSolved(this) === Outcome.Correct) {
+      // allow other events to complete before the tadah! moment
+      setTimeout(() => {
+        this.#stateChange('crosswordSolved');
+      }, SOLUTION_TIMEOUT);
+    }
   }
 
   /**
@@ -532,7 +543,7 @@ class CrosswordController {
 
     // Handle when current clue has changed in controller
     // eslint-disable-next-line no-param-reassign
-    controller.addEventListener('clueSelected', (data) => {
+    controller.addEventsListener(['clueSelected'], (data) => {
       for (const vac of view.acrossClues.children) {
         if (isCurrentClueSegment(vac.modelClue)) {
           addClass(vac, 'current-clue-segment');
@@ -749,7 +760,7 @@ class CrosswordController {
         // remove any visual flag in cell that letter is incorrect
         hideElement(controller.incorrectElement(eventCell));
         // test for crossword completion
-        this.testCrosswordCompletion();
+        this.#checkSolved();
       }
 
       if (advancingKeyPressCharacters.test(character)) {

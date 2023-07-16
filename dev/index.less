@@ -19,7 +19,7 @@
 @link-hover-color: lighten(@highlight-color, 20%);
 @link-visited-color: darken(@highlight-color, 20%);
 
-// Restore visibility after html completes loading ti avoid flash of unstyled content
+// Restore visibility after html completes loading t0 avoid flash of unstyled content
 // https://stackoverflow.com/a/53364612/1090683
 html {
   visibility: visible;
@@ -57,6 +57,10 @@ button {
   &:hover {
     transform: scale(1.1);
     box-shadow: @box-shadow;
+  }
+
+  &:active {
+    background-color: lighten(@highlight-color, 25%);
   }
 }
 
@@ -279,7 +283,15 @@ a {
   }
 }
 
-#crossword-complete-overlay {
+.crossword-dialog-styles() {
+  background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: @box-shadow;
+}
+
+#crossword-solved-overlay {
   display: none; // Hidden by default
   position: fixed; // Stay in place
   z-index: 1; // Sit on top
@@ -291,14 +303,11 @@ a {
   overflow: auto; // scroll if needed
   background-color: @modal-background-color;
   animation-name: fadeIn;
-  animation-duration: 0.2s;
+  animation-duration: 0.3s;
 
-  #crossword-complete-dialog {
-    background-color: white;
-    color: black;
-    padding: 10px 15px;
+  #crossword-solved-dialog {
+    .crossword-dialog-styles();
     width: 20em;
-    border-radius: 10px;
     box-shadow: @modal-box-shadow;
     // centre dialog in viewport
     position: absolute;
@@ -306,11 +315,10 @@ a {
     left: 50%;
     transform: translate(-50%, -50%);
 
-    #crossword-complete-close {
+    #crossword-solved-close {
       float: right;
       font-size: 28px;
       font-weight: bold;
-      // vertical-align: middle;
 
       &:hover,
       &:focus {
@@ -323,13 +331,51 @@ a {
       text-align: center;
     }
   }
+}
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 1.5s;
+  // final states of animation will remain applied
+  animation-fill-mode: forwards;
+}
+
+#clue-solved-notification {
+  display: none; // Hidden by default
+  position: fixed; // Stay in place
+  z-index: 1; // Sit on top
+
+  .crossword-dialog-styles();
+  width: 12em;
+  // box-shadow: @box-shadow;
+  // centre dialog in viewport
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  h3 {
+    margin: 5px;
+    text-align: center;
   }
 }

@@ -74,14 +74,19 @@
         <div id="crossword-clues-placeholder"></div>
       </div>
     </div>
-    <!-- Crossword completed elements -->
-    <div id="crossword-complete-overlay">
-      <div id="crossword-complete-dialog">
-        <span id="crossword-complete-close">&times;</span>
-        <h3><em>Congratulations!</em> You've completed the crossword</h3>
+    <!-- Crossword solved elements -->
+    <div id="crossword-solved-overlay">
+      <div id="crossword-solved-dialog">
+        <span id="crossword-solved-close">&times;</span>
+        <h3><em>Congratulations!</em></h3>
+        <h3>You've solved the crossword</h3>
       </div>
     </div>
 
+    <div id="clue-solved-notification">
+      <h3><em>That's correct!</em></h3>
+      <h3>Keep going</h3>
+    </div>
     <!-- Preload styles to avoid flash of unstyled content -->
     <!-- Bundler (ViteJS) will convert LESS files to CSS -->
     <link rel="stylesheet" href="./index.less" />

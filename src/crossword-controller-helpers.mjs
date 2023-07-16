@@ -1,4 +1,4 @@
-import { assert, memoize, trace, setLetter } from './helpers.mjs';
+import { assert, newEnum, memoize, trace, setLetter } from './helpers.mjs';
 
 const hideElement = (element) => {
   element && element.classList.add('hidden');
@@ -45,27 +45,50 @@ function revealClue(controller, clue) {
   });
 }
 
+function revealCrossword(controller) {
+  assert(controller, '<controller> is null or undefined');
+  trace('revealCrossword');
+  controller.crosswordModel.cells.forEach((row) => {
+    row
+      .filter((x) => x.light)
+      .forEach((cell) => {
+        revealCell(controller, cell);
+      });
+  });
+}
+
+const Outcome = newEnum([
+  'Correct', // 0 elements empty, N elements correct
+  'Incorrect', // 1+ elements incorrect
+  'Incomplete', // 1+ elements empty, 0 elements incorrect
+]);
+
 function testCell(controller, cell, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
 
   // Get index of cell-letter in clue
   // Cell can be in across and/or down clue
-  const clue = cell.acrossClue ? cell.acrossClue : cell.downClue;
-  const letterIndex = cell.acrossClue
-    ? cell.acrossClueLetterIndex
-    : cell.downClueLetterIndex;
-  // trace(`testCell(${cell.x},${cell.y}): answer: <${clue.answer}>`);
+  const [clue, letterIndex] = cell.acrossClue
+    ? [cell.acrossClue, cell.acrossClueLetterIndex]
+    : [cell.downClue, cell.downClueLetterIndex];
   const answerLetter = clue.answer[letterIndex];
   const solutionLetter = clue.solution[letterIndex];
-  const success = answerLetter === solutionLetter;
-  // trace(`testCell(${cell.x},${cell.y}): ${success}`);
+  const outcome =
+    answerLetter === solutionLetter
+      ? Outcome.Correct
+      : answerLetter === ' ' || answerLetter === undefined
+      ? Outcome.Incomplete
+      : Outcome.Incorrect;
+  // trace(
+  //   `testCell(${cell.x},${cell.y}): [${answerLetter}] [${solutionLetter}] ${outcome}`
+  // );
 
-  if (!(success || answerLetter === ' ') && showIncorrect) {
+  if (outcome === Outcome.Incorrect && showIncorrect) {
     // set visual flag in cell that answer letter is incorrect
     showElement(controller.incorrectElement(cell));
   }
-  return success;
+  return outcome;
 }
 
 function testClue(controller, clue, showIncorrect = true) {
@@ -73,16 +96,87 @@ function testClue(controller, clue, showIncorrect = true) {
   assert(clue, '<clue> is null or undefined');
   trace(`testClue: '${clue.code}'`);
 
-  let success = true;
+  let incorrect = 0,
+    incomplete = 0;
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
   clues.forEach((c) => {
+    // short-circuit an incorrect result`- use find()
     c.cells.forEach((cell) => {
-      success = testCell(controller, cell, showIncorrect) && success;
+      const outcome = testCell(controller, cell, showIncorrect);
+      if (outcome === Outcome.Incorrect) {
+        incorrect += 1;
+        // trace(`incorrect: ${incorrect}`);
+      } else if (outcome === Outcome.Incomplete) {
+        incomplete += 1;
+        // trace(`incomplete: ${incomplete}`);
+      }
     });
   });
-  return success;
+  return incorrect > 0
+    ? Outcome.Incorrect
+    : incomplete > 0
+    ? Outcome.Incomplete
+    : Outcome.Correct;
+}
+
+function testCrossword(controller, showIncorrect = true) {
+  assert(controller, '<controller> is null or undefined');
+  trace('testCrossword');
+  let incorrect = 0,
+    incomplete = 0;
+  controller.crosswordModel.cells.forEach((row) => {
+    row
+      .filter((x) => x.light)
+      .forEach((cell) => {
+        const outcome = testCell(controller, cell, showIncorrect);
+        if (outcome === Outcome.Incorrect) {
+          incorrect += 1;
+          // trace(`incorrect: ${incorrect}`);
+        } else if (outcome === Outcome.Incomplete) {
+          incomplete += 1;
+          // trace(`incomplete: ${incomplete}`);
+        }
+      });
+  });
+
+  return incorrect > 0
+    ? Outcome.Incorrect
+    : incomplete > 0
+    ? Outcome.Incomplete
+    : Outcome.Correct;
+}
+
+function checkSolved(controller) {
+  // trace('checkSolved');
+  assert(controller, '<controller> is null or undefined');
+  let incorrect = 0,
+    incomplete = 0;
+  const showIncorrect = false;
+  // short-circuit a non-correct result - use find()
+  controller.crosswordModel.cells.find((row) => {
+    return row
+      .filter((x) => x.light)
+      .find((cell) => {
+        const outcome = testCell(controller, cell, showIncorrect);
+        if (outcome === Outcome.Incorrect) {
+          incorrect = 1;
+          // trace(`incorrect: ${incorrect}`);
+          return true;
+        } else if (outcome === Outcome.Incomplete) {
+          incomplete = 1;
+          // trace(`incomplete: ${incomplete}`);
+          return true;
+        }
+      });
+  });
+
+  return incorrect > 0
+    ? Outcome.Incorrect
+    : incomplete > 0
+    ? Outcome.Incomplete
+    : Outcome.Correct;
 }
 
 function setCellText(controller, cell, newText, clearRevealed) {
@@ -101,7 +195,7 @@ function setCellText(controller, cell, newText, clearRevealed) {
   }
   // Cell can be part of BOTH across and down clues
 
-  // Test for across clue
+  // Outcome for across clue
   if (cell.acrossClue) {
     let clue = cell.acrossClue;
     // get index of cell-letter in clue
@@ -110,7 +204,7 @@ function setCellText(controller, cell, newText, clearRevealed) {
     clue = adjustClue(clue, letterIndex);
   }
 
-  // Test for down clue
+  // Outcome for down clue
   if (cell.downClue) {
     let clue = cell.downClue;
     // get index of cell-letter in clue
@@ -149,12 +243,24 @@ function resetClue(controller, clue) {
   });
 }
 
+function resetCrossword(controller) {
+  trace('resetCrossword');
+  assert(controller, '<controller> is null or undefined');
+  controller.crosswordModel.cells.forEach((row) => {
+    row
+      .filter((x) => x.light)
+      .forEach((cell) => {
+        resetCell(controller, cell);
+      });
+  });
+}
+
 function cleanCell(controller, cell) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
   // trace(`cleanCell:(${cell.x},${cell.y})`);
 
-  const wrongLetter = !testCell(controller, cell);
+  const wrongLetter = testCell(controller, cell) === Outcome.Incorrect;
   const clearRevealed = wrongLetter;
   // is the current cell letter incorrect?
   if (wrongLetter) {
@@ -178,16 +284,31 @@ function cleanClue(controller, clue) {
   });
 }
 
+function cleanCrossword(controller) {
+  trace('cleanCrossword');
+  assert(controller, '<controller> is null or undefined');
+  controller.crosswordModel.cells.forEach((row) => {
+    row
+      .filter((x) => x.light)
+      .forEach((cell) => {
+        cleanCell(controller, cell);
+      });
+  });
+}
+
 export {
   anchorSegmentClues,
-  cleanCell,
+  checkSolved,
   cleanClue,
+  cleanCrossword,
   hideElement,
-  resetCell,
+  Outcome,
   resetClue,
+  resetCrossword,
   revealCell,
   revealClue,
+  revealCrossword,
   showElement,
-  testCell,
   testClue,
+  testCrossword,
 };

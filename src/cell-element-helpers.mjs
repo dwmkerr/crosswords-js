@@ -138,14 +138,16 @@ function setCellContent(crosswordController, event, character) {
   //  eslint-disable-next-line no-param-reassign
   event.target.value = character;
 
-  //  We need to update the answer.
+  //  We need to update the answers
   if (eventCell.acrossClue) {
     eventCell.acrossClue.answer = setLetter(
       eventCell.acrossClue.answer,
       eventCell.acrossClueLetterIndex,
       character
     );
-  } else {
+  }
+  // across and/or down are possible
+  if (eventCell.downClue) {
     eventCell.downClue.answer = setLetter(
       eventCell.downClue.answer,
       eventCell.downClueLetterIndex,

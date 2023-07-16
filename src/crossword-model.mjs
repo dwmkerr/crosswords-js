@@ -1,4 +1,4 @@
-import { trace } from './helpers.mjs';
+import { setLetter, trace } from './helpers.mjs';
 import { newClueModel } from './clue-model.mjs';
 
 function buildCellGrid(crosswordModel) {
@@ -73,14 +73,13 @@ function newCrosswordModel(jsonCrossword) {
 
   //  We're going to go through the across clues, then the down clues.
   const jsonClues = jsonCrossword.acrossClues.concat(jsonCrossword.downClues);
-  for (let c = 0; c < jsonClues.length; c += 1) {
+  for (let index = 0; index < jsonClues.length; index += 1) {
     //  Grab the clue and build a flag letting us know if we're across or down.
-    const jsonClue = jsonClues[c];
-    const isAcrossClue = c < jsonCrossword.acrossClues.length;
+    const jsonClue = jsonClues[index];
+    const isAcrossClue = index < jsonCrossword.acrossClues.length;
 
     //  Compile the clue model from the crossword definition of the clue
     const clueModel = newClueModel(jsonClue, isAcrossClue);
-
     //  Update the crosswordModel.
     crosswordModel[isAcrossClue ? 'acrossClues' : 'downClues'].push(clueModel);
 
@@ -130,9 +129,6 @@ function newCrosswordModel(jsonCrossword) {
 
       //  If the imported clue has an answer we set it in the cell...
       if (jsonClue.answer) {
-        // trace(
-        //   `newCrosswordModel(${x},${y}): jsonClue.Answer<${jsonClue.answer}> cell.answer<${cell.answer}> clueModel.answer[letter]<${clueModel.answer[letter]}>`
-        // );
         //  ...but only if it is not different to an existing answer.
         if (
           cell.answer &&
@@ -150,8 +146,10 @@ function newCrosswordModel(jsonCrossword) {
             }) answer [${cell.acrossClue.answer},${cell.answer}].`
           );
         }
-        // if (cell.answer && cell.answer !== ' '
+        // if cell.answer && cell.answer !== ' '
         cell.answer = clueModel.answer[letter];
+        // check if cell appears in a clue in the other direction
+        updateOrthogonalClue(cell, cell.answer, isAcrossClue);
       }
       // no answer in imported clue, insert default if cell is vacant
       else {
@@ -272,6 +270,28 @@ function newCrosswordModel(jsonCrossword) {
   });
 
   return crosswordModel;
+}
+
+function updateOrthogonalClue(cell, character, isAcrossClue) {
+  //  eslint-disable-next-line no-param-reassign
+
+  //  We need to update the answers
+  if (!isAcrossClue && cell.acrossClue) {
+    //  eslint-disable-next-line no-param-reassign
+    cell.acrossClue.answer = setLetter(
+      cell.acrossClue.answer,
+      cell.acrossClueLetterIndex,
+      character
+    );
+  }
+  if (isAcrossClue && cell.downClue) {
+    //  eslint-disable-next-line no-param-reassign
+    cell.downClue.answer = setLetter(
+      cell.downClue.answer,
+      cell.downClueLetterIndex,
+      character
+    );
+  }
 }
 
 export { newCrosswordModel };

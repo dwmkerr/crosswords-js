@@ -201,6 +201,14 @@ const newPubSub = () => {
   };
 };
 
+function newEnum(values) {
+  const enumeration = {};
+  for (const val of values) {
+    enumeration[val] = val;
+  }
+  return Object.freeze(enumeration);
+}
+
 export {
   addClass,
   addClasses,
@@ -208,6 +216,7 @@ export {
   first,
   last,
   memoize,
+  newEnum,
   newPubSub,
   removeClass,
   replaceStrAt,
