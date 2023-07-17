@@ -24,6 +24,7 @@
 html {
   visibility: visible;
   opacity: 1;
+  font-size: 16px;
 }
 
 body {
@@ -183,6 +184,7 @@ a {
 
       .crossword-clue-block {
         padding: 0px 5px;
+        margin: auto;
       }
 
       .crossword-clue-block-title {
@@ -227,25 +229,19 @@ a {
     }
   }
 
-  @media screen and (max-width: 757px) {
-    #third-column {
-      .crossword-clues {
-        .crossword-clue-block {
-          margin: auto;
-          .crossword-clue-text {
-            max-width: 28rem;
-          }
+  @media screen and (max-width: 545px) {
+    #first-column {
+      #current-clue {
+        height: 4em;
+        #current-clue-text {
+          max-width: 15em;
         }
       }
     }
-  }
 
-  @media screen and (max-width: 545px) {
     #second-column {
       #api-block-title {
         display: none;
-        // width: 100%;
-        // padding: 5px 0px;
       }
 
       #api-block {
@@ -267,15 +263,6 @@ a {
           }
           button {
             min-width: 4rem;
-          }
-        }
-      }
-    }
-    #third-column {
-      .crossword-clues {
-        .crossword-clue-block {
-          .crossword-clue-text {
-            max-width: 19rem;
           }
         }
       }
