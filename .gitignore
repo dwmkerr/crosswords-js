@@ -3,10 +3,10 @@ node_modules/
 artifacts/
 .DS_Store
 
-# Generated artefacts
+# Project artefacts
 crosswords.css
 dev/dist/
 
-# VS Code artifacts
+# VS Code artefacts
 *.code-workspace
 .vscode/
