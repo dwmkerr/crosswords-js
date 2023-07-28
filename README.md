@@ -1,19 +1,31 @@
-# CrosswordsJS
+# CrosswordsJS <!-- omit from toc -->
 
-[![CircleCI](https://circleci.com/gh/dwmkerr/crosswords-js.svg?style=shield)](https://circleci.com/gh/dwmkerr/crosswords-js) [![codecov](https://codecov.io/gh/dwmkerr/crosswords-js/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/crosswords-js) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/crosswords-js.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/crosswords-js)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-**IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
+[![All Contributors][1]][2]
 
-Tiny, lightweight crossword for control for the web. Crossword.js is:
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-* Lightweight
-* Fast
-* Simple
-* Framework Free
+[![Release Please][3]][4]
+[![NPM Package Version][5]][6]
+[![codecov][7]][8]
 
-Demo: [dwmkerr.github.io/crosswords-js/](https://dwmkerr.github.io/crosswords-js/)
+> **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
+
+Tiny, lightweight crossword for control for the web. **Crosswords.js** is:
+
+- Lightweight
+- Fast
+- Simple
+- Framework Free
+
+Inspired by the excellent free online crosswords on [The Guardian Crosswords][18].
+
+Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 <a href="https://dwmkerr.github.io/crosswords-js/"><img src="./docs/screenshot.png" alt="CrosswordsJS Screenshot" width="480px" /></a>
+
+## Index <!-- omit from toc -->
 
 <!-- vim-markdown-toc GFM -->
 
@@ -177,7 +189,7 @@ controller.resetCrossword();
 
 ## Developer Guide
 
-Ensure you are using Node LTS. I recommend using [Node Version Manager](https://github.com/nvm-sh/nvm) for this:
+Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
 ```bash
 # Install/update node to latest long-term-support (LTS) version, and install/update npm to latest version.
@@ -185,7 +197,7 @@ nvm install --lts --latest-npm
 nvm use --lts
 ```
 
-Check out the code, then run:
+Check out the code, then, from the root directory, run:
 
 ```bash
 # Fetch all dependent packages
@@ -202,7 +214,7 @@ npm run dev
 
 Run the tests with:
 
-```sh
+```bash
 npm test
 ```
 
@@ -273,7 +285,7 @@ git config --local commit.template ./.git-commit-template.txt
 
 This is a little fiddly. I have tried to ensure the syntax is as close to what a reader would see in a printed crossword to make this as clear as possible. Here is an example:
 
-```
+```json
 {
   "downClues": [{
     "x": 6, "y": 1
@@ -400,7 +412,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [x] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
 - [ ] feat: allow italics with underscores, or bold with stars (i.e. very basic markdown)...
-- [ ] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
+- [x] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [ ] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
 - [x] build: enforce linting (current it is allowed to fail)
