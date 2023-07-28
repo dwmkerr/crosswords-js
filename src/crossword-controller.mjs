@@ -85,11 +85,11 @@ class CrosswordController {
     trace('CrosswordController constructor');
     assert(
       crosswordModel,
-      'CrosswordController: crosswordModel is null or undefined'
+      'CrosswordController: crosswordModel is null or undefined',
     );
     assert(
       domGridParentElement,
-      'CrosswordController: domGridParentElement is null or undefined'
+      'CrosswordController: domGridParentElement is null or undefined',
     );
     this.#crosswordModel = crosswordModel;
     this.#domGridParentElement = domGridParentElement;
@@ -102,7 +102,7 @@ class CrosswordController {
     if (domCluesParentElement) {
       this.#crosswordCluesView = this.#newCrosswordCluesView(
         this.#document,
-        this
+        this,
       );
       //  Add the crossword clues to the webpage DOM
       domCluesParentElement.appendChild(this.#crosswordCluesView);
@@ -203,7 +203,7 @@ class CrosswordController {
     trace(`elementEventHandler:${id}`);
     assert(
       this.#userEventHandlers.hasOwnProperty(id),
-      `userEventHandler: [${id}] is not a CrosswordController event handler.`
+      `userEventHandler: [${id}] is not a CrosswordController event handler.`,
     );
     // We dereference userEventHandlers object like an array to get property 'id'
     // We bind the controller object as the context for 'this' references in the event handler,
@@ -368,7 +368,7 @@ class CrosswordController {
     eventNames.forEach((en) => {
       assert(
         this.controllerEventNames.includes(en),
-        `addEventsListener: event [${en}] is not a CrosswordController event.`
+        `addEventsListener: event [${en}] is not a CrosswordController event.`,
       );
       this.#subscribers.push(this.#pubSub.subscribe(en, callback));
     });
@@ -459,7 +459,7 @@ class CrosswordController {
     assert(document, '#newCrosswordCluesView: [document] is null or undefined');
     assert(
       controller,
-      '#newCrosswordCluesView: [controller] is null or undefined'
+      '#newCrosswordCluesView: [controller] is null or undefined',
     );
 
     function newClueBlockElement(id, title) {
@@ -530,14 +530,14 @@ class CrosswordController {
     addClueElements(
       controller,
       view.acrossClues,
-      controller.crosswordModel.acrossClues
+      controller.crosswordModel.acrossClues,
     );
     view.wrapper.appendChild(view.acrossClues);
 
     addClueElements(
       controller,
       view.downClues,
-      controller.crosswordModel.downClues
+      controller.crosswordModel.downClues,
     );
     view.wrapper.appendChild(view.downClues);
 
@@ -692,14 +692,14 @@ class CrosswordController {
           : anchorSegmentClues(model.downClues);
 
         trace(
-          `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`
+          `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
         );
 
         let newClue = null;
         const currentIndex = searchClues.indexOf(clue);
         assert(
           currentIndex !== -1,
-          `keydown(TAB): clue '${clue.code}' not found in searchClues`
+          `keydown(TAB): clue '${clue.code}' not found in searchClues`,
         );
 
         if (event.shiftKey) {

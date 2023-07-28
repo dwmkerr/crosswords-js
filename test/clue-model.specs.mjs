@@ -1,5 +1,7 @@
 import { expect } from 'chai';
-import { newClueModel, cluePattern } from './clue-model.mjs';
+// import { newClueModel, cluePattern } from './clue-model.mjs';
+import { newClueModel, cluePattern } from '../src/clue-model.mjs';
+
 const isAcrossClue = true;
 const cd = [];
 cd['missing-clue'] = { x: 12, y: 9 };
@@ -203,28 +205,28 @@ describe('newClueModel()', () => {
     expect(() => {
       newClueModel(cd['missing-label'], isAcrossClue);
     }).to.throw(
-      `Clue '${cd['missing-label'].clue}' does not match the required pattern '${cluePattern}'`
+      `Clue '${cd['missing-label'].clue}' does not match the required pattern '${cluePattern}'`,
     );
   });
 
   it('should fail if the clue number is not numeric', () => {
     expect(() => {
       newClueModel(cd['non-numeric-label'], isAcrossClue);
-    }).to.throw(`'a. Red or green fruit (5)' Error in <numberText> near <a>`);
+    }).to.throw("'a. Red or green fruit (5)' Error in <numberText> near <a>");
   });
 
   it('should fail if the answer structure is not provided', () => {
     expect(() => {
       newClueModel(cd['missing-answer'], isAcrossClue);
     }).to.throw(
-      `Clue '${cd['missing-answer'].clue}' does not match the required pattern '${cluePattern}'`
+      `Clue '${cd['missing-answer'].clue}' does not match the required pattern '${cluePattern}'`,
     );
   });
 
   it('should fail if the answer structure is not numeric', () => {
     expect(() => {
       newClueModel(cd['non-numeric-answer'], isAcrossClue);
-    }).to.throw(`'3. Red or green fruit (a)' Error in <answerText> near <a>`);
+    }).to.throw("'3. Red or green fruit (a)' Error in <answerText> near <a>");
   });
 
   it('should compile the number, code and answer lengths of a clue string', () => {
@@ -240,7 +242,7 @@ describe('newClueModel()', () => {
   it('should compile multi-word and hyphenated answers', () => {
     const clueModel = newClueModel(
       cd['valid-multi-word-hyphenated-answer'],
-      isAcrossClue
+      isAcrossClue,
     );
     expect(clueModel.number).to.eql(9);
     expect(clueModel.clueText).to.eql('Clue');
@@ -262,7 +264,7 @@ describe('newClueModel()', () => {
   it('should compile multi-segment clue numbers', () => {
     const clueModel = newClueModel(
       cd['valid-multi-segment-number'],
-      isAcrossClue
+      isAcrossClue,
     );
     expect(clueModel.number).to.eql(9);
     expect(clueModel.clueText).to.eql('Clue');
@@ -302,7 +304,7 @@ describe('newClueModel()', () => {
   it('should compile the answer, solution and revealed a clue string', () => {
     const clueModel = newClueModel(
       cd['valid-answer-solution-revealed'],
-      isAcrossClue
+      isAcrossClue,
     );
     // cspell:disable-next-line
     expect(clueModel.answer).to.eql('A NXXXXX N');
@@ -316,7 +318,7 @@ describe('newClueModel()', () => {
     expect(clueModel.revealed).to.eql('A N      N');
     expect(clueModel.solution).to.eql('ANNEBOLEYN');
     expect(clueModel.clueText).to.eql(
-      'Woman who suffered capital loss in Lebanon, beaten by fluctuating yen'
+      'Woman who suffered capital loss in Lebanon, beaten by fluctuating yen',
     );
     expect(clueModel.number).to.eql(13);
     expect(clueModel.answerLength).to.eql(10);
@@ -328,7 +330,7 @@ describe('newClueModel()', () => {
     expect(() => {
       newClueModel(cd['invalid-solution'], isAcrossClue);
     }).to.throw(
-      "Length of clue solution 'CATHERINEPARR' does not match the answer length '(4,6)'"
+      "Length of clue solution 'CATHERINEPARR' does not match the answer length '(4,6)'",
     );
   });
 
@@ -336,7 +338,7 @@ describe('newClueModel()', () => {
     expect(() => {
       newClueModel(cd['invalid-revealed'], isAcrossClue);
     }).to.throw(
-      "Length of clue revealed characters 'A N    ' does not match the answer length: 10"
+      "Length of clue revealed characters 'A N    ' does not match the answer length: 10",
     );
   });
 });

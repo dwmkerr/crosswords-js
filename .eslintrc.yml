@@ -1,10 +1,18 @@
-extends: 
-  - airbnb-base
+# Base eslint config on prettier rules.
+extends:
+  - plugin:prettier/recommended
+plugins:
+  - import
+parserOptions:
+  # We use ECMAScript 2022 (version 13), which supports Array.prototype.at() method.
+  ecmaVersion: 13
+  sourceType: module
 env:
   node: true
   mocha: true
-plugins:
-  - import
+  # Including browser will allow use of environment-provided global variables such as 'window'
+  # which is not otherwise defined.
+  browser: true
 rules:
   no-console: 0
   # Sometimes I like a single 'return' statement in a full block, e.g. see the
@@ -15,3 +23,12 @@ rules:
   import/no-extraneous-dependencies:
     [error, { devDependencies: ["**/*.specs.mjs","webpack.config.js", "vite.config.js"] }]
   no-process-exit: 0
+  no-param-reassign:
+    [
+      "error",
+      {
+        "props": true,
+        # $scope appears in angular sample app
+        "ignorePropertyModificationsFor": ["$scope"],
+      },
+    ]

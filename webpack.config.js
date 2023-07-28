@@ -18,7 +18,7 @@ export default (env, argv) => {
       compress: true,
     },
 
-    mode: 'development',
+    mode: "development",
 
     module: {
       rules: [
@@ -30,12 +30,14 @@ export default (env, argv) => {
             "less-loader",
           ],
         },
-      ]
+      ],
     },
 
     // Add an instance of the MiniCssExtractPlugin to the plugins list
     // But remember - only for production!
-    plugins: isProduction ? [new MiniCssExtractPlugin({ filename: 'crosswords.css' })] : [],
+    plugins: isProduction
+      ? [new MiniCssExtractPlugin({ filename: "crosswords.css" })]
+      : [],
 
     output: {
       path: resolve(__dirname, "dist"),

@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { replaceStrAt, setLetter } from './helpers.mjs';
+// import { replaceStrAt, setLetter } from './helpers.mjs';
+import { replaceStrAt, setLetter } from '../src/helpers.mjs';
 
 describe('replaceStrAt()', () => {
   it('should return null for null [original]', () => {

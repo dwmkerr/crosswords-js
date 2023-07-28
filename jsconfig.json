@@ -7,6 +7,10 @@
     "outFile": "../../built/local/tsc.js",
     "sourceMap": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "archived/test/crossworddom.mjs",
+    "archived/src/compile-crossword.mjs"
+  ],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

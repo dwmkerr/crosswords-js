@@ -37,7 +37,7 @@ describe('newCrosswordModel()', () => {
     expect(() => {
       newCrosswordModel();
     }).to.throw(
-      'The model must be initialised with a JSON crossword definition.'
+      'The model must be initialised with a JSON crossword definition.',
     );
   });
 
@@ -65,7 +65,7 @@ describe('newCrosswordModel()', () => {
     //  The following elements are parsed from the clue text.
     expect(modelClue.number).to.eql(1);
     expect(modelClue.clueText).to.eql(
-      'Conspicuous influence exerted by active troops'
+      'Conspicuous influence exerted by active troops',
     );
   });
 
@@ -165,7 +165,7 @@ describe('newCrosswordModel()', () => {
     expect(crosswordModel.acrossClues[0].answer).to.equal('APPLE');
     expect(crosswordModel.downClues[0].answer).to.equal('ANGRY');
     expect(crosswordModel.acrossClues[0].answer[0]).to.equal(
-      crosswordModel.downClues[0].answer[0]
+      crosswordModel.downClues[0].answer[0],
     );
 
     crosswordModel.acrossClues[0].answer = 'apple';
@@ -174,7 +174,7 @@ describe('newCrosswordModel()', () => {
     expect(() => {
       newCrosswordModel(crosswordDefinition);
     }).to.throw(
-      'Clue 1d answer at (3,3) [PEACH[1],P] is not coherent with previous clue (1a) answer [APPLE,A].'
+      'Clue 1d answer at (3,3) [PEACH[1],P] is not coherent with previous clue (1a) answer [APPLE,A].',
     );
   });
 
@@ -204,7 +204,7 @@ describe('newCrosswordModel()', () => {
     expect(() => {
       newCrosswordModel(crosswordDefinition);
     }).to.throw(
-      'Clue 1d solution at (3,3) [PEACH[1],P] is not coherent with previous clue (1a) solution [APPLE,A].'
+      'Clue 1d solution at (3,3) [PEACH[1],P] is not coherent with previous clue (1a) solution [APPLE,A].',
     );
   });
 

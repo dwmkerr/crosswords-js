@@ -50,7 +50,7 @@ function newClueModel(jsonClue, isAcrossClue) {
         throw new Error(
           `'jsonClue.${key} (${jsonClue[key]})' must be a ${typeof required[
             key
-          ]}`
+          ]}`,
         );
       }
     }
@@ -61,7 +61,7 @@ function newClueModel(jsonClue, isAcrossClue) {
         throw new Error(
           `'jsonClue.${key} (${jsonClue[key]})' must be a ${typeof optional[
             key
-          ]}`
+          ]}`,
         );
     }
 
@@ -77,7 +77,7 @@ function newClueModel(jsonClue, isAcrossClue) {
 
     if (difference.size > 0) {
       throw new Error(
-        `'jsonClue' has unexpected properties <${[...difference].join(',')}>`
+        `'jsonClue' has unexpected properties <${[...difference].join(',')}>`,
       );
     }
   }
@@ -106,7 +106,7 @@ function newClueModel(jsonClue, isAcrossClue) {
   // Test if clue text matches expected pattern
   if (!clueRegex.test(jsonClue.clue)) {
     throw new Error(
-      `Clue '${jsonClue.clue}' does not match the required pattern '${cluePattern}'`
+      `Clue '${jsonClue.clue}' does not match the required pattern '${cluePattern}'`,
     );
   }
 
@@ -147,7 +147,7 @@ function newClueModel(jsonClue, isAcrossClue) {
 
   if (remainingText != undefined) {
     throw new Error(
-      `'${jsonClue.clue}' Error in <numberText> near <${remainingText}>`
+      `'${jsonClue.clue}' Error in <numberText> near <${remainingText}>`,
     );
   }
 
@@ -190,14 +190,14 @@ function newClueModel(jsonClue, isAcrossClue) {
 
   if (remainingText != undefined) {
     throw new Error(
-      `'${jsonClue.clue}' Error in <answerText> near <${remainingText}>`
+      `'${jsonClue.clue}' Error in <answerText> near <${remainingText}>`,
     );
   }
 
   //  Calculate the total length of the answer.
   const answerLength = answerSegments.reduce(
     (current, as) => current + as.length,
-    0
+    0,
   );
 
   // trace(`jsonClue.answer: <${jsonClue.answer}>`);
@@ -220,14 +220,14 @@ function newClueModel(jsonClue, isAcrossClue) {
   // Test if clue solution length matches answerLength
   if (solution && solution.length !== answerLength) {
     throw new Error(
-      `Length of clue solution '${solution}' does not match the answer length '${answerLengthText}'`
+      `Length of clue solution '${solution}' does not match the answer length '${answerLengthText}'`,
     );
   }
 
   // Test if clue revealed length matches answerLength
   if (revealed && revealed.length !== answerLength) {
     throw new Error(
-      `Length of clue revealed characters '${revealed}' does not match the answer length: ${answerLength}`
+      `Length of clue revealed characters '${revealed}' does not match the answer length: ${answerLength}`,
     );
   }
 

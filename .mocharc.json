@@ -1,0 +1,11 @@
+{
+  "diff": true,
+  "extension": ["js", "cjs", "mjs"],
+  "package": "./package.json",
+  "reporter": "spec",
+  "require": ["esm", "ignore-styles"],
+  "slow": "75",
+  "timeout": "2000",
+  "ui": "bdd",
+  "watch-files": ["src/**/*.{js,mjs}", "test/**/*.specs.mjs"]
+}

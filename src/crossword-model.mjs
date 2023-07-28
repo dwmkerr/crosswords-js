@@ -2,8 +2,8 @@ import { setLetter, trace } from './helpers.mjs';
 import { newClueModel } from './clue-model.mjs';
 
 function buildCellGrid(crosswordModel) {
-  const width = crosswordModel.width;
-  const height = crosswordModel.height;
+  const { width } = crosswordModel;
+  const { height } = crosswordModel;
   const array = new Array(width);
   for (let across = 0; across < width; across += 1) {
     array[across] = new Array(height);
@@ -42,7 +42,7 @@ function newCrosswordModel(jsonCrossword) {
   trace('newCrosswordModel');
   if (!jsonCrossword) {
     throw new Error(
-      'The model must be initialised with a JSON crossword definition.'
+      'The model must be initialised with a JSON crossword definition.',
     );
   }
 
@@ -120,7 +120,7 @@ function newCrosswordModel(jsonCrossword) {
       //  Check if we need to add an answer terminator.
       const [segment, index] = getAnswerSegment(
         clueModel.answerSegments,
-        letter
+        letter,
       );
       if (index === segment.length - 1 && segment.terminator !== '') {
         cell[clueModel.isAcross ? 'acrossTerminator' : 'downTerminator'] =
@@ -143,7 +143,7 @@ function newCrosswordModel(jsonCrossword) {
               clueModel.answer[letter]
             }] is not coherent with previous clue (${
               cell.acrossClue.code
-            }) answer [${cell.acrossClue.answer},${cell.answer}].`
+            }) answer [${cell.acrossClue.answer},${cell.answer}].`,
           );
         }
         // if cell.answer && cell.answer !== ' '
@@ -175,7 +175,7 @@ function newCrosswordModel(jsonCrossword) {
               clueModel.solution[letter]
             }] is not coherent with previous clue (${
               cell.acrossClue.code
-            }) solution [${cell.acrossClue.solution},${cell.solution}].`
+            }) solution [${cell.acrossClue.solution},${cell.solution}].`,
           );
         }
         // if (cell.solution && cell.solution !== ' '
@@ -190,7 +190,7 @@ function newCrosswordModel(jsonCrossword) {
       if (letter === 0) {
         if (cell.clueLabel && cell.clueLabel !== clueModel.number) {
           throw new Error(
-            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`
+            `Clue ${clueModel.code} has a label which is inconsistent with another clue (${cell.acrossClue.code}).`,
           );
         }
         cell.clueLabel = clueModel.number;
@@ -216,7 +216,7 @@ function newCrosswordModel(jsonCrossword) {
     clue.connectedClues = clue.connectedDirectedClues.map((cdc) => {
       if (cdc.direction === 'across') {
         return crosswordModel.acrossClues.find(
-          (ac) => ac.number === cdc.number
+          (ac) => ac.number === cdc.number,
         );
       }
       if (cdc.direction === 'down') {
@@ -281,7 +281,7 @@ function updateOrthogonalClue(cell, character, isAcrossClue) {
     cell.acrossClue.answer = setLetter(
       cell.acrossClue.answer,
       cell.acrossClueLetterIndex,
-      character
+      character,
     );
   }
   if (isAcrossClue && cell.downClue) {
@@ -289,7 +289,7 @@ function updateOrthogonalClue(cell, character, isAcrossClue) {
     cell.downClue.answer = setLetter(
       cell.downClue.answer,
       cell.downClueLetterIndex,
-      character
+      character,
     );
   }
 }

@@ -143,7 +143,7 @@ function setCellContent(crosswordController, event, character) {
     eventCell.acrossClue.answer = setLetter(
       eventCell.acrossClue.answer,
       eventCell.acrossClueLetterIndex,
-      character
+      character,
     );
   }
   // across and/or down are possible
@@ -151,7 +151,7 @@ function setCellContent(crosswordController, event, character) {
     eventCell.downClue.answer = setLetter(
       eventCell.downClue.answer,
       eventCell.downClueLetterIndex,
-      character
+      character,
     );
   }
 }

@@ -54,7 +54,7 @@ function replaceStrAt(original, index, str) {
     }
     if (pos >= 0 && str && original.length > pos) {
       result = `${original.slice(0, pos)}${str}${original.slice(
-        pos + str.length
+        pos + str.length,
       )}`;
     }
   }
@@ -83,7 +83,7 @@ function last(array) {
 const memoize = (fn) => {
   // A hopefully unique object property name/key!
   const id = 'id_Z?7kQ;x8j!';
-  let cache = {};
+  const cache = {};
   return (arg) => {
     if (!arg[id]) {
       // Attach a random id property to this object
@@ -140,12 +140,9 @@ function toggleClass(element, className) {
  */
 const toHexString = (obj) => {
   // Fails for circular objects
-  return (
-    '0x' +
-    [...JSON.stringify(obj)]
-      .map((c, i) => str.charCodeAt(i).toString(16))
-      .join('')
-  );
+  return `0x${[...JSON.stringify(obj)]
+    .map((c, i) => str.charCodeAt(i).toString(16))
+    .join('')}`;
 };
 
 // module scope variable to toggle log tracing

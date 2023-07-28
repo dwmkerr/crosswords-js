@@ -1,10 +1,10 @@
-var sampleapp = angular.module('sampleapp', []);
+const sampleapp = angular.module("sampleapp", []);
 
-sampleapp.controller("MainController", function ($scope, $http) {
-  var cwModel = null;
-  var cwController = null;
+sampleapp.controller("MainController", ($scope, $http) => {
+  let cwModel = null;
+  let cwController = null;
 
-  $http.get("crosswords/ftimes_17095.json").success(function (jsonCrossword) {
+  $http.get("crosswords/ftimes_17095.json").success((jsonCrossword) => {
     //  Set the crossword info.
     $scope.info = jsonCrossword.info;
 
@@ -21,19 +21,15 @@ sampleapp.controller("MainController", function ($scope, $http) {
     cwController.currentClue = cwModel.acrossClues[0];
     $scope.currentClue = cwModel.acrossClues[0];
 
-    cwController.addEventListener("clueSelected", (data) => {
+    cwController.addEventsListener(["clueSelected"], (data) => {
       $scope.currentClue = cwController.currentClue;
       $scope.$apply();
     });
   });
 
-    };
-
-  });
-
-  $scope.isHighlightedClue = function(clue) {
-    const currentClue = $scope.currentClue;
-    const parentClue = currentClue.parentClue;
+  $scope.isHighlightedClue = function (clue) {
+    const { currentClue } = $scope;
+    const { parentClue } = currentClue;
 
     // The trivial case is that the clue is selected.
     if (clue === currentClue) {
@@ -41,7 +37,11 @@ sampleapp.controller("MainController", function ($scope, $http) {
     }
 
     //  We might also be a clue which is part of a non-linear clue.
-    if (currentClue && parentClue && (parentClue === clue || parentClue.connectedClues.indexOf(clue) !== -1)) {
+    if (
+      currentClue &&
+      parentClue &&
+      (parentClue === clue || parentClue.connectedClues.indexOf(clue) !== -1)
+    ) {
       return true;
     }
 

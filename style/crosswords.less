@@ -1,7 +1,7 @@
 @import url('../style/cwdimensions.less');
 @import url('../style/cwcolors.less');
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 391px) {
   .crossword-grid {
     grid-template-rows: repeat(@row-count, @grid-cell-size-0);
     grid-template-columns: repeat(@column-count, @grid-cell-size-0);
@@ -27,7 +27,7 @@
   }
 }
 
-@media screen and (min-width: 361px) and (max-width: 499px) {
+@media screen and (min-width: 392px) and (max-width: 555px) {
   .crossword-grid {
     grid-template-rows: repeat(@row-count, @grid-cell-size-1);
     grid-template-columns: repeat(@column-count, @grid-cell-size-1);
@@ -53,7 +53,7 @@
   }
 }
 
-@media screen and (min-width: 500px) {
+@media screen and (min-width: 556px) {
   .crossword-grid {
     grid-template-rows: repeat(@row-count, @grid-cell-size-2);
     grid-template-columns: repeat(@column-count, @grid-cell-size-2);
@@ -201,7 +201,9 @@
   .hidden {
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0s linear 500ms, opacity 500ms;
+    transition:
+      visibility 0s linear 500ms,
+      opacity 500ms;
   }
 }
 
