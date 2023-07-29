@@ -218,7 +218,7 @@ npm run dev
 - Edit the development webpage JavaScript: [dev/index.js][23]
 - Edit the development webpage CSS via the [**less**][24] source: [dev/index.less][25]
 - Edit the styles for the **crosswords-js** package via the [**less**][24] source: [style/*.less][24]. 
-- _Less files are dynamically compiled to CSS by ViteJS for the development server_.
+- _Less files are dynamically compiled to CSS by [ViteJS][28] for the development server_.
 
 ### Documentation
 
@@ -284,7 +284,7 @@ git config --local commit.template ./.git-commit-template.txt
 
 ### Building the dev environment assets for production
 
-The `dev` environment **production** assets are built by ViteJS at `<repo-root>/dev/dist`
+The `dev` environment **production** assets are built by [ViteJS][28] at `<repo-root>/dev/dist`
 
 ```bash
 # Build the assets under <root>/dev/dist
@@ -474,3 +474,4 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [25]: dev/index.css
 [26]: https://mochajs.org/
 [27]: https://www.markdownguide.org/
+[28]: https://vitejs.dev/
