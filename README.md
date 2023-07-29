@@ -215,8 +215,10 @@ npm run dev
 - The development server webpage is visible at [http://localhost:5173/][11]
   - _The webpage will dynamically refresh whenever you save your source edits_
 - Edit the development webpage HTML: [dev/index.html][23]
-- Edit the development webpage CSS: [dev/index.css][25]
-- Edit the styles for the **crosswords-js** package via the [**less**][24] source: [src/crosswords.less][24]. _This is dynamically compiled to CSS for the development server_.
+- Edit the development webpage JavaScript: [dev/index.js][23]
+- Edit the development webpage CSS via the [**less**][24] source: [dev/index.less][25]
+- Edit the styles for the **crosswords-js** package via the [**less**][24] source: [style/*.less][24]. 
+- _Less files are dynamically compiled to CSS by ViteJS for the development server_.
 
 ### Documentation
 
