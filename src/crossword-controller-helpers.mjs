@@ -96,8 +96,8 @@ function testClue(controller, clue, showIncorrect = true) {
   assert(clue, '<clue> is null or undefined');
   trace(`testClue: '${clue.code}'`);
 
-  let incorrect = 0;
-  let incomplete = 0;
+  let incorrect = 0,
+    incomplete = 0;
   const clues = clue.parentClue
     ? [clue.parentClue].concat(clue.parentClue.connectedClues)
     : [clue];
@@ -124,8 +124,8 @@ function testClue(controller, clue, showIncorrect = true) {
 function testCrossword(controller, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
   trace('testCrossword');
-  let incorrect = 0;
-  let incomplete = 0;
+  let incorrect = 0,
+    incomplete = 0;
   controller.crosswordModel.cells.forEach((row) => {
     row
       .filter((x) => x.light)
@@ -151,8 +151,8 @@ function testCrossword(controller, showIncorrect = true) {
 function checkSolved(controller) {
   // trace('checkSolved');
   assert(controller, '<controller> is null or undefined');
-  let incorrect = 0;
-  let incomplete = 0;
+  let incorrect = 0,
+    incomplete = 0;
   const showIncorrect = false;
   // short-circuit a non-correct result - use find()
   controller.crosswordModel.cells.find((row) => {
@@ -164,8 +164,7 @@ function checkSolved(controller) {
           incorrect = 1;
           // trace(`incorrect: ${incorrect}`);
           return true;
-        }
-        if (outcome === Outcome.Incomplete) {
+        } else if (outcome === Outcome.Incomplete) {
           incomplete = 1;
           // trace(`incomplete: ${incomplete}`);
           return true;
@@ -187,7 +186,7 @@ function setCellText(controller, cell, newText, clearRevealed) {
   );
 
   function adjustClue(clue, letterIndex) {
-    const result = clue;
+    let result = clue;
     result.answer = setLetter(result.answer, letterIndex, newText);
     if (clearRevealed) {
       result.revealed = setLetter(result.revealed, letterIndex, newText);

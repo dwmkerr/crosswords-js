@@ -1,16 +1,31 @@
+## Index <!-- omit from toc -->
+
+- [CrosswordDefinition](#crossworddefinition)
+- [Clue](#clue)
+- [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
+  - [Multi-word clue](#multi-word-clue)
+  - [Multi-segment clue](#multi-segment-clue)
+- [Samples](#samples)
+
 ## CrosswordDefinition
 
-The **CrosswordDefinition** is a minimal object that defines the
-crossword. It should have the following properties:
+The **CrosswordDefinition** is a minimal [JSON][6] object that defines the
+crossword.The JSON file is converted to an analogous JavaScript object when it is loaded by the JavaScript code.
 
-- **width**: The width of the crossword.
-- **height**: The height of the crossword.
-- **acrossClues**: The clues which go across.
-- **downClues**: The clues which go down.
+It MUST have the following properties:
+
+- **width**: The width of the crossword _(the number of columns)_.
+- **height**: The height of the crossword _(the number of rows)_.
+- **acrossClues**: An array of [Clue][1] objects which go _across_ the puzzle.
+- **downClues**: An array of [Clue][1] objects which go _down_ the puzzle.
+
+It MAY have the following properties
+
+- **info**: An object containing details about the crossword and its setter.
 
 ## Clue
 
-A **Clue** has the following properties:
+A **Clue** in JSON format MUST have the following properties:
 
 - **x**: The column number (1-based) of the first letter(cell) in a clue.
 - **y**: The row number (1-based) of the first letter in a clue.

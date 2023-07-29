@@ -1,7 +1,5 @@
 import { expect } from 'chai';
-// import { newClueModel, cluePattern } from './clue-model.mjs';
 import { newClueModel, cluePattern } from '../src/clue-model.mjs';
-
 const isAcrossClue = true;
 const cd = [];
 cd['missing-clue'] = { x: 12, y: 9 };
@@ -212,7 +210,7 @@ describe('newClueModel()', () => {
   it('should fail if the clue number is not numeric', () => {
     expect(() => {
       newClueModel(cd['non-numeric-label'], isAcrossClue);
-    }).to.throw("'a. Red or green fruit (5)' Error in <numberText> near <a>");
+    }).to.throw(`'a. Red or green fruit (5)' Error in <numberText> near <a>`);
   });
 
   it('should fail if the answer structure is not provided', () => {
@@ -226,7 +224,7 @@ describe('newClueModel()', () => {
   it('should fail if the answer structure is not numeric', () => {
     expect(() => {
       newClueModel(cd['non-numeric-answer'], isAcrossClue);
-    }).to.throw("'3. Red or green fruit (a)' Error in <answerText> near <a>");
+    }).to.throw(`'3. Red or green fruit (a)' Error in <answerText> near <a>`);
   });
 
   it('should compile the number, code and answer lengths of a clue string', () => {

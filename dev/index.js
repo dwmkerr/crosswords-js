@@ -15,7 +15,7 @@ tracing(true);
 // Check for browser context
 assert(window != null && document != null, "Not in browser!");
 
-/// / Shortcut functions
+//// Shortcut functions
 
 const eid = (id) => {
   return document.getElementById(id);
@@ -104,16 +104,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Populate title block with crossword info
-  const infoSource = eid("info-source-url");
+  let infoSource = eid("info-source-url");
   infoSource.innerHTML = crosswordJSON.info.title;
   infoSource.setAttribute("href", crosswordJSON.info.source);
-  const infoSetter = eid("info-setter-url");
+  let infoSetter = eid("info-setter-url");
   infoSetter.innerHTML = crosswordJSON.info.setter.title;
   infoSetter.setAttribute("href", crosswordJSON.info.setter.url);
 
-  /// / Respond to crossword completion
+  //// Respond to crossword completion
 
-  const crosswordSolvedOverlay = eid("crossword-solved-overlay");
+  let crosswordSolvedOverlay = eid("crossword-solved-overlay");
   // let closeCompletedDialog = eid("crossword-complete-close");
 
   controller.addEventsListener(["crosswordSolved"], (clue) => {
@@ -129,9 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   window.onkeydown = window.onclick;
 
-  /// / Respond to clue solved
+  //// Respond to clue solved
 
-  const clueSolvedNotification = eid("clue-solved-notification");
+  let clueSolvedNotification = eid("clue-solved-notification");
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animations/Tips
   controller.addEventsListener(["clueSolved"], (clue) => {
