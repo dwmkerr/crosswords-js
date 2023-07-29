@@ -46,7 +46,8 @@ A **Clue** in JSON format MAY have the following properties:
 {
   "x": 2,
   "y": 1,
-  "clue": "2. Auntie hit boiling asphalt (9)"
+  "clue": "2. Auntie hit boiling asphalt (9)",
+  "solution": "uintahite"
 }
 ```
 
@@ -56,7 +57,7 @@ A **Clue** in JSON format MAY have the following properties:
 
 ### Multi-word clue
 
-**Multi-word** clues occupy a **single clue segment** on the crossword grid. The _clue-word-separators_ may be styled distinctly to a typical _clue-cell-separator_.
+**Multi-word** clues occupy a **single clue segment** on the crossword grid. The _clue-word-separators_ are styled distinctly to a typical _clue-cell-separator_.
 
 ```json
 // Multi-word clue JSON

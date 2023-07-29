@@ -31,6 +31,10 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 - [Quickstart](#quickstart)
 - [Developer Guide](#developer-guide)
+  - [Setting up your dev environment](#setting-up-your-dev-environment)
+  - [Documentation](#documentation)
+  - [Quality assurance](#quality-assurance)
+  - [Building the dev environment assets for production](#building-the-dev-environment-assets-for-production)
 - [Keyboard Functionality](#keyboard-functionality)
 - [Crossword Definition Tips](#crossword-definition-tips)
 - [Design Overview](#design-overview)
@@ -189,6 +193,8 @@ controller.resetCrossword();
 
 ## Developer Guide
 
+### Setting up your dev environment
+
 Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
 ```bash
@@ -206,13 +212,19 @@ npm install
 npm run dev
 ```
 
-- The development server webpage is visible at [http://localhost:8081/][11]
+- The development server webpage is visible at [http://localhost:5173/][11]
   - _The webpage will dynamically refresh whenever you save your source edits_
 - Edit the development webpage HTML: [dev/index.html][23]
 - Edit the development webpage CSS: [dev/index.css][25]
 - Edit the styles for the **crosswords-js** package via the [**less**][24] source: [src/crosswords.less][24]. _This is dynamically compiled to CSS for the development server_.
 
-Run the tests with:
+### Documentation
+
+The project documentation is written in [Markdown][27] and is located in the repository at `<repo-root>/docs`.
+
+### Quality assurance
+
+We use [MochaJS][26] for unit testing. The test source code is located in the repository at `<repo-root>/test`. Run the tests with:
 
 ```bash
 npm test
@@ -266,6 +278,22 @@ From the root directory of your repository:
 
 ```bash
 git config --local commit.template ./.git-commit-template.txt
+```
+
+### Building the dev environment assets for production
+
+The `dev` environment **production** assets are built by ViteJS at `<repo-root>/dev/dist`
+
+```bash
+# Build the assets under <root>/dev/dist
+npm run dev:build
+```
+
+You can _preview_ the **production** assets by running the following command and opening a browser on `http://localhost:4173`
+
+```bash
+# Build the assets and preview locally at http://locahost:4173
+npm run dev:prod
 ```
 
 ## Keyboard Functionality
@@ -427,7 +455,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [8]: https://codecov.io/gh/dwmkerr/crosswords-js
 [9]: https://dwmkerr.github.io/crosswords-js/
 [10]: https://github.com/nvm-sh/nvm
-[11]: http://localhost:8081/
+[11]: http://localhost:5173/
 [12]: ./.github/workflows/pull-request.yaml
 [13]: https://github.com/google-github-actions/release-please-action
 [14]: #release-pipeline
@@ -442,3 +470,5 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [23]: dev/index.html
 [24]: https://lesscss.org/functions/
 [25]: dev/index.css
+[26]: https://mochajs.org/
+[27]: https://www.markdownguide.org/
