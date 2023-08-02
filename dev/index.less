@@ -10,7 +10,9 @@
 @shadow-color: darken(@background-color, 10%);
 @highlight-text-color: @text-color;
 @font-family: 'PT Sans', sans-serif;
+@base-font-size: 16px;
 @text-font-size: large;
+@banner-text-size: 4 * @base-font-size;
 @box-shadow: 5px 5px 5px @shadow-color;
 @modal-background-color: rgba(0, 0, 0, 0.3); // Black with opacity
 @modal-shadow-color: darken(@background-color, 25%);
@@ -24,7 +26,7 @@
 html {
   visibility: visible;
   opacity: 1;
-  font-size: 16px;
+  font-size: @base-font-size;
 }
 
 body {
@@ -108,6 +110,26 @@ a {
   }
 }
 
+#banner {
+  background-color: @highlight-color;
+  color: @highlight-text-color;
+  padding: 10px;
+  box-shadow: @box-shadow;
+  .title {
+    font-size: @banner-text-size;
+    font-weight: bold;
+    display: inline-block;
+    padding: 0px 10px 10px;
+  }
+  .description {
+    font-style: italic;
+    font-size: large;
+    display: inline-block;
+    max-width: 30em;
+    padding-left: 10px;
+  }
+}
+
 #columns {
   display: flex;
   flex-direction: row;
@@ -187,7 +209,7 @@ a {
 
       .crossword-clue-block {
         padding: 0px 5px;
-        margin: auto;
+        // margin: auto;
       }
 
       .crossword-clue-block-title {

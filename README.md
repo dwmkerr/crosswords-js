@@ -1,4 +1,4 @@
-# CrosswordsJS <!-- omit from toc -->
+# crosswords-js <!-- omit from toc -->
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
@@ -12,12 +12,12 @@
 
 > **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
 
-Tiny, lightweight crossword for control for the web. **Crosswords.js** is:
+Tiny, lightweight crossword control for the web. **crosswords-js** is:
 
 - Lightweight
 - Fast
 - Simple
-- Framework Free
+- Framework-free
 
 Inspired by the excellent free online crosswords on [The Guardian Crosswords][18].
 
@@ -30,6 +30,8 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 <!-- vim-markdown-toc GFM -->
 
 - [Quickstart](#quickstart)
+  - [Application Programming Interface (API)](#application-programming-interface-api)
+  - [Sample applications](#sample-applications)
 - [Developer Guide](#developer-guide)
   - [Setting up your dev environment](#setting-up-your-dev-environment)
   - [Documentation](#documentation)
@@ -67,7 +69,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    <script src="node_modules/crosswords-js/dist/crosswords.js"></script>
    ```
 
-3. To create a crossword, locate or edit a **CrosswordDefinition**, which is a simple JSON file:
+3. To create a crossword, locate or edit a [**CrosswordDefinition**][29], which is a simple JSON file:
 
    ```json
    {
@@ -121,7 +123,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    }
    ```
 
-6. Now get the [DOM][20] elements which will be the parents for the crossword grid and clues block:
+6. Now get the [DOM][20] elements which will be the parents for the crossword grid and clues blocks:
 
    > For example, if we have placeholder `div` elements somewhere in our webpage:
    >
@@ -147,49 +149,72 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
    This binds the crossword **gridView** anf **cluesView** into the webpage [DOM][20].
 
-8. You can use the `controller` to programmatically manipulate the crossword [DOM][20] element, for example, in `button` click events.
+### Application Programming Interface (API)
 
-<!-- TODO: Down to here... -->
+You can use the `controller` to programmatically manipulate the **gridView** - the crossword grid [DOM][20] element.
 
-The following methods are available:
+1. Invoke the **user event handlers**
 
-- For the **currently selected clue** in the crossword grid
+- Call the _user event handler_ methods of the `controller` directly in code
+  ```js
+  // Check the current clue answer against the solution.
+  controller.testCurrentClue();
+  ```
+- Bind the _user event handler_ methods via `id` or `class` attributes on DOM elements in your HTML markup, such as _buttons_.
 
-```js
-// Check the current clue answer against the solution.
-controller.testCurrentClue();
-// Remove incorrect letters in the answer for the current clue
-// after testing.
-controller.cleanCurrentClue();
-// Reveal solution for current letter in answer.
-// All revealed cells have distinct styling which remains for the
-// duration of the puzzle. Public shaming is strictly enforced!
-controller.revealCurrentCell();
-// Reveal the solution for the current clue.
-controller.revealCurrentClue();
-// Clear out the answer for the current clue.
-controller.resetCurrentClue();
+  ```html
+  <div id="clue-buttons">
+    <p>Clue</p>
+    <button id="test-clue">Test</button>
+    <button id="clean-clue">Clean</button>
+    <button id="reveal-clue">Reveal</button>
+    <button class="reset-clue">Reset</button>
+    <button class="reset-clue">MoSet</button>
+  </div>
+  ```
+
+  ```js
+  // Bind one element with id "test-clue"
+  controller.bindEventHandlerToId("test-clue", "click", document);
+
+  // Using default arguments for
+  // eventName ("click") and dom (document)
+  controller.bindEventHandlerToId("reveal-clue");
+
+  // Bind event handler to multiple elements with class "reset-clue"
+  // default arguments are available as before
+  controller.bindEventHandlerToClass("reset-clue", "click", document);
+  });
+
+  // Bind ALL the user event handlers, using defaults
+  controller.bindEventHandlersToIds();
+
+  // Bind the user event handlers to ALL elements with 
+  // the given class(es), passing an array of one class name
+  controller.bindEventHandlersToClasses(["reset-clue"]);
+  ```
+
+2. You can also provide your own handlers to listen to **controller events**.
+
+For further information on these topics, consult the [controller API][30] documentation.
+
+For examples, refer to the [development server code][31].
+
+### Sample applications
+
+The _development server_ is a pure [Node.js][32] application of the the **crosswords-js** package. It exercises nearly all the available functionality. The code is found in the [dev][33] directory of this repository.
+
+```bash
+# Open the development server on http://localhost:5173
+npm run dev
 ```
 
-- For the **whole crossword grid**...
+You can find an **Angular** application in the [sample][34] directory of this repository. To run the application:
 
-```js
-// Check all the answers against the solutions.
-controller.testCrossword();
-// Clear incorrect letters for the entire crossword after testing.
-controller.cleanCrossword();
-// Reveal the solutions for the entire crossword.
-controller.revealCrossword();
-// Clear out the entire crossword.
-controller.resetCrossword();
+```bash
+# Run the Angular sample app
+npm start
 ```
-
-9. You can find an **Angular** sample application in the `sample` directory. To run the application:
-
-   ```bash
-   # Run the Angular sample app
-   npm start
-   ```
 
 ## Developer Guide
 
@@ -217,7 +242,7 @@ npm run dev
 - Edit the development webpage HTML: [dev/index.html][23]
 - Edit the development webpage JavaScript: [dev/index.js][23]
 - Edit the development webpage CSS via the [**less**][24] source: [dev/index.less][25]
-- Edit the styles for the **crosswords-js** package via the [**less**][24] source: [style/*.less][24]. 
+- Edit the styles for the **crosswords-js** package via the [**less**][24] source: [style/\*.less][24].
 - _Less files are dynamically compiled to CSS by [ViteJS][28] for the development server_.
 
 ### Documentation
@@ -315,7 +340,7 @@ npm run dev:prod
 
 This is a little fiddly. I have tried to ensure the syntax is as close to what a reader would see in a printed crossword to make this as clear as possible. Here is an example:
 
-```json
+```jsonNode.js
 {
   "downClues": [{
     "x": 6, "y": 1
@@ -362,6 +387,7 @@ Each stage is run on all recent Node versions, except for the **upload coverage*
 ### Release Pipeline
 
 When a [Release Please][15] pull request is merged to main, the [Release Please Workflow][16] is run. This will:
+Node.js
 
 - Install dependencies
 - Lint
@@ -375,7 +401,7 @@ Each stage is run on all recent Node versions, except for the **upload coverage*
 
 ## Adding Contributors
 
-To add contributors, use a comment like the below in any pull request:
+To add contributors, use a comment like the below in anNode.jsy pull request:
 
 ```
 @all-contributors please add @<username> for docs, code, tests
@@ -475,3 +501,9 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [26]: https://mochajs.org/
 [27]: https://www.markdownguide.org/
 [28]: https://vitejs.dev/
+[29]: docs/crossworddefinition.md
+[30]: docs/controller-api.md
+[31]: dev/index.js
+[32]: https://nodejs.org/
+[33]: dev/
+[34]: sample/

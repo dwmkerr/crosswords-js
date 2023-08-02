@@ -26,6 +26,18 @@ function assert(condition, message) {
   }
 }
 
+//// Shortcut functions
+
+const eid = (elementId, dom = document) => {
+  // trace(`eid: elementId=${elementId}, dom=${dom}`);
+  return dom.getElementById(elementId);
+};
+
+// Returns an array of elements
+const ecs = (elementClass, dom = document) => {
+  return dom.getElementsByClassName(elementClass);
+};
+
 /**
  * **first** - get the first element of an array
  * @param {*} array
@@ -210,6 +222,8 @@ export {
   addClass,
   addClasses,
   assert,
+  ecs,
+  eid,
   first,
   last,
   memoize,
@@ -219,6 +233,7 @@ export {
   replaceStrAt,
   setLetter,
   toggleClass,
+  toHexString,
   trace,
   tracing,
 };

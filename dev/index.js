@@ -2,6 +2,7 @@ import {
   assert,
   compileCrossword,
   Controller,
+  eid,
   trace,
   tracing,
 } from "./crosswords.js";
@@ -14,16 +15,6 @@ tracing(true);
 
 // Check for browser context
 assert(window != null && document != null, "Not in browser!");
-
-//// Shortcut functions
-
-const eid = (id) => {
-  return document.getElementById(id);
-};
-// Returns an array of elements
-const ecs = (className) => {
-  return document.getElementsByClassName(className);
-};
 
 // Execute once DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
@@ -49,44 +40,27 @@ document.addEventListener("DOMContentLoaded", () => {
   // (e.g. button click events in this example) where the associated behaviour
   // is desired.
 
-  // Helper function to bind Controller user-event-handler to webpage
-  // DOM elementId.
-  const bindControllerEventHandlerToId = (eventName, elementId) => {
-    const element = eid(elementId);
-    if (element) {
-      element.addEventListener(
-        eventName,
-        controller.userEventHandler(elementId),
-      );
-    }
-  };
-
-  // Helper function to bind Controller user-event-handler to webpage
-  // DOM element class. Using element class names rather than element Ids
-  // allows us to add controller user-event-handler to more than one
-  // DOM element
-  const bindControllerEventHandlerToClass = (eventName, elementClass) => {
-    const elements = ecs(elementClass);
-    elements
-      .filter((e) => Boolean(e))
-      .addEventListener(eventName, controller.userEventHandler(elementClass));
-  };
-
   // Helper function to log controller user event handler execution.
-  const addLogListener = (eventName, elementId) => {
-    const element = eid(elementId);
+  const addLogListener = (elementId, eventName, dom = document) => {
+    const element = eid(elementId, dom);
     if (element) {
       element.addEventListener(eventName, (event) => {
-        trace(`${elementId}:${eventName}`);
+        trace(`event=${elementId}:${eventName}`);
       });
     }
   };
 
   // Bind all the Controller user-event handlers by their ids to the
   // click event of the matching DOM element (ids) in this example application.
+  // defaults:
+  // elementIds = controller.userEventHandlerIds,
+  // eventName = "click",
+  // dom = document,
+  controller.bindEventHandlersToIds();
+
+  // Add a log event for all event handler calls on event "click"
   controller.userEventHandlerIds.forEach((id) => {
-    addLogListener("click", id);
-    bindControllerEventHandlerToId("click", id);
+    addLogListener(id, "click");
   });
 
   // Wire up current-clue elements
@@ -114,25 +88,29 @@ document.addEventListener("DOMContentLoaded", () => {
   //// Respond to crossword completion
 
   let crosswordSolvedOverlay = eid("crossword-solved-overlay");
-  // let closeCompletedDialog = eid("crossword-complete-close");
 
   controller.addEventsListener(["crosswordSolved"], (clue) => {
     trace("CrosswordSolvedHandler");
+    // show the crossword-complete dialog
     crosswordSolvedOverlay.style.display = "block";
   });
+
   // Setup crossword completed display UI event handlers
-  // When the user types or clicks anywhere outside of the complete dialog,
-  // close/hide it
+
   window.onclick = (event) => {
+    // Hide the crossword-complete dialog When the user clicks anywhere.
     crosswordSolvedOverlay.style.display = "none";
+    // Percolate the event
     return true;
   };
+  // When the user types, close/hide it
   window.onkeydown = window.onclick;
 
   //// Respond to clue solved
 
   let clueSolvedNotification = eid("clue-solved-notification");
 
+  // show notification message and then fade out automatically
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_animations/Tips
   controller.addEventsListener(["clueSolved"], (clue) => {
     trace("clueSolvedHandler");

@@ -3,6 +3,8 @@ import {
   addClass,
   addClasses,
   assert,
+  ecs,
+  eid,
   newPubSub,
   removeClass,
   trace,
@@ -215,6 +217,52 @@ class CrosswordController {
     return Object.keys(this.#userEventHandlers);
   }
 
+  // Helper function to bind Controller user-event-handler to webpage
+  // DOM elementId.
+  bindEventHandlerToId(elementId, eventName = 'click', dom = document) {
+    const element = eid(elementId, dom);
+    if (element) {
+      element.addEventListener(eventName, this.userEventHandler(elementId));
+    }
+  }
+
+  // Helper function to bind Controller user-event-handlers to a collection
+  // of webpage DOM elementIds.
+  bindEventHandlersToIds = function (
+    // all controller user event handlers
+    elementIds = this.userEventHandlerIds,
+    eventName = 'click',
+    dom = document,
+  ) {
+    elementIds.forEach((id) => {
+      this.bindEventHandlerToId(id, eventName, dom);
+    });
+  }.bind(this);
+
+  // Helper function to bind Controller user-event-handler to webpage
+  // DOM element class. Using element class names rather than element Ids
+  // allows us to add controller user-event-handler to more than one
+  // DOM element
+  bindEventHandlerToClass(elementClass, eventName = 'click', dom = document) {
+    const elements = ecs(elementClass, dom);
+    elements.forEach((e) => {
+      e.addEventListener(eventName, this.userEventHandler(elementClass));
+    });
+  }
+
+  // Helper function to bind Controller user-event-handlers to a collection
+  // of webpage DOM elementIds.
+  bindEventHandlersToClasses = function (
+    // all user event handlers
+    elementClasses = this.userEventHandlerIds,
+    eventName = 'click',
+    dom = document,
+  ) {
+    elementClasses.forEach((ec) =>
+      this.bindEventHandlerToClass(ec, eventName, dom),
+    );
+  }.bind(this);
+
   // Accessors for public property currentCell
   get currentCell() {
     return this.#current.cell;
@@ -226,7 +274,7 @@ class CrosswordController {
         this.#deHighlightCell(this.#current.cell);
       }
       this.#current.cell = cell;
-      cell && cell.cellElement.children[0].focus();
+      cell?.cellElement.children[0].focus();
       this.#highlightCell(cell);
     }
   }

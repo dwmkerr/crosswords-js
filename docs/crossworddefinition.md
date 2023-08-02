@@ -1,16 +1,34 @@
 ## Index <!-- omit from toc -->
 
-- [CrosswordDefinition](#crossworddefinition)
+- [crosswordDefinition](#crossworddefinition)
 - [Clue](#clue)
 - [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
   - [Multi-word clue](#multi-word-clue)
   - [Multi-segment clue](#multi-segment-clue)
 - [Samples](#samples)
 
-## CrosswordDefinition
+## crosswordDefinition
 
-The **CrosswordDefinition** is a minimal [JSON][6] object that defines the
-crossword.The JSON file is converted to an analogous JavaScript object when it is loaded by the JavaScript code.
+The **crosswordDefinition** is a simple JavaScript `Object`, typically  created by _parsing_ a [JSON][6] representation of the crossword clues and metadata. Other representations such as [YAML][7] can be used.
+
+[Here][8] is a JSON crossword definition and [there][9] is a YAML crossword definition. YAML definitions are easier to manually edit. 
+
+The **crosswordDefinition** object can be created _implicitly_ by importing a JSON file
+```js
+import crosswordDefinition from "./crosswords/ftimes_17095.json";
+```
+or _explicitly_ by calling the `JSON.parse()` function, passing a JSON-formatted `string` as the argument.
+```js
+import { readFileSync } from 'fs';
+
+try {  
+    var json = readFileSync("./crosswords/ftimes_17095.json", 'utf8');
+} catch(e) {
+    console.log('Error:', e.stack);
+
+const crosswordDefinition = JSON.parse(json.toString()) 
+```
+A JSON file is converted to an analogous JavaScript object when it is loaded by the JavaScript code.
 
 It MUST have the following properties:
 
@@ -112,3 +130,6 @@ Two [sample][2] [files][5] can be found in the sample folder
 [4]: #multi-word-and-multi-segment
 [5]: ../sample/crosswords/guardian_quiptic_89.json
 [6]: https://www.w3schools.com/whatis/whatis_json.asp
+[7]: https://www.redhat.com/en/topics/automation/what-is-yaml
+[8]: ../dev/crosswords/ftimes_17095.json
+[9]: ../dev/crosswords/ftimes_17095.yml
