@@ -94,16 +94,16 @@ cd['invalid-multi-segment-number'] = { x: 12, y: 9, clue: '9,3b,4. Clue (5)' };
   });
 
 describe('newClueModel()', () => {
-  it('should fail if jsonClue is not provided', () => {
+  it('should fail if cdClue is not provided', () => {
     expect(() => {
       newClueModel();
-    }).to.throw("'jsonClue' and 'isAcrossClue' are required");
+    }).to.throw("'cdClue' and 'isAcrossClue' are required");
   });
 
   it('should fail if isAcrossClue is not provided', () => {
     expect(() => {
       newClueModel(cd['valid-single-segment']);
-    }).to.throw("'jsonClue' and 'isAcrossClue' are required");
+    }).to.throw("'cdClue' and 'isAcrossClue' are required");
   });
 
   it('should fail if isAcrossClue is null', () => {
@@ -118,85 +118,85 @@ describe('newClueModel()', () => {
     }).to.throw("'isAcrossClue' must be a boolean (true,false)");
   });
 
-  it('should fail if jsonClue is null', () => {
+  it('should fail if cdClue is null', () => {
     expect(() => {
       newClueModel(null, isAcrossClue);
-    }).to.throw("'jsonClue' can't be null");
+    }).to.throw("'cdClue' can't be null");
   });
 
-  it('should fail if jsonClue.x replaced by another property', () => {
+  it('should fail if cdClue.x replaced by another property', () => {
     expect(() => {
       newClueModel(cd['z-replaces-x'], isAcrossClue);
-    }).to.throw("'jsonClue.x' is missing");
+    }).to.throw("'cdClue.x' is missing");
   });
 
-  it('should fail if jsonClue.x missing', () => {
+  it('should fail if cdClue.x missing', () => {
     expect(() => {
       newClueModel(cd['missing-x'], isAcrossClue);
-    }).to.throw("'jsonClue.x' is missing");
+    }).to.throw("'cdClue.x' is missing");
   });
 
-  it('should fail if jsonClue.x is null', () => {
+  it('should fail if cdClue.x is null', () => {
     expect(() => {
       newClueModel(cd['null-x'], isAcrossClue);
-    }).to.throw("'jsonClue.x (null)' must be a number");
+    }).to.throw("'cdClue.x (null)' must be a number");
   });
 
-  it('should fail if jsonClue.x is a string', () => {
+  it('should fail if cdClue.x is a string', () => {
     expect(() => {
       newClueModel(cd['string-x'], isAcrossClue);
-    }).to.throw("'jsonClue.x (a)' must be a number");
+    }).to.throw("'cdClue.x (a)' must be a number");
   });
 
-  it('should fail if jsonClue.y missing', () => {
+  it('should fail if cdClue.y missing', () => {
     expect(() => {
       newClueModel(cd['missing-y'], isAcrossClue);
-    }).to.throw("'jsonClue.y' is missing");
+    }).to.throw("'cdClue.y' is missing");
   });
 
-  it('should fail if jsonClue.y is null', () => {
+  it('should fail if cdClue.y is null', () => {
     expect(() => {
       newClueModel(cd['null-y'], isAcrossClue);
-    }).to.throw("'jsonClue.y (null)' must be a number");
+    }).to.throw("'cdClue.y (null)' must be a number");
   });
 
-  it('should fail if jsonClue.y is a boolean', () => {
+  it('should fail if cdClue.y is a boolean', () => {
     expect(() => {
       newClueModel(cd['boolean-y'], isAcrossClue);
-    }).to.throw("'jsonClue.y (true)' must be a number");
+    }).to.throw("'cdClue.y (true)' must be a number");
   });
 
-  it('should fail if jsonClue has unexpected properties', () => {
+  it('should fail if cdClue has unexpected properties', () => {
     expect(() => {
       newClueModel(cd['unexpected-properties'], isAcrossClue);
-    }).to.throw("'jsonClue' has unexpected properties <z,a>");
+    }).to.throw("'cdClue' has unexpected properties <z,a>");
   });
 
-  it('should pass if jsonClue has optional properties', () => {
+  it('should pass if cdClue has optional properties', () => {
     const clueModel = newClueModel(cd['optional-properties'], isAcrossClue);
     expect(clueModel.answer).to.eql('GUESS');
   });
 
-  it('should pass if jsonClue has normalisable answer', () => {
+  it('should pass if cdClue has normalisable answer', () => {
     const clueModel = newClueModel(cd['normalisable-answer'], isAcrossClue);
     expect(clueModel.answer).to.eql('A  L ');
   });
 
-  it('should pass if jsonClue has normalisable solution', () => {
+  it('should pass if cdClue has normalisable solution', () => {
     const clueModel = newClueModel(cd['normalisable-solution'], isAcrossClue);
     expect(clueModel.solution).to.eql('APPLE');
   });
 
-  it('should fail if jsonClue.answer is not a string', () => {
+  it('should fail if cdClue.answer is not a string', () => {
     expect(() => {
       newClueModel(cd['undefined-answer'], isAcrossClue);
-    }).to.throw("'jsonClue.answer (undefined)' must be a string");
+    }).to.throw("'cdClue.answer (undefined)' must be a string");
   });
 
-  it('should fail if jsonClue.solution is not a string', () => {
+  it('should fail if cdClue.solution is not a string', () => {
     expect(() => {
       newClueModel(cd['undefined-solution'], isAcrossClue);
-    }).to.throw("'jsonClue.solution (undefined)' must be a string");
+    }).to.throw("'cdClue.solution (undefined)' must be a string");
   });
 
   it('should fail if the clue number is not provided', () => {

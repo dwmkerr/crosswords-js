@@ -1,0 +1,55 @@
+# Crossword Styling <!-- omit from toc -->
+
+## Index <!-- omit from toc -->
+
+- [Overview](#overview)
+- [Reference](#reference)
+  - [Crossword grid](#crossword-grid)
+  - [Dev page](#dev-page)
+
+## Overview
+
+- The stylesheets for the **crosswords-js** module are located in the [style][8] directory
+- The stylesheets are mostly written in [Less][5], which is a [CSS][6] preprocessor.
+- The _Less_ source code is converted to _CSS_ automatically by the [Vite][7] bundler.
+
+The styles are spread across four files:
+
+- [style/reset.css][9]
+  - This is a third-party stylesheet designed to reset any default styles set by browsers. Applying these styles gives us a blank canvas to build a consistent look and feel across all modern browsers.
+- [style/crosswords.less][10]
+  - This is the main stylesheet for the module. The focus of this sheet is the layout of the _grid_ and _clue_ elements. The listed fonts and colours are parameterised and can be modified by _locally_ overriding the _default_ values in the next two files.
+  - Note that we are employing [**responsive**][14] design, so some styles are defined in multiple `@media` queries.
+  - Code your preferred fonts and colours in your project stylesheet below the `import` statements for [reset.css][9] and [crosswords.less][10] to override the defaults. Refer to [dev/index.less][13] for an example.
+- [style/cwdimensions.less][11]
+  - This stylesheet defines the default values for the font sizes and dimensions of the crossword elements, including the grid dimensions (default of 15x15).
+  - Most dimensions are expressed in `rem` which is proportional to the `font-size` set for the root `html` element on your web page. Typically, that size is `16px`.
+- [style/cwcolors.less][12]
+  - This stylesheet contains the default values for the colours of the crossword elements.
+
+## Reference
+
+### Crossword grid
+
+- [CSS Grid][1]
+- [CSS Tricks reference poster][3]
+
+### Dev page
+
+- [CSS Flexbox][2]
+- [CSS Tricks reference Poster][4]
+
+[1]: https://css-tricks.com/snippets/css/complete-guide-grid/
+[2]: https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+[3]: ./img/css-grid-poster.png
+[4]: ./img/css-flexbox-poster.png
+[5]: https://lesscss.org/
+[6]: https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps/What_is_CSS
+[7]: ./vite.md
+[8]: ../style/
+[9]: ../style/reset.css
+[10]: ../style/crosswords.less
+[11]: ../style/cwdimensions.less
+[12]: ../style/cwcolors.less
+[13]: ../dev/index.less
+[14]: https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design

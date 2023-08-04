@@ -1,6 +1,7 @@
 ## Index <!-- omit from toc -->
 
 - [crosswordDefinition](#crossworddefinition)
+  - [Properties](#properties)
 - [Clue](#clue)
 - [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
   - [Multi-word clue](#multi-word-clue)
@@ -9,28 +10,48 @@
 
 ## crosswordDefinition
 
-The **crosswordDefinition** is a simple JavaScript `Object`, typically  created by _parsing_ a [JSON][6] representation of the crossword clues and metadata. Other representations such as [YAML][7] can be used.
+The **crosswordDefinition** is a simple JavaScript `Object`, typically created by _parsing_ a [JSON][6] representation of the crossword clues and metadata. Other representations such as [YAML][7] can be used.
 
-[Here][8] is a JSON crossword definition and [there][9] is a YAML crossword definition. YAML definitions are easier to manually edit. 
+[Here][8] is a crossword definition in JSON and [there][9] is a YAML one. YAML definitions are easier to manually edit.
 
-The **crosswordDefinition** object can be created _implicitly_ by importing a JSON file
+The **crosswordDefinition** object can be created _implicitly_ by importing a JSON file...
+
 ```js
-import crosswordDefinition from "./crosswords/ftimes_17095.json";
+import crosswordDefinition from 'data/ftimes_17095.json';
 ```
-or _explicitly_ by calling the `JSON.parse()` function, passing a JSON-formatted `string` as the argument.
+
+...or _explicitly_ by calling the `JSON.parse()` function, passing a JSON-formatted `string` as the argument.
+
 ```js
 import { readFileSync } from 'fs';
 
-try {  
-    var json = readFileSync("./crosswords/ftimes_17095.json", 'utf8');
-} catch(e) {
-    console.log('Error:', e.stack);
+try {
+  const json = readFileSync('../data/ftimes_17095.json', 'utf8');
+} catch (e) {
+  console.log('Error:', e.stack);
+}
 
-const crosswordDefinition = JSON.parse(json.toString()) 
+const crosswordDefinition = JSON.parse(json.toString());
 ```
-A JSON file is converted to an analogous JavaScript object when it is loaded by the JavaScript code.
 
-It MUST have the following properties:
+...or import a YAML-formatted `string`:
+
+```js
+import { readFileSync } from 'fs';
+import YAML from 'yaml';
+
+try {
+  const yaml = readFileSync('../data/ftimes_17095.yml', 'utf8');
+} catch (e) {
+  console.log('Error:', e.stack);
+}
+
+const crosswordDefinition = YAML.parse(yaml.toString());
+```
+
+### Properties
+
+A _crosswordDefinition_ MUST have the following properties:
 
 - **width**: The width of the crossword _(the number of columns)_.
 - **height**: The height of the crossword _(the number of rows)_.
@@ -43,7 +64,7 @@ It MAY have the following properties
 
 ## Clue
 
-A **Clue** in JSON format MUST have the following properties:
+A **Clue** MUST have the following properties:
 
 - **x**: The column number (1-based) of the first letter(cell) in a clue.
 - **y**: The row number (1-based) of the first letter in a clue.
@@ -54,7 +75,7 @@ A **Clue** in JSON format MUST have the following properties:
   - **text**: The text of the clue, such as `Outside port finally, make fast a vessel – one that's engine driven`
   - **length**: The length of the answer, an array such as `(6)` or for a [multi-word][4] answer `(5,4)`.
 
-A **Clue** in JSON format MAY have the following properties:
+A **Clue** MAY have the following properties:
 
 - **solution**: The solution text for the clue. This is a simple string without spaces or punctuation.
 
@@ -131,5 +152,5 @@ Two [sample][2] [files][5] can be found in the sample folder
 [5]: ../sample/crosswords/guardian_quiptic_89.json
 [6]: https://www.w3schools.com/whatis/whatis_json.asp
 [7]: https://www.redhat.com/en/topics/automation/what-is-yaml
-[8]: ../dev/crosswords/ftimes_17095.json
-[9]: ../dev/crosswords/ftimes_17095.yml
+[8]: ../data/ftimes_17095.json
+[9]: ../data/ftimes_17095.yml

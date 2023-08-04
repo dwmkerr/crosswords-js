@@ -33,7 +33,7 @@ This page describes the requirements and design of features to leverage a suppli
 
 ## Design
 
-The JSON format and description of the _crossword definition_ is covered [here][1].
+The format and description of the _crossword definition_ is covered [here][1].
 
 I see two approaches to support the _crossword solution_ data, both of which could be supported:
 
@@ -62,4 +62,4 @@ To support this, we need to track the revealed clues and letters.
 
 This could be stored in each cell in the crossword grid. However, this data is not persisted and will be lost if the user session is terminated.
 
-[1]: ./crossworddefinition.md
+[1]: ./crossword-definition.md

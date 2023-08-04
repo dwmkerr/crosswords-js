@@ -1,39 +1,25 @@
 import { expect } from 'chai';
 import { newCrosswordModel } from '../src/crossword-model.mjs';
 
-// https://pawelgrzybek.com/all-you-need-to-know-to-move-from-commonjs-to-ecmascript-modules-esm-in-node-js/
-// Alternative using JSON.parse() to load crosswords.
-// This approach will be needed for crossword definitions in YAML?
-// import { fileURLToPath } from 'url';
-// import { dirname } from 'path';
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-// import { promises as fs } from "fs";
-// const quiptic89 = JSON.parse(await fs.readFile(`${__dirname}/test-crosswords/quiptic89.json`));
+// mocha requires 'assert' for json imports but eslint (ecma version 13) throws parsing error...
+//  import quiptic89 from '../data/quiptic89.json' assert { type: "json" };
+//  import alberich4 from '../data/alberich_4.json' assert { type: "json" };
+// eslint (ecma version 13) passes but mocha requires 'assert'...
+//  import quiptic89 from '../data/quiptic_89.json';
+//  import alberich4 from '../data/alberich_4.json';
+//
+// hack: reintroduce 'require'!
 
-// mocha requires 'assert' for json imports but eslint (ecma version 13) throws parsing error...
-//  import quiptic89 from './test-crosswords/quiptic89.json' assert { type: "json" };
-//  import alberich4 from './test-crosswords/alberich_4.json' assert { type: "json" };
-// eslint (ecma version 13) passes but mocha requires 'assert'...
-//  import quiptic89 from './test-crosswords/quiptic89.json';
-//  import alberich4 from './test-crosswords/alberich_4.json';
-// https://pawelgrzybek.com/all-you-need-to-know-to-move-from-commonjs-to-ecmascript-modules-esm-in-node-js/
 import { createRequire } from 'module';
-// mocha requires 'assert' for json imports but eslint (ecma version 13) throws parsing error...
-//  import quiptic89 from './test-crosswords/quiptic89.json' assert { type: "json" };
-//  import alberich4 from './test-crosswords/alberich_4.json' assert { type: "json" };
-// eslint (ecma version 13) passes but mocha requires 'assert'...
-//  import quiptic89 from './test-crosswords/quiptic89.json';
-//  import alberich4 from './test-crosswords/alberich_4.json';
 const require = createRequire(import.meta.url);
-const quiptic89 = require('./test-crosswords/quiptic89.json');
-const alberich4 = require('./test-crosswords/alberich_4.json');
-const ftimes17095 = require('./test-crosswords/ftimes_17095.json');
+const quiptic89 = require('../data/quiptic_89.json');
+const alberich4 = require('../data/alberich_4.json');
+const ftimes17095 = require('../data/ftimes_17095.json');
 
 const { width, height, acrossClues, downClues } = quiptic89;
 
 describe('newCrosswordModel()', () => {
-  it('should fail if jsonCrossword is not provided', () => {
+  it('should fail if crosswordDefinition is not provided', () => {
     expect(() => {
       newCrosswordModel();
     }).to.throw(
@@ -41,7 +27,7 @@ describe('newCrosswordModel()', () => {
     );
   });
 
-  it('should provide basic details of the crossword in jsonCrossword', () => {
+  it('should provide basic details of the crossword in crosswordDefinition', () => {
     //  Generate the crossword model.
     const crosswordModel = newCrosswordModel(quiptic89);
 
@@ -52,7 +38,7 @@ describe('newCrosswordModel()', () => {
     expect(crosswordModel.downClues.length).to.eql(downClues.length);
   });
 
-  it('should provide clues in the jsonCrossword', () => {
+  it('should provide clues in the crosswordDefinition', () => {
     const crosswordModel = newCrosswordModel(quiptic89);
 
     const definitionClue = acrossClues[0];
@@ -69,7 +55,7 @@ describe('newCrosswordModel()', () => {
     );
   });
 
-  it('should fail if the bounds of jsonCrossword are invalid', () => {
+  it('should fail if the bounds of crosswordDefinition are invalid', () => {
     const expectedError = 'The crossword bounds are invalid.';
 
     let crosswordDefinition = {
@@ -95,7 +81,7 @@ describe('newCrosswordModel()', () => {
     }).to.throw(expectedError);
   });
 
-  it('should fail if a clue exceeds the bounds of jsonCrossword', () => {
+  it('should fail if a clue exceeds the bounds of crosswordDefinition', () => {
     const crosswordDefinition = {
       width: 10,
       height: 10,

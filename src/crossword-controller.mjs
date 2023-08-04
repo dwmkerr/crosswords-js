@@ -219,12 +219,16 @@ class CrosswordController {
 
   // Helper function to bind Controller user-event-handler to webpage
   // DOM elementId.
-  bindEventHandlerToId(elementId, eventName = 'click', dom = document) {
+  bindEventHandlerToId = function (
+    elementId,
+    eventName = 'click',
+    dom = document,
+  ) {
     const element = eid(elementId, dom);
     if (element) {
       element.addEventListener(eventName, this.userEventHandler(elementId));
     }
-  }
+  }.bind(this);
 
   // Helper function to bind Controller user-event-handlers to a collection
   // of webpage DOM elementIds.
@@ -243,16 +247,20 @@ class CrosswordController {
   // DOM element class. Using element class names rather than element Ids
   // allows us to add controller user-event-handler to more than one
   // DOM element
-  bindEventHandlerToClass(elementClass, eventName = 'click', dom = document) {
+  bindEventHandlerToClass = function (
+    elementClass,
+    eventName = 'click',
+    dom = document,
+  ) {
     const elements = ecs(elementClass, dom);
     elements.forEach((e) => {
       e.addEventListener(eventName, this.userEventHandler(elementClass));
     });
-  }
+  }.bind(this);
 
   // Helper function to bind Controller user-event-handlers to a collection
   // of webpage DOM elementIds.
-  bindEventHandlersToClasses = function (
+  bindEventHandlersToClass = function (
     // all user event handlers
     elementClasses = this.userEventHandlerIds,
     eventName = 'click',

@@ -22,7 +22,7 @@ function directionFromClueLabel(clueLabel) {
  * compileClue - create a clue model from a clue read
  * from a _CrosswordDefinition_ [JSON](https://en.wikipedia.org/wiki/JSON) document.
  *
- * @param jsonClue - an object which defines the clue, with properties:
+ * @param cdClue - an object which defines the clue, with properties:
  * x: the zero-based grid column index of the starting letter of the clue
  * y: the zero-based grid row index of the starting letter of the clue
  * clue: the clue description string which has the format:
@@ -30,42 +30,38 @@ function directionFromClueLabel(clueLabel) {
  * @param isAcrossClue - a boolean indicating the clue orientation
  * @returns - the clue model for the given definition
  */
-function newClueModel(jsonClue, isAcrossClue) {
-  function validateClueStructure(jsonClue) {
+function newClueModel(cdClue, isAcrossClue) {
+  function validateClueStructure(cdClue) {
     const required = { x: 1, y: 1, clue: '1. Clue (1)' };
     const optional = { answer: '', solution: '', revealed: '' };
     const requiredKeys = Object.keys(required);
     const optionalKeys = Object.keys(optional);
-    const cdKeys = Object.keys(jsonClue);
+    const cdKeys = Object.keys(cdClue);
 
     // Test for presence of required keys
     for (const requiredKey of requiredKeys) {
       if (!cdKeys.includes(requiredKey))
-        throw new Error(`'jsonClue.${requiredKey}' is missing`);
+        throw new Error(`'cdClue.${requiredKey}' is missing`);
     }
 
     // Test for type of required keys
     for (const key of requiredKeys) {
-      if (typeof required[key] != typeof jsonClue[key]) {
+      if (typeof required[key] != typeof cdClue[key]) {
         throw new Error(
-          `'jsonClue.${key} (${jsonClue[key]})' must be a ${typeof required[
-            key
-          ]}`,
+          `'cdClue.${key} (${cdClue[key]})' must be a ${typeof required[key]}`,
         );
       }
     }
 
     // Test for presence and type of optional keys
     for (const key of optionalKeys) {
-      if (cdKeys.includes(key) && typeof optional[key] != typeof jsonClue[key])
+      if (cdKeys.includes(key) && typeof optional[key] != typeof cdClue[key])
         throw new Error(
-          `'jsonClue.${key} (${jsonClue[key]})' must be a ${typeof optional[
-            key
-          ]}`,
+          `'cdClue.${key} (${cdClue[key]})' must be a ${typeof optional[key]}`,
         );
     }
 
-    // Test for additional properties in jsonClue
+    // Test for additional properties in cdClue
 
     const difference = new Set(cdKeys);
     for (const requiredKey of requiredKeys) {
@@ -77,19 +73,19 @@ function newClueModel(jsonClue, isAcrossClue) {
 
     if (difference.size > 0) {
       throw new Error(
-        `'jsonClue' has unexpected properties <${[...difference].join(',')}>`,
+        `'cdClue' has unexpected properties <${[...difference].join(',')}>`,
       );
     }
   }
 
   // Test for null or undefined argument
 
-  if (jsonClue === undefined || isAcrossClue === undefined) {
-    throw new Error("'jsonClue' and 'isAcrossClue' are required");
+  if (cdClue === undefined || isAcrossClue === undefined) {
+    throw new Error("'cdClue' and 'isAcrossClue' are required");
   }
 
-  if (jsonClue === null) {
-    throw new Error("'jsonClue' can't be null");
+  if (cdClue === null) {
+    throw new Error("'cdClue' can't be null");
   }
 
   if (isAcrossClue === null) {
@@ -100,37 +96,37 @@ function newClueModel(jsonClue, isAcrossClue) {
     throw new Error("'isAcrossClue' must be a boolean (true,false)");
   }
 
-  // Test the properties and types of the jsonClue argument
-  validateClueStructure(jsonClue);
+  // Test the properties and types of the cdClue argument
+  validateClueStructure(cdClue);
 
   // Test if clue text matches expected pattern
-  if (!clueRegex.test(jsonClue.clue)) {
+  if (!clueRegex.test(cdClue.clue)) {
     throw new Error(
-      `Clue '${jsonClue.clue}' does not match the required pattern '${cluePattern}'`,
+      `Clue '${cdClue.clue}' does not match the required pattern '${cluePattern}'`,
     );
   }
 
   // Extract simple properties
-  const x = jsonClue.x - 1; //  Definitions are 1 based, models are more useful 0 based.
-  const y = jsonClue.y - 1;
+  const x = cdClue.x - 1; //  Definitions are 1 based, models are more useful 0 based.
+  const y = cdClue.y - 1;
 
   const isAcross = isAcrossClue;
   // Initialise array of crossword grid elements - populated as part of crossword DOM
   const cells = [];
   // Initialise setter's solution for clue
-  const solution = jsonClue.solution
+  const solution = cdClue.solution
     ? // Strip out everything from solution except spaces and alphabetical characters
       // DO NOT substitute spaces
-      jsonClue.solution.toUpperCase().replaceAll(/[^A-Z]/g, '')
+      cdClue.solution.toUpperCase().replaceAll(/[^A-Z]/g, '')
     : undefined;
   // Initialise revealed letters for clue
-  const revealed = jsonClue.revealed
+  const revealed = cdClue.revealed
     ? // strip out everything from revealed except alphabetical characters
-      jsonClue.revealed.toUpperCase()
+      cdClue.revealed.toUpperCase()
     : undefined;
 
   //  Get the clue components.
-  const [, numberGroup, clueGroup, answerGroup] = clueRegex.exec(jsonClue.clue);
+  const [, numberGroup, clueGroup, answerGroup] = clueRegex.exec(cdClue.clue);
 
   //// Parse numberGroup
 
@@ -147,7 +143,7 @@ function newClueModel(jsonClue, isAcrossClue) {
 
   if (remainingText != undefined) {
     throw new Error(
-      `'${jsonClue.clue}' Error in <numberText> near <${remainingText}>`,
+      `'${cdClue.clue}' Error in <numberText> near <${remainingText}>`,
     );
   }
 
@@ -190,7 +186,7 @@ function newClueModel(jsonClue, isAcrossClue) {
 
   if (remainingText != undefined) {
     throw new Error(
-      `'${jsonClue.clue}' Error in <answerText> near <${remainingText}>`,
+      `'${cdClue.clue}' Error in <answerText> near <${remainingText}>`,
     );
   }
 
@@ -200,10 +196,10 @@ function newClueModel(jsonClue, isAcrossClue) {
     0,
   );
 
-  // trace(`jsonClue.answer: <${jsonClue.answer}>`);
+  // trace(`cdClue.answer: <${cdClue.answer}>`);
   // Initialise punter's answer for clue
-  const answer = jsonClue.answer
-    ? jsonClue.answer
+  const answer = cdClue.answer
+    ? cdClue.answer
         // convert to uppercase and pad out to answerLength with spaces
         .toUpperCase()
         // replace illegal characters with spaces

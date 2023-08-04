@@ -4,12 +4,12 @@ sampleapp.controller("MainController", ($scope, $http) => {
   let cwModel = null;
   let cwController = null;
 
-  $http.get("crosswords/ftimes_17095.json").success((jsonCrossword) => {
+  $http.get("crosswords/ftimes_17095.json").success((crosswordDefinition) => {
     //  Set the crossword info.
-    $scope.info = jsonCrossword.info;
+    $scope.info = crosswordDefinition.info;
 
     //  Create the crossword model.
-    cwModel = CrosswordsJS.compileCrossword(jsonCrossword);
+    cwModel = CrosswordsJS.compileCrossword(crosswordDefinition);
     cwController = new CrosswordsJS.Controller(
       cwModel,
       document.getElementById("crossword1"),

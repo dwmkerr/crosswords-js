@@ -110,14 +110,14 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
    ```js
    import { compileCrossword, Controller } from './crosswords.js';
-   import crosswordJSON from './crosswords/ftimes_17095.json';
+   import crosswordDefinition from './crosswords/ftimes_17095.json';
    ```
 
-5. Compile `crosswordJSON` - creating the **Model** (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordJSON` will generate an exception:
+5. Compile `crosswordDefinition` - creating the **Model** (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordDefinition` will generate an exception:
 
    ```js
    try {
-     const model = compileCrossword(crosswordJSON);
+     const model = compileCrossword(crosswordDefinition);
    } catch (err) {
      console.log(`Error compiling crossword: ${err}`);
    }
@@ -189,9 +189,9 @@ You can use the `controller` to programmatically manipulate the **gridView** - t
   // Bind ALL the user event handlers, using defaults
   controller.bindEventHandlersToIds();
 
-  // Bind the user event handlers to ALL elements with 
+  // Bind the user event handlers to ALL elements with
   // the given class(es), passing an array of one class name
-  controller.bindEventHandlersToClasses(["reset-clue"]);
+  controller.bindEventHandlersToClass(["reset-clue"]);
   ```
 
 2. You can also provide your own handlers to listen to **controller events**.
@@ -242,12 +242,13 @@ npm run dev
 - Edit the development webpage HTML: [dev/index.html][23]
 - Edit the development webpage JavaScript: [dev/index.js][23]
 - Edit the development webpage CSS via the [**less**][24] source: [dev/index.less][25]
-- Edit the styles for the **crosswords-js** package via the [**less**][24] source: [style/\*.less][24].
 - _Less files are dynamically compiled to CSS by [ViteJS][28] for the development server_.
 
 ### Documentation
 
 The project documentation is written in [Markdown][27] and is located in the repository at `<repo-root>/docs`.
+
+- [Crossword stylesheets][35] overview
 
 ### Quality assurance
 
@@ -340,7 +341,7 @@ npm run dev:prod
 
 This is a little fiddly. I have tried to ensure the syntax is as close to what a reader would see in a printed crossword to make this as clear as possible. Here is an example:
 
-```jsonNode.js
+```json
 {
   "downClues": [{
     "x": 6, "y": 1
@@ -493,17 +494,18 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [18]: https://www.theguardian.com/crosswords
 [19]: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
 [20]: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
-[21]: src/test-crosswords/alberich_4.json
-[22]: src/test-crosswords/ftimes_17095.json
+[21]: data/alberich_4.json
+[22]: data/ftimes_17095.json
 [23]: dev/index.html
 [24]: https://lesscss.org/functions/
 [25]: dev/index.css
 [26]: https://mochajs.org/
 [27]: https://www.markdownguide.org/
 [28]: https://vitejs.dev/
-[29]: docs/crossworddefinition.md
+[29]: docs/crossword-definition.md
 [30]: docs/controller-api.md
 [31]: dev/index.js
 [32]: https://nodejs.org/
 [33]: dev/
 [34]: sample/
+[35]: docs/crossword-styling.md

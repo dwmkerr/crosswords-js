@@ -8,7 +8,7 @@ import {
 } from "./crosswords.js";
 
 // TODO: Load crossword dynamically form the user's choice.
-import crosswordJSON from "./crosswords/ftimes_17095.json";
+import crosswordDefinition from "./crosswords/ftimes_17095.json";
 
 // Enable console logging for crosswords.js
 tracing(true);
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // The DOM elementIds provide the linkage between the HTML and the Controller
   // Compile a crossword
-  const crosswordModel = compileCrossword(crosswordJSON);
+  const crosswordModel = compileCrossword(crosswordDefinition);
   // Locate the parent element for the crossword-grid
   const crosswordGridParent = eid("crossword-grid-placeholder");
   trace(`crosswordGridParent: ${crosswordGridParent}`);
@@ -79,11 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Populate title block with crossword info
   let infoSource = eid("info-source-url");
-  infoSource.innerHTML = crosswordJSON.info.title;
-  infoSource.setAttribute("href", crosswordJSON.info.source);
+  infoSource.innerHTML = crosswordDefinition.info.title;
+  infoSource.setAttribute("href", crosswordDefinition.info.source);
   let infoSetter = eid("info-setter-url");
-  infoSetter.innerHTML = crosswordJSON.info.setter.title;
-  infoSetter.setAttribute("href", crosswordJSON.info.setter.url);
+  infoSetter.innerHTML = crosswordDefinition.info.setter.title;
+  infoSetter.setAttribute("href", crosswordDefinition.info.setter.url);
 
   //// Respond to crossword completion
 

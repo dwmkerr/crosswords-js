@@ -33,14 +33,14 @@ function getAnswerSegment(answerSegments, letterIndex) {
 }
 
 /**
- * **newCrosswordModel**: build a crossword model from a crossword object read from JSON.
+ * **newCrosswordModel**: build a crossword model from a crosswordDefinition object.
  * - The function compiles a JSON crossword and emits diagnostic exceptions when errors are encountered.
- * @param {*} jsonCrossword the crossword object read from a JSON crossword description.
+ * @param {*} crosswordDefinition A javascript Object typically parsed or imported from a crossword description file in JSON or YAML format.
  * @returns a crossword model object
  */
-function newCrosswordModel(jsonCrossword) {
+function newCrosswordModel(crosswordDefinition) {
   trace('newCrosswordModel');
-  if (!jsonCrossword) {
+  if (!crosswordDefinition) {
     throw new Error(
       'The model must be initialised with a JSON crossword definition.',
     );
@@ -48,8 +48,8 @@ function newCrosswordModel(jsonCrossword) {
 
   //  Create the basic crosswordModel structure.
   const crosswordModel = {
-    width: jsonCrossword.width,
-    height: jsonCrossword.height,
+    width: crosswordDefinition.width,
+    height: crosswordDefinition.height,
     acrossClues: [],
     downClues: [],
     cells: [],
@@ -72,14 +72,16 @@ function newCrosswordModel(jsonCrossword) {
   crosswordModel.cells = buildCellGrid(crosswordModel);
 
   //  We're going to go through the across clues, then the down clues.
-  const jsonClues = jsonCrossword.acrossClues.concat(jsonCrossword.downClues);
-  for (let index = 0; index < jsonClues.length; index += 1) {
+  const cdClues = crosswordDefinition.acrossClues.concat(
+    crosswordDefinition.downClues,
+  );
+  for (let index = 0; index < cdClues.length; index += 1) {
     //  Grab the clue and build a flag letting us know if we're across or down.
-    const jsonClue = jsonClues[index];
-    const isAcrossClue = index < jsonCrossword.acrossClues.length;
+    const cdClue = cdClues[index];
+    const isAcrossClue = index < crosswordDefinition.acrossClues.length;
 
     //  Compile the clue model from the crossword definition of the clue
-    const clueModel = newClueModel(jsonClue, isAcrossClue);
+    const clueModel = newClueModel(cdClue, isAcrossClue);
     //  Update the crosswordModel.
     crosswordModel[isAcrossClue ? 'acrossClues' : 'downClues'].push(clueModel);
 
@@ -128,7 +130,7 @@ function newCrosswordModel(jsonCrossword) {
       }
 
       //  If the imported clue has an answer we set it in the cell...
-      if (jsonClue.answer) {
+      if (cdClue.answer) {
         //  ...but only if it is not different to an existing answer.
         if (
           cell.answer &&
@@ -160,7 +162,7 @@ function newCrosswordModel(jsonCrossword) {
       }
 
       //  If the imported clue has a solution we set it in the cell...
-      if (jsonClue.solution) {
+      if (cdClue.solution) {
         //  ...but only if it is NOT different to any existing solution.
         if (
           cell.solution &&
