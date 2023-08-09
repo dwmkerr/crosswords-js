@@ -1,6 +1,5 @@
 import { first, last, trace } from './helpers.mjs';
 // Parse the groups: /^numberGroup\.clueGroup\(answerGroup\)$/
-// const clueRegex = /^(\d+[ad]?[,\dad]*?)\.(\s*.*?\s*)\(([\d,-]+)\)$/;
 const clueRegex = /^(.*?)\.(.*)\((.*?)\)$/;
 // Parse numberGroup into 1+ clue segment labels
 const numberGroupRegex = /^(\d+[ad]?)(,(\d+[ad]?.*))*$/;
@@ -13,73 +12,68 @@ const cluePattern = '<NumberText>.<ClueText>(<AnswerText>)';
 
 // Helper
 function directionFromClueLabel(clueLabel) {
-  if (/a$/.test(clueLabel)) return 'across';
-  if (/d$/.test(clueLabel)) return 'down';
+  if (clueLabel.endsWith('a')) return 'across';
+  if (clueLabel.endsWith('d')) return 'down';
   return null;
 }
 
-/**
- * compileClue - create a clue model from a clue read
- * from a _CrosswordDefinition_ [JSON](https://en.wikipedia.org/wiki/JSON) document.
- *
- * @param cdClue - an object which defines the clue, with properties:
- * x: the zero-based grid column index of the starting letter of the clue
- * y: the zero-based grid row index of the starting letter of the clue
- * clue: the clue description string which has the format:
- *   "<Number Structure>.<Clue>(<Answer Structure>)"
- * @param isAcrossClue - a boolean indicating the clue orientation
- * @returns - the clue model for the given definition
- */
-function newClueModel(cdClue, isAcrossClue) {
-  function validateClueStructure(cdClue) {
-    const required = { x: 1, y: 1, clue: '1. Clue (1)' };
-    const optional = { answer: '', solution: '', revealed: '' };
-    const requiredKeys = Object.keys(required);
-    const optionalKeys = Object.keys(optional);
-    const cdKeys = Object.keys(cdClue);
+//  Helper for newClueModel()
+function validateClueStructure(cdClue) {
+  const required = { x: 1, y: 1, clue: '1. Clue (1)' };
+  const optional = { answer: '', solution: '', revealed: '' };
+  const requiredKeys = Object.keys(required);
+  const optionalKeys = Object.keys(optional);
+  const cdKeys = Object.keys(cdClue);
 
-    // Test for presence of required keys
-    for (const requiredKey of requiredKeys) {
-      if (!cdKeys.includes(requiredKey))
-        throw new Error(`'cdClue.${requiredKey}' is missing`);
-    }
+  // Test for presence of required keys
+  for (const requiredKey of requiredKeys) {
+    if (!cdKeys.includes(requiredKey))
+      throw new Error(`'cdClue.${requiredKey}' is missing`);
+  }
 
-    // Test for type of required keys
-    for (const key of requiredKeys) {
-      if (typeof required[key] != typeof cdClue[key]) {
-        throw new Error(
-          `'cdClue.${key} (${cdClue[key]})' must be a ${typeof required[key]}`,
-        );
-      }
-    }
-
-    // Test for presence and type of optional keys
-    for (const key of optionalKeys) {
-      if (cdKeys.includes(key) && typeof optional[key] != typeof cdClue[key])
-        throw new Error(
-          `'cdClue.${key} (${cdClue[key]})' must be a ${typeof optional[key]}`,
-        );
-    }
-
-    // Test for additional properties in cdClue
-
-    const difference = new Set(cdKeys);
-    for (const requiredKey of requiredKeys) {
-      difference.delete(requiredKey);
-    }
-    for (const optionalKey of optionalKeys) {
-      difference.delete(optionalKey);
-    }
-
-    if (difference.size > 0) {
+  // Test for type of required keys
+  for (const key of requiredKeys) {
+    if (typeof required[key] != typeof cdClue[key]) {
       throw new Error(
-        `'cdClue' has unexpected properties <${[...difference].join(',')}>`,
+        `'cdClue.${key} (${cdClue[key]})' must be a ${typeof required[key]}`,
       );
     }
   }
 
-  // Test for null or undefined argument
+  // Test for presence and type of optional keys
+  for (const key of optionalKeys) {
+    if (cdKeys.includes(key) && typeof optional[key] != typeof cdClue[key])
+      throw new Error(
+        `'cdClue.${key} (${cdClue[key]})' must be a ${typeof optional[key]}`,
+      );
+  }
 
+  // Test for additional properties in cdClue
+
+  const difference = new Set(cdKeys);
+  for (const requiredKey of requiredKeys) {
+    difference.delete(requiredKey);
+  }
+  for (const optionalKey of optionalKeys) {
+    difference.delete(optionalKey);
+  }
+
+  if (difference.size > 0) {
+    throw new Error(
+      `'cdClue' has unexpected properties <${[...difference].join(',')}>`,
+    );
+  }
+
+  // Test if clue text matches expected pattern
+  if (!clueRegex.test(cdClue.clue)) {
+    throw new Error(
+      `Clue '${cdClue.clue}' does not match the required pattern '${cluePattern}'`,
+    );
+  }
+}
+
+//  Helper for newClueModel()
+function validateClueModelArguments(cdClue, isAcrossClue) {
   if (cdClue === undefined || isAcrossClue === undefined) {
     throw new Error("'cdClue' and 'isAcrossClue' are required");
   }
@@ -95,16 +89,81 @@ function newClueModel(cdClue, isAcrossClue) {
   if (typeof isAcrossClue != 'boolean') {
     throw new Error("'isAcrossClue' must be a boolean (true,false)");
   }
+}
 
-  // Test the properties and types of the cdClue argument
-  validateClueStructure(cdClue);
+// Helper for newClueModel()
+function buildClueLabelSegments(clueLabelText, cdClue) {
+  let remainingText = clueLabelText;
+  let clueLabelSegments = [];
+  while (numberGroupRegex.test(remainingText)) {
+    // Discard leading "," before residual
+    const [, labelSegment, , residual] = numberGroupRegex.exec(remainingText);
+    clueLabelSegments.push(labelSegment);
+    remainingText = residual;
+  }
 
-  // Test if clue text matches expected pattern
-  if (!clueRegex.test(cdClue.clue)) {
+  if (remainingText != undefined) {
     throw new Error(
-      `Clue '${cdClue.clue}' does not match the required pattern '${cluePattern}'`,
+      `'${cdClue.clue}' Error in <numberText> near <${remainingText}>`,
     );
   }
+  return clueLabelSegments;
+}
+
+function buildConnectedDirectedClues(clueLabelSegments) {
+  // Helper for newClueModel()
+  let connectedSegments = clueLabelSegments.slice(1);
+  let connectedDirectedClues = [];
+
+  // build connected clues
+  if (connectedSegments) {
+    connectedDirectedClues = connectedSegments.map((cs) => ({
+      number: parseInt(cs, 10),
+      direction: directionFromClueLabel(cs),
+    }));
+  }
+  return connectedDirectedClues;
+}
+
+// Helper for newClueModel()
+function buildAnswerSegments(answerGroup, cdClue) {
+  let answerSegments = [];
+  let remainingText = answerGroup;
+
+  while (answerGroupRegex.test(remainingText)) {
+    const [, length, , terminator, residual] =
+      answerGroupRegex.exec(remainingText);
+    answerSegments.push({
+      length: parseInt(length, 10),
+      terminator: terminator ?? '',
+    });
+    remainingText = residual;
+  }
+
+  if (remainingText != undefined) {
+    throw new Error(
+      `'${cdClue.clue}' Error in <answerText> near <${remainingText}>`,
+    );
+  }
+  return answerSegments;
+}
+
+/**
+ * Create a clue model from a clue read from a
+ * _CrosswordDefinition_ [JSON](https://en.wikipedia.org/wiki/JSON) document.
+ * @param cdClue - an object which defines the clue, with properties:
+ * x: the zero-based grid column index of the starting letter of the clue
+ * y: the zero-based grid row index of the starting letter of the clue
+ * clue: the clue description string which has the format:
+ *   "<Number Structure>.<Clue>(<Answer Structure>)"
+ * @param isAcrossClue - a boolean indicating the clue orientation
+ * @returns - the clue model for the given definition
+ */
+function newClueModel(cdClue, isAcrossClue) {
+  // Test for null or undefined argument
+  validateClueModelArguments(cdClue, isAcrossClue);
+  // Test the properties and types of the cdClue argument
+  validateClueStructure(cdClue);
 
   // Extract simple properties
   const x = cdClue.x - 1; //  Definitions are 1 based, models are more useful 0 based.
@@ -121,7 +180,7 @@ function newClueModel(cdClue, isAcrossClue) {
     : undefined;
   // Initialise revealed letters for clue
   const revealed = cdClue.revealed
-    ? // strip out everything from revealed except alphabetical characters
+    ? // string of upper-cased revealed characters
       cdClue.revealed.toUpperCase()
     : undefined;
 
@@ -130,41 +189,20 @@ function newClueModel(cdClue, isAcrossClue) {
 
   //// Parse numberGroup
 
-  let clueLabelSegments = [],
-    connectedDirectedClues = [],
-    remainingText = numberGroup;
-
-  while (numberGroupRegex.test(remainingText)) {
-    const [, labelSegment, , residual] = numberGroupRegex.exec(remainingText);
-    clueLabelSegments.push(labelSegment);
-    // Trim leading ',' from residual
-    remainingText = residual;
-  }
-
-  if (remainingText != undefined) {
-    throw new Error(
-      `'${cdClue.clue}' Error in <numberText> near <${remainingText}>`,
-    );
-  }
+  const clueLabelSegments = buildClueLabelSegments(numberGroup, cdClue);
+  const connectedDirectedClues = buildConnectedDirectedClues(clueLabelSegments);
 
   const anchorSegment = first(clueLabelSegments);
   const number = parseInt(anchorSegment, 10);
   const clueLabel = number.toString();
+
   // Code is number followed by 'a' or 'd'...
   // Check last character of anchorSegment and append if required
-  const code = 'ad'.includes(last(anchorSegment))
-    ? anchorSegment
-    : anchorSegment + (isAcrossClue ? 'a' : 'd');
 
-  //  Trim off anchor segment
-  let connectedSegments = clueLabelSegments.slice(1);
-  // build connected clues
-  if (connectedSegments) {
-    connectedDirectedClues = connectedSegments.map((cs) => ({
-      number: parseInt(cs, 10),
-      direction: directionFromClueLabel(cs),
-    }));
-  }
+  const code =
+    anchorSegment.endsWith('a') || anchorSegment.endsWith('d')
+      ? anchorSegment
+      : anchorSegment + (isAcrossClue ? 'a' : 'd');
 
   //// Parse clueGroup
 
@@ -172,23 +210,7 @@ function newClueModel(cdClue, isAcrossClue) {
 
   //// Parse answerGroup
 
-  let answerSegments = [];
-  remainingText = answerGroup;
-  while (answerGroupRegex.test(remainingText)) {
-    const [, length, , terminator, residual] =
-      answerGroupRegex.exec(remainingText);
-    answerSegments.push({
-      length: parseInt(length, 10),
-      terminator: terminator ?? '',
-    });
-    remainingText = residual;
-  }
-
-  if (remainingText != undefined) {
-    throw new Error(
-      `'${cdClue.clue}' Error in <answerText> near <${remainingText}>`,
-    );
-  }
+  const answerSegments = buildAnswerSegments(answerGroup, cdClue);
 
   //  Calculate the total length of the answer.
   const answerLength = answerSegments.reduce(
@@ -200,7 +222,7 @@ function newClueModel(cdClue, isAcrossClue) {
   // Initialise punter's answer for clue
   const answer = cdClue.answer
     ? cdClue.answer
-        // convert to uppercase and pad out to answerLength with spaces
+        // convert to uppercase
         .toUpperCase()
         // replace illegal characters with spaces
         .replaceAll(/[^ A-Z]/g, ' ')
@@ -227,6 +249,7 @@ function newClueModel(cdClue, isAcrossClue) {
     );
   }
 
+  // Combine elements into object and exit
   return {
     answer,
     answerLength,

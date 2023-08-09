@@ -2,13 +2,13 @@
 
 - [crosswordDefinition](#crossworddefinition)
   - [Properties](#properties)
-- [Clue](#clue)
-- [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
-  - [Multi-word clue](#multi-word-clue)
-  - [Multi-segment clue](#multi-segment-clue)
-- [Samples](#samples)
+  - [Clue](#clue)
+  - [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
+    - [Multi-word clue](#multi-word-clue)
+    - [Multi-segment clue](#multi-segment-clue)
+  - [Samples](#samples)
 
-## crosswordDefinition
+# crosswordDefinition
 
 The **crosswordDefinition** is a simple JavaScript `Object`, typically created by _parsing_ a [JSON][6] representation of the crossword clues and metadata. Other representations such as [YAML][7] can be used.
 
@@ -34,7 +34,7 @@ try {
 const crosswordDefinition = JSON.parse(json.toString());
 ```
 
-...or import a YAML-formatted `string`:
+...or _explicitly_ by parsing a YAML-formatted `string`:
 
 ```js
 import { readFileSync } from 'fs';
@@ -110,19 +110,19 @@ A **Clue** MAY have the following properties:
 
 ### Multi-segment clue
 
-**Multi-segment** clues occupy **two or more clue segments** on the crossword grid - one grid segment per clue segment. Clue segments _may also_ be _multi-word_ clues.
+**Multi-segment** clues occupy **two or more clue segments** on the crossword grid - one grid segment per clue segment. Each or any of the clue segments _may also_ be _multi-word_ clues.
 
 A **multi-segment** clue:
 
-- A collection of 2+ clue segments on the crossword grid and 2+ clues in the clue lists.
-- Clue segments in the collection need not be sequential.
-- Each clue segment direction is either _across_ or _down_, not both.
-- The clue segment collection contain 0+ segments of both directions (_across_ and _down_).
+- A **collection** of 2+ _clue segments_ on the crossword grid and 2+ _clues_ in the clue lists.
+- Clue segments in the _collection_ need not be sequential.
+- Each _clue segment_ direction is either _across_ or _down_, not both.
+- The clue segment _collection_ contain 0+ segments of both directions (_across_ and _down_).
 - The order of segments in a collection is not constrained.
 - The **first segment** in a _multi-segment clue_ will be referred to as the **anchor segment**.
-- The _number_ property of the _anchor_ clue is an ordered, comma-separated, list of the all the segments in the clue, e.g `4,21.`
+- The _number_ property of the _anchor segment_ is an ordered, comma-separated, list of all the segments in the clue, e.g `4,21.`
   > BUG?: There is no guarantee across and down clue numbers are distinct sets with no intersection. Perhaps we should include an `a` or `d` suffix to the clue number where ambiguity exists?
-- The _length_ property of _every_ segment clue, including the anchor clue, refers to the length of the answer for _only_ that segment.
+- The _length_ property of _every_ clue segment, including the anchor segment, refers to the length of the answer for _only_ that segment.
 - The _length_ property of every segment may indicate a single-word answer or a _multi-word_ answer.
 
 ```json

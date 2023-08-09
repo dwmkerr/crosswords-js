@@ -21,12 +21,12 @@ function buildCellGrid(crosswordModel) {
 // Find the segment of an answer a specific letter is in.
 function getAnswerSegment(answerSegments, letterIndex) {
   let remainingIndex = letterIndex;
-  for (let i = 0; i < answerSegments.length; i += 1) {
-    if (remainingIndex <= answerSegments[i].length) {
-      return [answerSegments[i], remainingIndex];
+  for (const element of answerSegments) {
+    if (remainingIndex <= element.length) {
+      return [element, remainingIndex];
     }
 
-    remainingIndex -= answerSegments[i].length;
+    remainingIndex -= element.length;
   }
 
   return null;
@@ -47,25 +47,7 @@ function newCrosswordModel(crosswordDefinition) {
   }
 
   //  Create the basic crosswordModel structure.
-  const crosswordModel = {
-    width: crosswordDefinition.width,
-    height: crosswordDefinition.height,
-    acrossClues: [],
-    downClues: [],
-    cells: [],
-  };
-
-  //  Validate the bounds.
-  if (
-    crosswordModel.width === undefined ||
-    crosswordModel.width === null ||
-    crosswordModel.width < 0 ||
-    crosswordModel.height === undefined ||
-    crosswordModel.height === null ||
-    crosswordModel.height < 0
-  ) {
-    throw new Error('The crossword bounds are invalid.');
-  }
+  let crosswordModel = initialiseCrosswordModel(crosswordDefinition);
 
   //  Create the array of cells. Each element has a reference back to the crosswordModel
   //  for convenience.
@@ -82,28 +64,11 @@ function newCrosswordModel(crosswordDefinition) {
 
     //  Compile the clue model from the crossword definition of the clue
     const clueModel = newClueModel(cdClue, isAcrossClue);
-    //  Update the crosswordModel.
+    //  Add clue model to crosswordModel clues array.
     crosswordModel[isAcrossClue ? 'acrossClues' : 'downClues'].push(clueModel);
 
     //  The clue position must be in the bounds.
-    if (
-      clueModel.x < 0 ||
-      clueModel.x >= crosswordModel.width ||
-      clueModel.y < 0 ||
-      clueModel.y >= crosswordModel.height
-    ) {
-      throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
-    }
-
-    //  Make sure the clue is not too long.
-    if (isAcrossClue) {
-      if (clueModel.x + clueModel.answerLength > crosswordModel.width) {
-        throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
-      }
-      // down clue
-    } else if (clueModel.y + clueModel.answerLength > crosswordModel.height) {
-      throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
-    }
+    validateClueInCrossword(clueModel, crosswordModel, isAcrossClue);
 
     //  We can now mark the cells as light. If the clue has
     //  an answer (which is optional), we can validate it
@@ -206,8 +171,8 @@ function newCrosswordModel(crosswordDefinition) {
     }
   }
 
-  //  Now that we have constructed the full crosswordModel, we will connect the non-linear
-  //  clues.
+  //  Now that we have constructed the full crosswordModel,
+  //  we will connect the multi-segment clues.
   const allClues = crosswordModel.acrossClues.concat(crosswordModel.downClues);
   allClues.forEach((clue) => {
     //  Skip clues without a connected clue.
@@ -272,6 +237,48 @@ function newCrosswordModel(crosswordDefinition) {
   });
 
   return crosswordModel;
+}
+
+function initialiseCrosswordModel(crosswordDefinition) {
+  let crosswordModel = {
+    width: crosswordDefinition.width,
+    height: crosswordDefinition.height,
+    acrossClues: [],
+    downClues: [],
+    cells: [],
+  };
+  if (
+    crosswordModel.width === undefined ||
+    crosswordModel.width === null ||
+    crosswordModel.width < 0 ||
+    crosswordModel.height === undefined ||
+    crosswordModel.height === null ||
+    crosswordModel.height < 0
+  ) {
+    throw new Error('The crossword bounds are invalid.');
+  }
+  return crosswordModel;
+}
+
+function validateClueInCrossword(clueModel, crosswordModel, isAcrossClue) {
+  if (
+    clueModel.x < 0 ||
+    clueModel.x >= crosswordModel.width ||
+    clueModel.y < 0 ||
+    clueModel.y >= crosswordModel.height
+  ) {
+    throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
+  }
+
+  //  Make sure the clue is not too long.
+  if (isAcrossClue) {
+    if (clueModel.x + clueModel.answerLength > crosswordModel.width) {
+      throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
+    }
+    // down clue
+  } else if (clueModel.y + clueModel.answerLength > crosswordModel.height) {
+    throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
+  }
 }
 
 function updateOrthogonalClue(cell, character, isAcrossClue) {

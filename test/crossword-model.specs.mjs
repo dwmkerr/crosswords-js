@@ -222,12 +222,12 @@ describe('newCrosswordModel()', () => {
     expect(crosswordModel.acrossClues[0].solution).to.eql('APPLE');
   });
 
-  it('should correctly construct non-linear clues', () => {
-    //  Non-linear clues are clues which have an answer that does fit in a
+  it('should correctly construct multi-segment clues', () => {
+    //  multi-segment clues are clues which have an answer that does fit in a
     //  single contiguous block, but instead is split into multiple sections.
     const crossword = newCrosswordModel(alberich4);
 
-    //  Get the two clues which make up the single non-linear clue.
+    //  Get the two clues which make up the single multi-segment clue.
     const clue4down = crossword.downClues.find((dc) => dc.number === 4);
     const clue21across = crossword.acrossClues.find((ac) => ac.number === 21);
 

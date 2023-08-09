@@ -16,7 +16,7 @@ The design of **crosswords-js** follows the [Model-view-controller (MVC) design 
 The package exposes:
 
 - A `CrosswordModel` object, which is the **model** in the MVC pattern.
-- A `CrosswordController` class to create the MVC **controller** object which surfaces **views** as object properties.
+- A `CrosswordController` class to create the MVC **controller** object, which surfaces **views** as object properties.
 - Helper functions which are useful aids for developers, but not essential.
 
 As a module user, you will typically interact with the **crosswordController** to programmatically manipulate and monitor:
@@ -197,7 +197,7 @@ The `controller` also publishes a collection of events reflecting changes in int
 | `crosswordCleaned`  | The _crossword_ has been _cleaned_ - all incorrect letters _cleared_.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `crosswordReset`    | The entire _crossword_ has been _cleared_.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `crosswordRevealed` | The entire _crossword_ has been _revealed_. A `crosswordSolved` event is **not** subsequently emitted in this case.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `crosswordSolved`   | The entire _crossword_ has been _solved_. This event occurs when all clues have complete and correct answers. This will occur automatically when the last cell is filled and all clues are complete and correctly answered.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `crosswordSolved`   | The entire _crossword_ has been _solved_. This event occurs when all clues have complete and correct answers. This is emitted when the last cell is filled and all clues are complete and correctly answered.                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `crosswordTested`   | The entire _crossword_ has been _tested_. A `crosswordSolved` event is emitted if all answers are complete and correct.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 You can register your own event handlers via
@@ -209,7 +209,7 @@ You can register your own event handlers via
 controller.addEventsHandler(events, handler);
 ```
 
-A complete example is found in [dev/index.js][8]:
+A complete example is found in [`dev/index.js`][8]:
 
 ```js
 // Wire up current-clue elements
