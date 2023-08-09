@@ -123,7 +123,7 @@ function testClue(controller, clue, showIncorrect = true) {
 
 function testCrossword(controller, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
-  trace('testCrossword');
+  // trace('testCrossword');
   let incorrect = 0,
     incomplete = 0;
   controller.crosswordModel.cells.forEach((row) => {
