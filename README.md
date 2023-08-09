@@ -69,7 +69,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    <script src="node_modules/crosswords-js/dist/crosswords.js"></script>
    ```
 
-3. To create a crossword, locate or edit a [**CrosswordDefinition**][29], which is a simple JSON file:
+3. To create a crossword, locate or edit a [**CrosswordDefinition**][29], which can be `import`ed from a simple JSON file:
 
    ```json
    {
@@ -98,9 +98,9 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    }
    ```
 
-   Complete _CrosswordDefinition_ examples can be found [here][21] and [there][22].
+   Complete _CrosswordDefinition_ source file examples can be found [here][21], [there][22] or [everywhere][36].
 
-   Further on, the _CrosswordDefinition_ needs to be compiled into a **CrosswordModel**. Compiling validates the the _CrosswordDefinition_ , making sure that there are no incongruities in the structure, for example:
+   Further on, the _CrosswordDefinition_ needs to be compiled into a [**CrosswordModel**][37]. Compiling validates the the _CrosswordDefinition_, making sure that there are no incongruities in the structure, for example:
 
    - overlapping clues
    - clues which don't fit in the grid bounds
@@ -113,7 +113,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    import crosswordDefinition from './crosswords/ftimes_17095.json';
    ```
 
-5. Compile `crosswordDefinition` - creating the **Model** (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordDefinition` will generate an exception:
+5. Compile `crosswordDefinition` - creating the [**CrosswordModel**][37] (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordDefinition` will generate an exception:
 
    ```js
    try {
@@ -141,7 +141,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    > const cluesParent = document.getElementById('crossword-clues-placeholder');
    > ```
 
-7. And pass the `model`, `gridParent` and `viewParent` elements into the **Controller** constructor:
+7. And pass the `model`, `gridParent` and `viewParent` elements into the [**Controller**][38] constructor:
 
    ```js
    let controller = new Controller(model, gridParent, cluesParent);
@@ -153,7 +153,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 You can use the `controller` to programmatically manipulate the **gridView** - the crossword grid [DOM][20] element.
 
-1. Invoke the **user event handlers**
+1. Invoke the [**user event handlers**][39]
 
 - Call the _user event handler_ methods of the `controller` directly in code
   ```js
@@ -194,9 +194,9 @@ You can use the `controller` to programmatically manipulate the **gridView** - t
   controller.bindEventHandlersToClass(["reset-clue"]);
   ```
 
-2. You can also provide your own handlers to listen to **controller events**.
+2. You can also provide your own handlers to listen to [**controller events**][40].
 
-For further information on these topics, consult the [controller API][30] documentation.
+For further information on these topics, consult the [module API][30] documentation.
 
 For examples, refer to the [development server code][31].
 
@@ -228,7 +228,7 @@ nvm install --lts --latest-npm
 nvm use --lts
 ```
 
-Check out the code, then, from the root directory, run:
+Check out the code, then, from the root directory of the repository, run:
 
 ```bash
 # Fetch all dependent packages
@@ -246,9 +246,9 @@ npm run dev
 
 ### Documentation
 
-The project documentation is written in [Markdown][27] and is located in the repository at `<repo-root>/docs`.
+The project documentation is written in [Markdown][27] and is located in the repository at [`<repo-root>/docs`][42].
 
-- [Crossword stylesheets][35] overview
+- [Documentation index][40]
 
 ### Quality assurance
 
@@ -258,7 +258,7 @@ We use [MochaJS][26] for unit testing. The test source code is located in the re
 npm test
 ```
 
-Linting is provided by `eslint`, which is also configured to use `prettier` for code formatting:
+Linting is provided by [ESLint][43], which is also configured to use [Prettier][44] for code formatting:
 
 ```bash
 # Lint the code.
@@ -267,7 +267,7 @@ npm run lint
 npm run lint:fix
 ```
 
-Documentation and HTML can be checked for standard conformance using `prettier`:
+Documentation and HTML can be checked for standard conformance using [Prettier][44]:
 
 ```bash
 # Check html and docs for correctness.
@@ -276,7 +276,7 @@ npm run prettier
 npm run prettier:fix
 ```
 
-Spelling can be checked using `cspell`:
+Spelling can be checked using [CSpell][45]:
 
 ```bash
 # Check _staged_ files for spelling.
@@ -287,7 +287,7 @@ npm run spell:changed
 npm run spell:all
 ```
 
-To automate all these checks on each commit to your local git repository, create a `pre-commit` hook in your repository. From the root directory of your repository:
+To automate all these checks on each commit to your local git repository, create a **pre-commit hook** in your repository. From the root directory of your repository:
 
 ```bash
 cat << EOF > .git/hooks/pre-commit
@@ -300,7 +300,7 @@ EOF
 chmod u+x .git/hooks/pre-commit
 ```
 
-Please install our git commit template. This enables project commit guidelines to be prefixed to the standard git commit message.
+Please install our git **commit template**. This enables project commit guidelines to be prefixed to the standard git commit message.
 
 From the root directory of your repository:
 
@@ -310,14 +310,14 @@ git config --local commit.template ./.git-commit-template.txt
 
 ### Building the dev environment assets for production
 
-The `dev` environment **production** assets are built by [ViteJS][28] at `<repo-root>/dev/dist`
+The `dev` environment **production assets** are built by [ViteJS][28] at [`<repo-root>/dev/dist`][46]. The `dist` folder is created when the assets are built.
 
 ```bash
 # Build the assets under <root>/dev/dist
 npm run dev:build
 ```
 
-You can _preview_ the **production** assets by running the following command and opening a browser on `http://localhost:4173`
+You can _preview_ the **production** assets by running the following command and opening a browser on [`http://localhost:4173/`][47]
 
 ```bash
 # Build the assets and preview locally at http://locahost:4173
@@ -326,14 +326,16 @@ npm run dev:prod
 
 ## Keyboard Functionality
 
-- Left/Right/Up/Down: Move (if possible) to the cell in the direction specified.
-- Space: Move to the next cell in the focused clue, if one exists.
-- Delete: Delete the current cell.
-- Backspace: Delete the current cell, and move to the previous cell in the focused clue, if one exists.
-- Tab: Move to the first cell of the next clue, 'wrapping' to the first clue.
-- Shift+Tab: Move to the last cell of the previous clue, 'wrapping' to the last clue.
-- A-Z: Enter the character. Not locale aware!
-- Enter: At a clue intersection, switch between across and down.
+_You can also find these keyboard shortcuts in the [documentation][48]_
+
+- **Left**/**Right**/**Up**/**Down**: Move (if possible) to the cell in the direction specified.
+- **Space**: Move to the next cell in the focused clue, if one exists.
+- **Delete**: Delete the current cell.
+- **Backspace**: Delete the current cell, and move to the previous cell in the focused clue, if one exists.
+- **Tab**: Move to the first cell of the next clue, 'wrapping' to the first clue.
+- **Shift+Tab**: Move to the last cell of the previous clue, 'wrapping' to the last clue.
+- **A**-**Z**: Enter the character. Not locale aware!
+- **Enter**: At a clue intersection, switch between across and down.
 
 ## Crossword Definition Tips
 
@@ -456,21 +458,21 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 
 - [x] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
 - [ ] bug: [Demo site][9] is not tracking latest version
-- [ ] feat(docs): improve the demo site image (its an old one at the moment!)
-- [ ] feat(samples): show how we can check answers or highlight incorrect entries (see issue #9)
+- [x] feat(docs): improve the demo site image (its an old one at the moment!)
+- [x] feat: show how we can check answers or highlight incorrect entries (see issue #9)
 - [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
 - [x] feat(samples): cursor initially on the first clue
 - [ ] feat(dom): support a keyboard scheme or configurable keybindings so that keys for navigating / editing the crossword can be specified in config (allowing for schemes such as 'the guardian' or 'the age')
 - [x] fix: the border on word separators slightly offsets the rendering of the grid
 - [] fix: the border on word separators in 'down' clues. Only partially extends across cell-width. (See "14 down" clue in "Financial Times 17,095" test crossword)
 - [ ] feat(accessibility): get screenreader requirements
-- [ ] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample? OR have multiple samples, one for each common framework?
+- [x] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample? OR have multiple samples, one for each common framework?
 - [x] refactor: finish refactoring
 - [x] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
-- [ ] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
+- [x] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
 - [ ] feat: allow italics with underscores, or bold with stars (i.e. very basic markdown)...
 - [x] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
-- [ ] todo: document the clue structure
+- [x] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
 - [x] build: enforce linting (current it is allowed to fail)
 
@@ -485,6 +487,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [9]: https://dwmkerr.github.io/crosswords-js/
 [10]: https://github.com/nvm-sh/nvm
 [11]: http://localhost:5173/
+[12]: ./.github/workflows/pull-request.yaml
 [12]: ./.github/workflows/pull-request.yaml
 [13]: https://github.com/google-github-actions/release-please-action
 [14]: #release-pipeline
@@ -503,9 +506,22 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [27]: https://www.markdownguide.org/
 [28]: https://vitejs.dev/
 [29]: docs/crossword-definition.md
-[30]: docs/controller-api.md
+[30]: docs/module-api.md
 [31]: dev/index.js
 [32]: https://nodejs.org/
 [33]: dev/
 [34]: sample/
 [35]: docs/crossword-styling.md
+[36]: data/ftimes_17095.yml
+[37]: docs/crossword-model.md#crosswordmodel
+[38]: docs/module-api.md#overview
+[39]: docs/module-api.md#user-event-handlers
+[40]: docs/module-api.md#controller-events
+[41]: docs/README.md
+[42]: docs/
+[43]: https://eslint.org/
+[44]: https://prettier.io/
+[45]: https://cspell.org/
+[46]: dev/dist/
+[47]: http://localhost:4173/
+[48]: docs/keyboard-shortcuts.md

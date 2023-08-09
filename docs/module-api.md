@@ -17,7 +17,7 @@ The design of **crosswords-js** follows the [Model-view-controller (MVC) design 
 
 The package exposes:
 
-- A `CrosswordModel` object, which is the **model** in the MVC pattern.
+- A `CrosswordModel` data structure, which is the **model** in the MVC pattern.
 - A `CrosswordController` class to create the MVC **controller** object, which surfaces **views** as object properties.
 - Helper functions which are useful aids for developers, but not essential.
 
