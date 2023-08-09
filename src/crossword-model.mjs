@@ -1,6 +1,7 @@
 import { setLetter, trace } from './helpers.mjs';
 import { newClueModel } from './clue-model.mjs';
 
+// Helper for newCrosswordModel()
 function buildCellGrid(crosswordModel) {
   const { width } = crosswordModel;
   const { height } = crosswordModel;
@@ -18,18 +19,86 @@ function buildCellGrid(crosswordModel) {
   return array;
 }
 
+// Helper for newCrosswordModel()
 // Find the segment of an answer a specific letter is in.
 function getAnswerSegment(answerSegments, letterIndex) {
   let remainingIndex = letterIndex;
-  for (const element of answerSegments) {
-    if (remainingIndex <= element.length) {
-      return [element, remainingIndex];
+  for (const as of answerSegments) {
+    if (remainingIndex <= as.length) {
+      return [as, remainingIndex];
     }
 
-    remainingIndex -= element.length;
+    remainingIndex -= as.length;
   }
 
   return null;
+}
+
+// Helper for newCrosswordModel()
+function initialiseCrosswordModel(crosswordDefinition) {
+  let crosswordModel = {
+    width: crosswordDefinition.width,
+    height: crosswordDefinition.height,
+    acrossClues: [],
+    downClues: [],
+    cells: [],
+  };
+  if (
+    crosswordModel.width === undefined ||
+    crosswordModel.width === null ||
+    crosswordModel.width < 0 ||
+    crosswordModel.height === undefined ||
+    crosswordModel.height === null ||
+    crosswordModel.height < 0
+  ) {
+    throw new Error('The crossword bounds are invalid.');
+  }
+  return crosswordModel;
+}
+
+// Helper for newCrosswordModel()
+function validateClueInCrossword(clueModel, crosswordModel, isAcrossClue) {
+  if (
+    clueModel.x < 0 ||
+    clueModel.x >= crosswordModel.width ||
+    clueModel.y < 0 ||
+    clueModel.y >= crosswordModel.height
+  ) {
+    throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
+  }
+
+  //  Make sure the clue is not too long.
+  if (isAcrossClue) {
+    if (clueModel.x + clueModel.answerLength > crosswordModel.width) {
+      throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
+    }
+    // down clue
+  } else if (clueModel.y + clueModel.answerLength > crosswordModel.height) {
+    throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
+  }
+}
+
+// Helper for newCrosswordModel()
+function updateOrthogonalClue(cell, character, isAcrossClue) {
+  //  eslint-disable-next-line no-param-reassign
+
+  //  We need to update the answers
+  if (!isAcrossClue && cell.acrossClue) {
+    //  eslint-disable-next-line no-param-reassign
+    cell.acrossClue.answer = setLetter(
+      cell.acrossClue.answer,
+      cell.acrossClueLetterIndex,
+      character,
+    );
+  }
+  if (isAcrossClue && cell.downClue) {
+    //  eslint-disable-next-line no-param-reassign
+    cell.downClue.answer = setLetter(
+      cell.downClue.answer,
+      cell.downClueLetterIndex,
+      character,
+    );
+  }
 }
 
 /**
@@ -237,70 +306,6 @@ function newCrosswordModel(crosswordDefinition) {
   });
 
   return crosswordModel;
-}
-
-function initialiseCrosswordModel(crosswordDefinition) {
-  let crosswordModel = {
-    width: crosswordDefinition.width,
-    height: crosswordDefinition.height,
-    acrossClues: [],
-    downClues: [],
-    cells: [],
-  };
-  if (
-    crosswordModel.width === undefined ||
-    crosswordModel.width === null ||
-    crosswordModel.width < 0 ||
-    crosswordModel.height === undefined ||
-    crosswordModel.height === null ||
-    crosswordModel.height < 0
-  ) {
-    throw new Error('The crossword bounds are invalid.');
-  }
-  return crosswordModel;
-}
-
-function validateClueInCrossword(clueModel, crosswordModel, isAcrossClue) {
-  if (
-    clueModel.x < 0 ||
-    clueModel.x >= crosswordModel.width ||
-    clueModel.y < 0 ||
-    clueModel.y >= crosswordModel.height
-  ) {
-    throw new Error(`Clue ${clueModel.code} doesn't start in the bounds.`);
-  }
-
-  //  Make sure the clue is not too long.
-  if (isAcrossClue) {
-    if (clueModel.x + clueModel.answerLength > crosswordModel.width) {
-      throw new Error(`Clue ${clueModel.code} exceeds horizontal bounds.`);
-    }
-    // down clue
-  } else if (clueModel.y + clueModel.answerLength > crosswordModel.height) {
-    throw new Error(`Clue ${clueModel.code} exceeds vertical bounds.`);
-  }
-}
-
-function updateOrthogonalClue(cell, character, isAcrossClue) {
-  //  eslint-disable-next-line no-param-reassign
-
-  //  We need to update the answers
-  if (!isAcrossClue && cell.acrossClue) {
-    //  eslint-disable-next-line no-param-reassign
-    cell.acrossClue.answer = setLetter(
-      cell.acrossClue.answer,
-      cell.acrossClueLetterIndex,
-      character,
-    );
-  }
-  if (isAcrossClue && cell.downClue) {
-    //  eslint-disable-next-line no-param-reassign
-    cell.downClue.answer = setLetter(
-      cell.downClue.answer,
-      cell.downClueLetterIndex,
-      character,
-    );
-  }
 }
 
 export { newCrosswordModel };

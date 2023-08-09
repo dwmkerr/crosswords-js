@@ -10,13 +10,6 @@ const answerGroupRegex = /^(\d+)(([,-])(\d+.*))*$/;
 
 const cluePattern = '<NumberText>.<ClueText>(<AnswerText>)';
 
-// Helper
-function directionFromClueLabel(clueLabel) {
-  if (clueLabel.endsWith('a')) return 'across';
-  if (clueLabel.endsWith('d')) return 'down';
-  return null;
-}
-
 //  Helper for newClueModel()
 function validateClueStructure(cdClue) {
   const required = { x: 1, y: 1, clue: '1. Clue (1)' };
@@ -26,36 +19,35 @@ function validateClueStructure(cdClue) {
   const cdKeys = Object.keys(cdClue);
 
   // Test for presence of required keys
-  for (const requiredKey of requiredKeys) {
-    if (!cdKeys.includes(requiredKey))
-      throw new Error(`'cdClue.${requiredKey}' is missing`);
+  for (const rk of requiredKeys) {
+    if (!cdKeys.includes(rk)) throw new Error(`'cdClue.${rk}' is missing`);
   }
 
   // Test for type of required keys
-  for (const key of requiredKeys) {
-    if (typeof required[key] != typeof cdClue[key]) {
+  for (const rk of requiredKeys) {
+    if (typeof required[rk] != typeof cdClue[rk]) {
       throw new Error(
-        `'cdClue.${key} (${cdClue[key]})' must be a ${typeof required[key]}`,
+        `'cdClue.${rk} (${cdClue[rk]})' must be a ${typeof required[rk]}`,
       );
     }
   }
 
   // Test for presence and type of optional keys
-  for (const key of optionalKeys) {
-    if (cdKeys.includes(key) && typeof optional[key] != typeof cdClue[key])
+  for (const ok of optionalKeys) {
+    if (cdKeys.includes(ok) && typeof optional[ok] != typeof cdClue[ok])
       throw new Error(
-        `'cdClue.${key} (${cdClue[key]})' must be a ${typeof optional[key]}`,
+        `'cdClue.${ok} (${cdClue[ok]})' must be a ${typeof optional[ok]}`,
       );
   }
 
   // Test for additional properties in cdClue
 
   const difference = new Set(cdKeys);
-  for (const requiredKey of requiredKeys) {
-    difference.delete(requiredKey);
+  for (const rk of requiredKeys) {
+    difference.delete(rk);
   }
-  for (const optionalKey of optionalKeys) {
-    difference.delete(optionalKey);
+  for (const ok of optionalKeys) {
+    difference.delete(ok);
   }
 
   if (difference.size > 0) {
@@ -110,8 +102,19 @@ function buildClueLabelSegments(clueLabelText, cdClue) {
   return clueLabelSegments;
 }
 
+// Helper for newClueModel()
 function buildConnectedDirectedClues(clueLabelSegments) {
-  // Helper for newClueModel()
+  // Helper
+  function directionFromClueLabel(clueLabel) {
+    if (clueLabel.endsWith('a')) {
+      return 'across';
+    } else if (clueLabel.endsWith('d')) {
+      return 'down';
+    } else {
+      return null;
+    }
+  }
+
   let connectedSegments = clueLabelSegments.slice(1);
   let connectedDirectedClues = [];
 
@@ -174,7 +177,7 @@ function newClueModel(cdClue, isAcrossClue) {
   const cells = [];
   // Initialise setter's solution for clue
   const solution = cdClue.solution
-    ? // Strip out everything from solution except spaces and alphabetical characters
+    ? // Strip out everything from solution except alphabetical characters
       // DO NOT substitute spaces
       cdClue.solution.toUpperCase().replaceAll(/[^A-Z]/g, '')
     : undefined;

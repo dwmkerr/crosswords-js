@@ -76,7 +76,7 @@ The data structure:
   // Upper-cased revealed characters of solution; unrevealed characters are spaces
   revealed: string,
   // Upper-cased and "normalised" puzzle-setter's solution for clue:
-  // Non-alphabetic and non-space characters are stripped out of solution
+  // Non-alphabetic characters are stripped out of solution
   solution: string,
   // Column number for first character of clue in grid [1..crosswordModel.width]
   x: number,

@@ -6,7 +6,7 @@
 - [Suggested configuration](#suggested-configuration)
 - [References](#references)
   - [Crossword grid](#crossword-grid)
-  - [Dev page](#dev-page)
+  - [Crossword clues](#crossword-clues)
   - [Reset stylesheets](#reset-stylesheets)
 
 ## Overview
@@ -42,7 +42,7 @@ The styles are spread across four files:
 - [CSS Grid][1]
 - [**CSS Tricks** reference poster][3]
 
-### Dev page
+### Crossword clues
 
 - [CSS Flexbox][2]
 - [**CSS Tricks** reference Poster][4]

@@ -1,7 +1,7 @@
 ## Index <!-- omit from toc -->
 
 - [crosswordDefinition](#crossworddefinition)
-  - [Properties](#properties)
+    - [Properties](#properties)
   - [Clue](#clue)
   - [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
     - [Multi-word clue](#multi-word-clue)
@@ -115,13 +115,11 @@ A **Clue** MAY have the following properties:
 A **multi-segment** clue:
 
 - A **collection** of 2+ _clue segments_ on the crossword grid and 2+ _clues_ in the clue lists.
-- Clue segments in the _collection_ need not be sequential.
 - Each _clue segment_ direction is either _across_ or _down_, not both.
 - The clue segment _collection_ contain 0+ segments of both directions (_across_ and _down_).
-- The order of segments in a collection is not constrained.
 - The **first segment** in a _multi-segment clue_ will be referred to as the **anchor segment**.
-- The _number_ property of the _anchor segment_ is an ordered, comma-separated, list of all the segments in the clue, e.g `4,21.`
-  > BUG?: There is no guarantee across and down clue numbers are distinct sets with no intersection. Perhaps we should include an `a` or `d` suffix to the clue number where ambiguity exists?
+- The _clue number_  part of the _anchor segment_ is an ordered, comma-separated, list of all the segments in the clue
+  - The compiled crooswordModel e.g `4a,21d.`
 - The _length_ property of _every_ clue segment, including the anchor segment, refers to the length of the answer for _only_ that segment.
 - The _length_ property of every segment may indicate a single-word answer or a _multi-word_ answer.
 

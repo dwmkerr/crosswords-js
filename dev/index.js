@@ -8,7 +8,7 @@ import {
 } from "./crosswords.js";
 
 // TODO: Load crossword dynamically form the user's choice.
-import crosswordDefinition from "./crosswords/ftimes_17095.json";
+import crosswordDefinition from "../data/ftimes_17095.json";
 
 // Enable console logging for crosswords.js
 tracing(true);

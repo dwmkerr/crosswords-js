@@ -4,7 +4,7 @@ sampleapp.controller("MainController", ($scope, $http) => {
   let cwModel = null;
   let cwController = null;
 
-  $http.get("crosswords/ftimes_17095.json").success((crosswordDefinition) => {
+  $http.get("../data/ftimes_17095.json").success((crosswordDefinition) => {
     //  Set the crossword info.
     $scope.info = crosswordDefinition.info;
 
@@ -36,16 +36,12 @@ sampleapp.controller("MainController", ($scope, $http) => {
       return true;
     }
 
-    //  We might also be a clue which is part of a non-linear clue.
-    if (
+    //  We might also be a clue which is part of a multi-segment clue.
+    return (
       currentClue &&
       parentClue &&
       (parentClue === clue || parentClue.connectedClues.indexOf(clue) !== -1)
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   $scope.selectClue = function (clue) {

@@ -367,44 +367,44 @@ class CrosswordController {
   revealCurrentCell() {
     // trace('revealCurrentCell');
     revealCell(this, this.currentCell);
-    this.#stateChange('cellRevealed');
+    this.#stateChange('cellRevealed', this.currentCell);
     this.#checkSolved();
   }
 
   revealCurrentClue() {
     // trace('revealCurrentClue');
     revealClue(this, this.currentClue);
-    this.#stateChange('clueRevealed');
+    this.#stateChange('clueRevealed', this.currentClue);
     this.#checkSolved();
   }
 
   revealCrossword() {
     trace('revealCrossword');
     revealCrossword(this);
-    this.#stateChange('crosswordRevealed');
+    this.#stateChange('crosswordRevealed', this.crosswordModel);
     //No crossword solved notification
   }
 
   resetCurrentClue() {
     resetClue(this, this.currentClue);
-    this.#stateChange('clueReset');
+    this.#stateChange('clueReset', this.currentClue);
   }
 
   resetCrossword() {
     trace('resetCrossword');
     resetCrossword(this);
-    this.#stateChange('crosswordReset');
+    this.#stateChange('crosswordReset', this.crosswordModel);
   }
 
   cleanCurrentClue() {
     cleanClue(this, this.currentClue);
-    this.#stateChange('clueCleaned');
+    this.#stateChange('clueCleaned', this.currentClue);
   }
 
   cleanCrossword() {
     trace('cleanCrossword');
     cleanCrossword(this);
-    this.#stateChange('crosswordCleaned');
+    this.#stateChange('crosswordCleaned', this.crosswordModel);
   }
 
   //// Private methods ////
@@ -498,7 +498,7 @@ class CrosswordController {
     if (checkSolved(this) === Outcome.Correct) {
       // allow other events to complete before the tadah! moment
       setTimeout(() => {
-        this.#stateChange('crosswordSolved');
+        this.#stateChange('crosswordSolved', this.crosswordModel);
       }, SOLUTION_TIMEOUT);
     }
   }
@@ -562,15 +562,15 @@ class CrosswordController {
       if (clue === currentClue) {
         return true;
       } else {
-        //  We might also be a clue which is part of a non-linear clue.
-        const parentClue = currentClue && currentClue.parentClue;
+        //  We might also be a clue which is part of a multi-segment clue.
+        const parentClue = currentClue?.parentClue;
 
-        return currentClue &&
+        return (
+          currentClue &&
           parentClue &&
           (parentClue === clue ||
             parentClue.connectedClues.indexOf(clue) !== -1)
-          ? true
-          : false;
+        );
       }
     }
 
@@ -620,6 +620,214 @@ class CrosswordController {
     return view.wrapper;
   }
 
+  // Helper function for #newCellElement()
+  #addEventListeners(cellElement, inputElement) {
+    const controller = this;
+    //  Listen for focus events.
+    inputElement.addEventListener('focus', (event) => {
+      trace('event:focus');
+      //  Get the cell data.
+      const eventCell = controller.cell(event.target.parentNode);
+      if (controller.#currentClueChanged(eventCell)) {
+        this.#stateChange('clueSelected', controller.currentClue);
+      }
+    });
+
+    //  Listen for click events.
+    inputElement.addEventListener('click', (event) => {
+      trace('event:click');
+      const eventCell = controller.cell(event.target.parentNode);
+      // Test for second click on same cell
+      if (eventCell === controller.currentCell) {
+        toggleClueDirection(controller, eventCell);
+      }
+      controller.currentCell = eventCell;
+    });
+
+    //  Listen for keydown events.
+    cellElement.addEventListener('keydown', (event) => {
+      trace(`event:keydown keycode=${event.keyCode}`);
+
+      //  Get the cell element and cell data.
+      const eventCell = controller.cell(event.target.parentNode);
+      const { model } = eventCell;
+      let clue = controller.currentClue;
+
+      switch (event.keyCode) {
+        case BACKSPACE:
+          //  We don't want default behaviour.
+          event.preventDefault();
+          trace('BACKSPACE');
+          // Fill cell with SPACE
+          setCellContent(controller, event, ' ');
+          // remove any visual flag in cell that letter is incorrect
+          hideElement(controller.incorrectElement(eventCell));
+
+          const letterIndex =
+            eventCell.acrossClue === clue
+              ? eventCell.acrossClueLetterIndex
+              : eventCell.downClueLetterIndex;
+          trace(`BACKSPACE: current cell index: ${letterIndex}`);
+          const previousIndex = letterIndex - 1;
+
+          if (previousIndex >= 0) {
+            // Move to previous character
+            trace(`Focussing previous cell index: ${previousIndex}`);
+            controller.currentCell = clue.cells[previousIndex];
+          } else if (previousIndex === -1 && clue.previousClueSegment) {
+            //  If we are at the start of the clue and we have a previous segment, select it.
+            trace('Focussing previous segment last cell');
+            controller.currentCell = last(clue.previousClueSegment.cells);
+          }
+
+          break;
+
+        case TAB:
+          //  We don't want default behaviour.
+          event.preventDefault();
+          trace('TAB');
+
+          // get anchor segment of multi-segment clue
+          if (clue.parentClue) {
+            clue = clue.parentClue;
+          }
+          // Get the next clue.
+          // Skip clues which are part of a multi-segment clue and not the anchor segment.
+          const searchClues = clue.isAcross
+            ? anchorSegmentClues(model.acrossClues)
+            : anchorSegmentClues(model.downClues);
+
+          trace(
+            `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
+          );
+
+          let newClue = null;
+          const sci = searchClues.indexOf(clue);
+          assert(
+            sci !== -1,
+            `keydown(TAB): clue '${clue.code}' not found in searchClues`,
+          );
+
+          if (event.shiftKey) {
+            //  Shift-tab selects previous clue
+            if (sci > 0) {
+              // Selects previous clue in same direction if not the first clue
+              newClue = searchClues[sci - 1];
+            } else {
+              // On first clue, wrap to last clue in other direction
+              newClue = clue.isAcross
+                ? model.downClues[model.downClues.length - 1]
+                : model.acrossClues[model.acrossClues.length - 1];
+            }
+          } else if (sci < searchClues.length - 1) {
+            // Tab selects next clue in same direction if not the last clue
+            newClue = searchClues[sci + 1];
+          } else {
+            // On last clue, tab wraps to first clue in other direction
+            newClue = clue.isAcross ? model.downClues[0] : model.acrossClues[0];
+          }
+
+          // Select the new clue.
+          controller.currentClue = newClue;
+
+          break;
+
+        case ENTER:
+          //  We don't want default behaviour.
+          event.preventDefault();
+          trace('ENTER');
+          toggleClueDirection(controller, eventCell);
+
+          break;
+
+        case DELETE:
+          //  We don't want default behaviour.
+          event.preventDefault();
+          trace('DELETE');
+          // Fill cell with SPACE
+          setCellContent(controller, event, ' ');
+          // remove any visual flag in cell that letter is incorrect
+          hideElement(controller.incorrectElement(eventCell));
+
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    //  Listen for keypress events.
+    cellElement.addEventListener('keypress', (event) => {
+      trace('event:keypress');
+      // We've just pressed a key that generates a character.
+      // Stop default handling for input component
+      event.preventDefault();
+
+      //  Get cell data.
+      const eventCell = controller.cell(event.target.parentNode);
+      const clue = controller.currentClue;
+
+      // Convert keyCode to upper-case character
+      const character = String.fromCharCode(event.keyCode).toUpperCase();
+      trace(`character:<${character}>`);
+
+      if (echoingKeyPressCharacters.test(character)) {
+        //  Sets the letter in the current clue cell.
+        trace(`Setting content: <${character}>`);
+        setCellContent(controller, event, character);
+        // remove any visual flag in cell that letter is incorrect
+        hideElement(controller.incorrectElement(eventCell));
+        // test for crossword completion
+        this.#checkSolved();
+      }
+
+      if (advancingKeyPressCharacters.test(character)) {
+        //  Move to the next cell in the clue.
+        trace('Advancing to next cell');
+        const currentCellIndex =
+          eventCell.acrossClue === clue
+            ? eventCell.acrossClueLetterIndex
+            : eventCell.downClueLetterIndex;
+        trace(`current cell index: ${currentCellIndex}`);
+        const nextCellIndex = currentCellIndex + 1;
+
+        if (nextCellIndex < clue.cells.length) {
+          // We are still within the bounds of the current clue (segment)
+          trace(`Focussing next cell index: ${nextCellIndex}`);
+          controller.currentCell = clue.cells[nextCellIndex];
+        } else if (clue.nextClueSegment) {
+          //  We are at the end of the clue segment and there is a next segment.
+          trace('Focussing next answer segment cell index 0');
+          controller.currentClue = clue.nextClueSegment;
+        }
+      }
+    });
+
+    //  Listen for keyup events.
+    cellElement.addEventListener('keyup', (event) => {
+      trace('event:keyup');
+      const eventCell = controller.cell(event.target.parentNode);
+
+      switch (event.keyCode) {
+        case LEFT:
+          moveLeft(controller, eventCell);
+          break;
+        case UP:
+          moveUp(controller, eventCell);
+          break;
+        case RIGHT:
+          moveRight(controller, eventCell);
+          break;
+        case DOWN:
+          moveDown(controller, eventCell);
+          break;
+        //  No action needed for any other keys.
+        default:
+          break;
+      }
+    });
+  }
+
   /**
    * **newCellElement**: build a crossword grid _cell_ DOM element
    * with child elements and event listeners to handle user interaction events.
@@ -629,7 +837,6 @@ class CrosswordController {
    */
   #newCellElement(document, cell) {
     // trace(`newCellElement(${cell.x},${cell.y})`);
-    const controller = this;
     const cellElement = document.createElement('div');
     addClass(cellElement, 'cwcell');
     //  eslint-disable-next-line no-param-reassign
@@ -677,194 +884,7 @@ class CrosswordController {
     }
 
     //// Event handlers
-
-    //  Listen for focus events.
-    inputElement.addEventListener('focus', (event) => {
-      trace('event:focus');
-      //  Get the cell data.
-      const eventCell = controller.cell(event.target.parentNode);
-      if (controller.#currentClueChanged(eventCell)) {
-        this.#stateChange('clueSelected', controller.currentClue);
-      }
-    });
-
-    //  Listen for click events.
-    inputElement.addEventListener('click', (event) => {
-      trace('event:click');
-      const eventCell = controller.cell(event.target.parentNode);
-      // Test for second click on same cell
-      if (eventCell === controller.currentCell) {
-        toggleClueDirection(controller, eventCell);
-      }
-      controller.currentCell = eventCell;
-    });
-
-    //  Listen for keydown events.
-    cellElement.addEventListener('keydown', (event) => {
-      trace(`event:keydown keycode=${event.keyCode}`);
-
-      //  Get the cell element and cell data.
-      const eventCell = controller.cell(event.target.parentNode);
-      const { model } = eventCell;
-      let clue = controller.currentClue;
-
-      if (event.keyCode === BACKSPACE) {
-        //  We don't want default behaviour.
-        event.preventDefault();
-        // Fill cell with SPACE
-        setCellContent(controller, event, ' ');
-        // remove any visual flag in cell that letter is incorrect
-        hideElement(controller.incorrectElement(eventCell));
-
-        const currentIndex =
-          eventCell.acrossClue === clue
-            ? eventCell.acrossClueLetterIndex
-            : eventCell.downClueLetterIndex;
-        trace(`BACKSPACE: current cell index: ${currentIndex}`);
-        const previousIndex = currentIndex - 1;
-
-        if (previousIndex >= 0) {
-          // Move to previous character
-          trace(`Focussing previous cell index: ${previousIndex}`);
-          controller.currentCell = clue.cells[previousIndex];
-        } else if (previousIndex === -1 && clue.previousClueSegment) {
-          //  If we are at the start of the clue and we have a previous segment, select it.
-          trace('Focussing previous segment last cell');
-          controller.currentCell = last(clue.previousClueSegment.cells);
-        }
-      } else if (event.keyCode === TAB) {
-        //  We don't want default behaviour.
-        event.preventDefault();
-        trace('TAB');
-
-        // get anchor segment of multi-segment clue
-        if (clue.parentClue) {
-          clue = clue.parentClue;
-        }
-        // Get the next clue.
-        // Skip clues which are part of a multi-segment clue and not the anchor segment.
-        const searchClues = clue.isAcross
-          ? anchorSegmentClues(model.acrossClues)
-          : anchorSegmentClues(model.downClues);
-
-        trace(
-          `tab: across (${clue.isAcross}) searchClues.length (${searchClues.length})`,
-        );
-
-        let newClue = null;
-        const currentIndex = searchClues.indexOf(clue);
-        assert(
-          currentIndex !== -1,
-          `keydown(TAB): clue '${clue.code}' not found in searchClues`,
-        );
-
-        if (event.shiftKey) {
-          //  Shift-tab selects previous clue
-          if (currentIndex > 0) {
-            // Selects previous clue in same direction if not the first clue
-            newClue = searchClues[currentIndex - 1];
-          } else {
-            // On first clue, wrap to last clue in other direction
-            newClue = clue.isAcross
-              ? model.downClues[model.downClues.length - 1]
-              : model.acrossClues[model.acrossClues.length - 1];
-          }
-        } else if (currentIndex < searchClues.length - 1) {
-          // Tab selects next clue in same direction if not the last clue
-          newClue = searchClues[currentIndex + 1];
-        } else {
-          // On last clue, tab wraps to first clue in other direction
-          newClue = clue.isAcross ? model.downClues[0] : model.acrossClues[0];
-        }
-
-        // Select the new clue.
-        controller.currentClue = newClue;
-      } else if (event.keyCode === ENTER) {
-        //  We don't want default behaviour.
-        event.preventDefault();
-        trace('ENTER');
-        toggleClueDirection(controller, eventCell);
-      } else if (event.keyCode === DELETE) {
-        //  We don't want default behaviour.
-        event.preventDefault();
-        // Fill cell with SPACE
-        setCellContent(controller, event, ' ');
-        // remove any visual flag in cell that letter is incorrect
-        hideElement(controller.incorrectElement(eventCell));
-      }
-    });
-
-    //  Listen for keypress events.
-    cellElement.addEventListener('keypress', (event) => {
-      trace('event:keypress');
-      // We've just pressed a key that generates a character.
-      // Stop default handling for input component
-      event.preventDefault();
-
-      //  Get cell data.
-      const eventCell = controller.cell(event.target.parentNode);
-      const clue = controller.currentClue;
-
-      // Convert keyCode to upper-case character
-      const character = String.fromCharCode(event.keyCode).toUpperCase();
-      trace(`character:<${character}>`);
-
-      if (echoingKeyPressCharacters.test(character)) {
-        //  Sets the letter in the current clue cell.
-        trace(`Setting content: <${character}>`);
-        setCellContent(controller, event, character);
-        // remove any visual flag in cell that letter is incorrect
-        hideElement(controller.incorrectElement(eventCell));
-        // test for crossword completion
-        this.#checkSolved();
-      }
-
-      if (advancingKeyPressCharacters.test(character)) {
-        //  Move to the next cell in the clue.
-        trace('Advancing to next cell');
-        const currentIndex =
-          eventCell.acrossClue === clue
-            ? eventCell.acrossClueLetterIndex
-            : eventCell.downClueLetterIndex;
-        trace(`current cell index: ${currentIndex}`);
-        const nextIndex = currentIndex + 1;
-
-        if (nextIndex < clue.cells.length) {
-          // We are still within the bounds of the current clue (segment)
-          trace(`Focussing next cell index: ${nextIndex}`);
-          controller.currentCell = clue.cells[nextIndex];
-        } else if (clue.nextClueSegment) {
-          //  We are at the end of the clue segment and there is a next segment.
-          trace('Focussing next answer segment cell index 0');
-          controller.currentClue = clue.nextClueSegment;
-        }
-      }
-    });
-
-    //  Listen for keyup events.
-    cellElement.addEventListener('keyup', (event) => {
-      trace('event:keyup');
-      const eventCell = controller.cell(event.target.parentNode);
-
-      switch (event.keyCode) {
-        case LEFT:
-          moveLeft(controller, eventCell);
-          break;
-        case UP:
-          moveUp(controller, eventCell);
-          break;
-        case RIGHT:
-          moveRight(controller, eventCell);
-          break;
-        case DOWN:
-          moveDown(controller, eventCell);
-          break;
-        //  No action needed for any other keys.
-        default:
-          break;
-      }
-    });
-
+    this.#addEventListeners(cellElement, inputElement);
     return cellElement;
   }
 
