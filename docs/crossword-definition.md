@@ -1,12 +1,12 @@
 ## Index <!-- omit from toc -->
 
 - [crosswordDefinition](#crossworddefinition)
-    - [Properties](#properties)
+  - [Properties](#properties)
   - [Clue](#clue)
   - [Multi-word and multi-segment clues](#multi-word-and-multi-segment-clues)
     - [Multi-word clue](#multi-word-clue)
     - [Multi-segment clue](#multi-segment-clue)
-  - [Samples](#samples)
+  - [Sample crosswords](#sample-crosswords)
 
 # crosswordDefinition
 
@@ -118,8 +118,8 @@ A **multi-segment** clue:
 - Each _clue segment_ direction is either _across_ or _down_, not both.
 - The clue segment _collection_ contain 0+ segments of both directions (_across_ and _down_).
 - The **first segment** in a _multi-segment clue_ will be referred to as the **anchor segment**.
-- The _clue number_  part of the _anchor segment_ is an ordered, comma-separated, list of all the segments in the clue
-  - The compiled crooswordModel e.g `4a,21d.`
+- The _clue number_ part of the _anchor segment_ is an ordered, comma-separated, list of all the segments in the clue
+  - The compiled crosswordModel e.g `4a,21d.`
 - The _length_ property of _every_ clue segment, including the anchor segment, refers to the length of the answer for _only_ that segment.
 - The _length_ property of every segment may indicate a single-word answer or a _multi-word_ answer.
 
@@ -139,9 +139,12 @@ A **multi-segment** clue:
 }
 ```
 
-## Samples
+## Sample crosswords
 
-Two [sample][2] [files][5] can be found in the sample folder
+- [Sample 1 (JSON)][8]
+- [Sample 1 (YAML)][9]
+- [Sample 2 (JSON)][10]
+- [Sample 3 (JSON)][11]
 
 [1]: #clue
 [2]: ../sample/crosswords/alberich_4.json
@@ -152,3 +155,5 @@ Two [sample][2] [files][5] can be found in the sample folder
 [7]: https://www.redhat.com/en/topics/automation/what-is-yaml
 [8]: ../data/ftimes_17095.json
 [9]: ../data/ftimes_17095.yml
+[10]: ../data/alberich_4.json
+[11]: ../data/quiptic_89.json

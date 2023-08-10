@@ -101,18 +101,19 @@ controller.crosswordGridView;
 // The object behind the optional crossword clues DOM element
 controller.crosswordCluesView;
 ```
-### The `crosswordGridView` structure 
+
+### The `crosswordGridView` structure
 
 - The `crossword-grid` _div_ element is a flat container of `crossword-cell` _div_ elements.
-- The **grid** contains `crosswordModel.height * crosswordModel.width` **cell** elements. 
+- The **grid** contains `crosswordModel.height * crosswordModel.width` **cell** elements.
 - Grid **rows** are _visually_ delimited using the [CSS Grid][10] layout in the [`style/crosswords.less`][11] stylesheet.
 - **Cell** elements are listed in [row-major][9] order (row-by-row) within the **grid**.
 - The **currentClue** is visually identified by toggling the `active` class on the the **cell** elements
 - The **currentCell** is visually identified by toggling the `highlighted` class on the the **cell** element.
-- The `cwcell-revealed` and `cwcell-incorrect` _div_ elements are exposed/hidden by toggling the `hidden` class on the element   
+- The `cwcell-revealed` and `cwcell-incorrect` _div_ elements are exposed/hidden by toggling the `hidden` class on the element
 
 _Duplicate cell types have been removed for clarity_
-  
+
 ```html
 <div class="crossword-grid">
   <!-- labelled clue cell -->
@@ -158,11 +159,11 @@ _Duplicate cell types have been removed for clarity_
   </div>
   <!-- revealed cell -->
   <div class="cwcell light">
-      <input maxlength="1" class="" />
-      <div class="cwcell-revealed"></div>
-      <div class="cwcell-incorrect hidden"></div>
-    </div>
-    <!-- incorrect cell -->
+    <input maxlength="1" class="" />
+    <div class="cwcell-revealed"></div>
+    <div class="cwcell-incorrect hidden"></div>
+  </div>
+  <!-- incorrect cell -->
   <div class="cwcell light">
     <input maxlength="1" class="active highlighted" />
     <div class="cwcell-revealed hidden"></div>
@@ -170,16 +171,17 @@ _Duplicate cell types have been removed for clarity_
   </div>
 </div>
 ```
+
 ### The `crosswordCluesView` structure
 
 - The `crossword-clues` _div_ element is a flat container of two `crossword-clue-block` _div_ elements
-  - the `crossword-across-clues` **clueBlock** element  
-  - the `crossword-down-clues` **clueBlock** element  
-- The **clueBlock** elements contain a `crossword-clue-block-title` _paragraph_ (`p`) element, followed by a list of `crossword-clue` _div_ elements 
-- The  **crosswordCluesView** is _visually_ laid out using [CSS Flexbox][12] in the [`style/crosswords.less`][11] stylesheet.   
+  - the `crossword-across-clues` **clueBlock** element
+  - the `crossword-down-clues` **clueBlock** element
+- The **clueBlock** elements contain a `crossword-clue-block-title` _paragraph_ (`p`) element, followed by a list of `crossword-clue` _div_ elements
+- The **crosswordCluesView** is _visually_ laid out using [CSS Flexbox][12] in the [`style/crosswords.less`][11] stylesheet.
 
 _Duplicate cell types have been removed for clarity_
-  
+
 ```html
 <div class="crossword-clues">
   <!-- across clues block -->
@@ -214,7 +216,6 @@ _Duplicate cell types have been removed for clarity_
     </div>
   </div>
 </div>
-
 ```
 
 ## User Event Handlers
@@ -302,7 +303,7 @@ controller.bindEventHandlersToClass(['reset-clue']);
 
 ## Controller Events
 
-The `controller` also publishes a collection of events reflecting changes in internal state. 
+The `controller` also publishes a collection of events reflecting changes in internal state.
 
 | Event Name          | Event Data                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -324,15 +325,17 @@ You can register your own **event listeners** via
 ```js
 controller.addEventsListener(events, listener);
 ```
-- `events` is an array of event names, such as 
-  
-  ```js 
-  ["click","hover"]
-  ``` 
+
+- `events` is an array of event names, such as
+
+  ```js
+  ['click', 'hover'];
+  ```
+
   A single event must still be passed in an array.
 
-- `listener` is your **event listener** function. 
-  
+- `listener` is your **event listener** function.
+
   It must be a _function_ or _arrow function_ that takes a single argument. Refer to the **Event Data** column in the table above for the argument passed to each event listener
 
 ```js

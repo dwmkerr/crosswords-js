@@ -513,7 +513,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [34]: sample/
 [35]: docs/crossword-styling.md
 [36]: data/ftimes_17095.yml
-[37]: docs/crossword-model.md#crosswordmodel
+[37]: docs/crossword-data-structures.md#crosswordmodel
 [38]: docs/module-api.md#overview
 [39]: docs/module-api.md#user-event-handlers
 [40]: docs/module-api.md#controller-events
