@@ -2,7 +2,11 @@
   "enabled": true,
   "language": "en-GB",
   "allowCompoundWords": true,
-  "ignorePaths": ["node_modules", "vendor", ".*"],
+  "ignorePaths": [
+    "node_modules",
+    "vendor",
+    ".*"
+  ],
   "enabledLanguageIds": [
     "css",
     "html",
@@ -22,6 +26,7 @@
     "bruxelles",
     "catherineparr",
     "celldom",
+    "chid",
     "codecov",
     "crossworddom",
     "cwcell",
@@ -39,6 +44,7 @@
     "lcov",
     "lessc",
     "moley",
+    "mump",
     "normalised",
     "nxxxxx",
     "parameterised",
