@@ -14,7 +14,7 @@ test:
 
 # Build the static site.
 build-sample-site:
-	# Cleanup the artifacts folder, create the sample site location.
+	# Clean up the artifacts folder, create the sample site location.
 	rm -rf artifacts || true
 	mkdir artifacts
 	mkdir artifacts/sample-site

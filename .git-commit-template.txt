@@ -1,0 +1,12 @@
+# MANDATORY: Subject line (try to keep under 50 characters)
+#
+# - Multi-line description of commit,
+#   feel free to be detailed.
+# - Every staged change should be described unless 
+#   it's a non-functional change (NFC).
+# - However, please DO describe these changes: 
+#   * documentation
+#   * styles (css/less..)
+#   * markup (html)
+#
+# Include feature or bug id [XXXXX] if applicable
