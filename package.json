@@ -3,15 +3,18 @@
   "version": "0.1.14",
   "description": "Tiny, lightweight crosswords for HTML5/JS/CSS.",
   "main": "src/index.js",
+  "type": "module",
   "devDependencies": {
     "chai": "^4.3.7",
     "connect-livereload": "^0.6.1",
+    "cspell": "^6.30.2",
     "css-loader": "^6.7.3",
     "eslint": "^8.33.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "esm": "^3.2.25",
     "ignore-styles": "^5.0.1",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
@@ -19,23 +22,31 @@
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "open": "^8.4.0",
-    "prettier": "2.8.4",
-    "standard-version": "^9.5.0",
+    "prettier": "^3.0.0",
     "style-loader": "^3.3.1",
-    "webpack": "^5.75.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1",
+    "webpack": "^5.76.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "lint": "eslint *.js src/**/*.js sample/*.js",
-    "lint:fix": "eslint --fix *.js src/**/*.js sample/*.js",
-    "prettier": "prettier --check *.md docs/**/*.md sample/*.html",
-    "prettier:fix": "prettier --write *.md docs/**/*.md sample/*.html",
+    "lint": "eslint *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample/*.{js,mjs}",
+    "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
+    "prettier": "prettier --check *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} style/*.less data/*.{json,yml}",
+    "prettier:fix": "prettier --write *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less data/*.{json,yml}",
+    "spell": "export DIFFLIST=/tmp/sd97sfnsvsi && git diff --staged --diff-filter=AM --name-only > $DIFFLIST && if [ -s $DIFFLIST ]; then npx cspell --file-list stdin < $DIFFLIST; fi",
+    "spell:changed": "export DIFFLIST=/tmp/sd97sfnsvsi && git diff --staged --diff-filter=AMU --name-only > $DIFFLIST && if [ -s $DIFFLIST ]; then npx cspell --file-list stdin < $DIFFLIST; fi",
+    "spell:all": "cspell *.{html,js,md,mjs} docs/**/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less",
     "start": "webpack-dev-server",
-    "test": "mocha --require ignore-styles ./src/{,**/}*.specs.js",
-    "test:cov": "nyc mocha --require ignore-styles ./src/{,**/}*.specs.js",
-    "test:debug": "mocha --require ignore-styles --inspect-brk -w ./src/{,**/}*.specs.js",
-    "release": "standard-version"
+    "start:angular": "webpack-dev-server",
+    "dev": "vite serve dev",
+    "dev:build": "vite build dev",
+    "dev:prod": "vite build dev && vite preview dev",
+    "test": "mocha",
+    "test:cov": "nyc mocha",
+    "test:debug": "mocha --inspect-brk -w",
+    "cssgrid": "vite serve test"
   },
   "keywords": [
     "crossword"
@@ -57,10 +68,10 @@
   "nyc": {
     "all": true,
     "include": [
-      "src/**/*.js"
+      "src/**/*.{js,mjs}"
     ],
     "exclude": [
-      "src/**/*.specs.js"
+      "src/**/*.specs.{js,mjs}"
     ],
     "reporter": [
       "text",

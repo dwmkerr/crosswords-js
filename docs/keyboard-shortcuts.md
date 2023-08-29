@@ -1,20 +1,21 @@
-# Keyboard shortcuts
+# Crossword grid keyboard shortcuts <!-- omit from toc -->
 
-- [Keyboard shortcuts](#keyboard-shortcuts)
-  - [Default](#default)
-    - [Problems](#problems)
-  - [The Age (Melbourne, Australia)](#the-age-melbourne-australia)
-    - [Problems](#problems-1)
+- [Default - The Guardian](#default---the-guardian)
+  - [Problems](#problems)
+- [The Age (Melbourne, Australia)](#the-age-melbourne-australia)
+  - [Problems](#problems-1)
 
-## Default
+## Default - [The Guardian][2]
 
 - ARROW KEYS: Move (if possible) to the cell in the direction specified.
 - SPACEBAR: Move to the next cell in the focused clue, if one exists.
-- BACKSPACE: Move to the previous cell in the focused clue, if one exists.
+- DELETE: Delete the current cell.
+- BACKSPACE: Delete the current cell, and move to the previous cell in the focused clue, if one exists.
 - TAB: Move to the first cell of the next clue, 'wrapping' to the first clue.
   - SHIFT-TAB reverses the direction
 - A-Z: Enter the character and advance to next character in clue. Not locale aware!
-- ENTER: Switch between across and down.
+- ENTER: Switch between across and down at clue intersections.
+  - _This is non-Guardian functionality_
 
 ### Problems
 
@@ -39,3 +40,4 @@
 - No way to switch between across and down in the grid.
 
 [1]: https://www.theage.com.au/puzzles/crosswords/
+[2]: https://www.theguardian.com/crosswords/

@@ -31,4 +31,4 @@ class CellMap {
   }
 }
 
-module.exports = CellMap;
+export { CellMap };
