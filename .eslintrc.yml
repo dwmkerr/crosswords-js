@@ -4,8 +4,9 @@ extends:
 plugins:
   - import
 parserOptions:
-  # We use ecma version 13, which supports private class fields.
+  # We use ECMAScript 2022 (version 13), which supports Array.prototype.at() method.
   ecmaVersion: 13
+  sourceType: module
 env:
   node: true
   mocha: true
@@ -14,11 +15,13 @@ env:
   browser: true
 rules:
   no-console: 0
-  # Sometimes I like a single 'return' statement in a full bloc, e.g. see the
+  # Sometimes I like a single 'return' statement in a full block, e.g. see the
   # tests, so relax the requirement to have single return statements
   arrow-body-style: 0
+  # Ignore import of dev packages:
+  # 'chai' in test/spec files and others in webpack and vite config
   import/no-extraneous-dependencies:
-    [error, { devDependencies: ["**/*.specs.js","webpack.config.js"] }]
+    [error, { devDependencies: ["**/*.specs.mjs","webpack.config.js", "vite.config.js"] }]
   no-process-exit: 0
   no-param-reassign:
     [

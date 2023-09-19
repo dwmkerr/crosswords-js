@@ -1,0 +1,196 @@
+{
+  "info": {
+    "source": "http://www.alberichcrosswords.com/pages/id4.html",
+    "title": "Alberich Crosswords - Crossword 2",
+    "setter": {
+      "title": "Alberich",
+      "url": "http://www.alberichcrosswords.com/index.html"
+    }
+  },
+  "width": 15,
+  "height": 15,
+  "acrossClues": [
+    {
+      "x": 1,
+      "y": 1,
+      "clue": "1. Rush around in old car, to find escaped criminal in Oz (10)",
+      "solution": "bushranger"
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "clue": "7. A disease singular to sponge (4)",
+      "solution": "mump"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "clue": "9. English is almost never spoken poetically in Telford, for example (8)",
+      "solution": "engineer"
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "clue": "10. Rotter is in modern art emporium (6)",
+      "solution": "arcade"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "clue": "11. Copper into Turner gets depression (6)",
+      "solution": "lacuna"
+    },
+    {
+      "x": 8,
+      "y": 5,
+      "clue": "12. I am unpretentious? No (8)",
+      "solution": "immodest"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "clue": "13. Clothe with part of a corset (4)",
+      "solution": "gird"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "clue": "15. Get mean about bird call (10)",
+      "solution": "denominate"
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "clue": "18. Monster horribly present on the waves (3,7)",
+      "solution": "seaserpent"
+    },
+    {
+      "x": 12,
+      "y": 9,
+      "clue": "20. Who should really have written _Diary of a Nobody_? (4)",
+      "solution": "anon"
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "clue": "21. See 4 (3,5)",
+      "solution": "the great"
+    },
+    {
+      "x": 10,
+      "y": 11,
+      "clue": "24. Enjoy the flavour (6)",
+      "solution": "relish"
+    },
+    {
+      "x": 1,
+      "y": 13,
+      "clue": "26. Composer of _Semiramide_ and _La Mer_? No (6)",
+      "solution": "rameau"
+    },
+    {
+      "x": 8,
+      "y": 13,
+      "clue": "27. As were the leftovers a man ate, being overdrawn? (8)",
+      "solution": "reheated"
+    },
+    {
+      "x": 1,
+      "y": 15,
+      "clue": "28. Scolded infant without a trace of leniency (4)",
+      "solution": "chid"
+    },
+    {
+      "x": 6,
+      "y": 15,
+      "clue": "29. 4,21's Mount is irregular cube next to a generation symbol (missing centrepiece) (10)",
+      "solution": "bucephalus"
+    }
+  ],
+  "downClues": [
+    {
+      "x": 2,
+      "y": 1,
+      "clue": "2. Auntie hit boiling asphalt (9)",
+      "solution": "uintahite"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "clue": "3. Told of journey to university to find poem (5)",
+      "solution": "haiku"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "clue": "4,21. The king of 7, this general axed threat strategically (9)",
+      "solution": "alexander"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "clue": "5. Not,we hear, a problem for 4,21 (7)",
+      "solution": "gordian"
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "clue": "6. Province is to take up weapons again, changing sides (5)",
+      "solution": "realm"
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "clue": "7. 4,21's country; a wine capital erected around the last stages of 300 (as it's written) (9)",
+      "solution": "macedonia"
+    },
+    {
+      "x": 14,
+      "y": 1,
+      "clue": "8. Aeolian and Doric, say, in 12 (5)",
+      "solution": "modes"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "clue": "14. Quarrelled in Hell over a sin (9)",
+      "solution": "disagreed"
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "clue": "16. Outside port finally, make fast a vessel – one that's engine driven (5,4)",
+      "solution": "motorship"
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "clue": "17. Some garment to stitch, it's said – or more than one (9)",
+      "solution": "trousseau"
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "clue": "19. One goes into troubled centre, having some guts (7)",
+      "solution": "enteric"
+    },
+    {
+      "x": 2,
+      "y": 11,
+      "clue": "22. Man 'as old Erica (5)",
+      "solution": "heath"
+    },
+    {
+      "x": 6,
+      "y": 11,
+      "clue": "23. Residential area in upwardly mobile part of Bruxelles (5)",
+      "solution": "exurb"
+    },
+    {
+      "x": 12,
+      "y": 11,
+      "clue": "25. Student priest in Guanaco (5)",
+      "solution": "llama"
+    }
+  ]
+}

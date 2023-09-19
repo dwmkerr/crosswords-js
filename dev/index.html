@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>crosswords-js developer sandbox</title>
+    <!-- Stop flash of unstyled content 
+      https://stackoverflow.com/a/53364612/1090683 -->
+    <style>
+      html {
+        visibility: hidden;
+        opacity: 0;
+      }
+    </style>
+    <!-- PT Sans webfont. -->
+    <link
+      href="https://fonts.googleapis.com/css?family=PT+Sans:400,700i&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Application entry point -->
+    <script type="module" src="index.js"></script>
+  </head>
+
+  <body>
+    <noscript>
+      Your browser has disabled or does not support JavaScript. The
+      crosswords-js package does not work without JavaScript.
+    </noscript>
+    <div id="banner">
+      <span class="title">crosswords-js</span>
+      <span class="description">
+        Simple, fast, framework-free crosswords for the web. Find out more at
+        <a href="https://github.com/dwmkerr/crosswords-js" target="_blank"
+          >github.com/dwmkerr/crosswords-js</a
+        ></span
+      >
+    </div>
+
+    <div id="columns">
+      <div id="first-column">
+        <div id="title-block">
+          <ul>
+            <li>
+              Source: <a href="" target="_blank" id="info-source-url"></a>
+            </li>
+            <li>
+              Setter: <a href="" target="_blank" id="info-setter-url"></a>
+            </li>
+          </ul>
+        </div>
+        <div id="current-clue">
+          <span id="current-clue-label"></span>
+          <span id="current-clue-text"></span>
+        </div>
+        <div id="crossword-grid-placeholder"></div>
+      </div>
+      <div id="second-column">
+        <p id="api-block-title">Menu</p>
+        <div id="api-block">
+          <div id="cell-buttons">
+            <p>Letter</p>
+            <button id="reveal-cell">Reveal</button>
+          </div>
+          <div id="clue-buttons">
+            <p>Clue</p>
+            <button id="test-clue">Test</button>
+            <button id="clean-clue">Clean</button>
+            <button id="reveal-clue">Reveal</button>
+            <button id="reset-clue">Reset</button>
+          </div>
+          <div id="grid-buttons">
+            <p>Crossword</p>
+            <button id="test-crossword">Test</button>
+            <button id="clean-crossword">Clean</button>
+            <button id="reveal-crossword">Reveal</button>
+            <button id="reset-crossword">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div id="third-column">
+        <div id="crossword-clues-placeholder"></div>
+      </div>
+    </div>
+    <!-- Crossword solved elements -->
+    <div id="crossword-solved-overlay">
+      <div id="crossword-solved-dialog">
+        <span id="crossword-solved-close">&times;</span>
+        <h3><em>Congratulations!</em></h3>
+        <h3>You've solved the crossword</h3>
+      </div>
+    </div>
+
+    <div id="clue-solved-notification">
+      <h3><em>That's correct!</em></h3>
+      <h3>Keep going</h3>
+    </div>
+    <!-- Preload styles to avoid flash of unstyled content -->
+    <!-- Bundler (ViteJS) will convert LESS files to CSS -->
+    <link rel="stylesheet" href="./index.less" />
+  </body>
+</html>

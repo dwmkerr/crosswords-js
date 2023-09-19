@@ -1,15 +1,19 @@
-const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import { dirname, join, resolve } from "path";
+import { fileURLToPath } from "url";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+const { loader } = MiniCssExtractPlugin;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-module.exports = (env, argv) => {
+export default (env, argv) => {
   const isProduction = argv.mode === "production";
 
   return {
-    entry: "./src/index.js",
+    entry: "./src/index.mjs",
 
     devServer: {
       static: {
-        directory: path.join(__dirname, "sample"),
+        directory: join(__dirname, "sample"),
       },
       compress: true,
     },
@@ -21,7 +25,7 @@ module.exports = (env, argv) => {
         {
           test: /\.less$/,
           use: [
-            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
+            isProduction ? loader : "style-loader",
             "css-loader",
             "less-loader",
           ],
@@ -36,7 +40,7 @@ module.exports = (env, argv) => {
       : [],
 
     output: {
-      path: path.resolve(__dirname, "dist"),
+      path: resolve(__dirname, "dist"),
       filename: "crosswords.js",
     },
   };
