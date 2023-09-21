@@ -2,7 +2,13 @@
   "name": "crosswords-js",
   "version": "0.1.14",
   "description": "Tiny, lightweight crosswords for HTML5/JS/CSS.",
-  "main": "src/index.js",
+  "main": "dist/crosswords.js",
+  "files": [
+    "data",
+    "dist",
+    "src",
+    "style"
+  ],
   "type": "module",
   "devDependencies": {
     "chai": "^4.3.7",
