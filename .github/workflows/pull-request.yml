@@ -31,6 +31,8 @@ jobs:
     # Lint and test.
     - name: ci
       run: npm ci
+    - name: build
+      run: npm run build
     - name: lint
       run: npm run lint
     - name: test
