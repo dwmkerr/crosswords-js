@@ -216,14 +216,14 @@ function setCellText(controller, cell, newText, clearRevealed) {
   controller.inputElement(cell).value = newText;
 }
 
-function resetCell(controller, cell) {
+function resetCell(controller, cell, content = ' ') {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
   // trace(`resetCell:(${cell.x},${cell.y})`);
 
   const clearRevealed = true;
   // put a space in the cell
-  setCellText(controller, cell, ' ', clearRevealed);
+  setCellText(controller, cell, content, clearRevealed);
   // remove visual flags in cell
   hideElement(controller.incorrectElement(cell));
 }
@@ -255,7 +255,7 @@ function resetCrossword(controller) {
   });
 }
 
-function cleanCell(controller, cell) {
+function cleanCell(controller, cell, content = ' ') {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
   // trace(`cleanCell:(${cell.x},${cell.y})`);
@@ -264,7 +264,7 @@ function cleanCell(controller, cell) {
   const clearRevealed = wrongLetter;
   // is the current cell letter incorrect?
   if (wrongLetter) {
-    setCellText(controller, cell, ' ', clearRevealed);
+    setCellText(controller, cell, cleanCell, clearRevealed);
     // remove visual flags in cell
     hideElement(controller.incorrectElement(cell));
   }
@@ -299,10 +299,12 @@ function cleanCrossword(controller) {
 export {
   anchorSegmentClues,
   checkSolved,
+  cleanCell,
   cleanClue,
   cleanCrossword,
   hideElement,
   Outcome,
+  resetCell,
   resetClue,
   resetCrossword,
   revealCell,
