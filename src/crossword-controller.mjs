@@ -103,6 +103,7 @@ class CrosswordController {
     this.#crosswordGridView.style.setProperty('--row-count', this.#crosswordModel.height.toString())
     this.#crosswordGridView.style.setProperty('--column-count', this.#crosswordModel.width.toString())
 
+    addClass(this.#crosswordGridView, 'crosswords-js');
     addClass(this.#crosswordGridView, 'crossword-grid');
 
     // Build the DOM for the crossword clues.
@@ -586,6 +587,7 @@ class CrosswordController {
       downClues: newClueBlockElement('crossword-down-clues', 'Down'),
     };
 
+    addClass(view.wrapper, 'crosswords-js');
     addClass(view.wrapper, 'crossword-clues');
 
     addClueElements(
