@@ -100,8 +100,14 @@ class CrosswordController {
     this.#crosswordGridView = this.#document.createElement('div');
 
     // set the grid size variables, used as part of the css-grid styling
-    this.#crosswordGridView.style.setProperty('--row-count', this.#crosswordModel.height.toString())
-    this.#crosswordGridView.style.setProperty('--column-count', this.#crosswordModel.width.toString())
+    this.#crosswordGridView.style.setProperty(
+      '--row-count',
+      this.#crosswordModel.height.toString(),
+    );
+    this.#crosswordGridView.style.setProperty(
+      '--column-count',
+      this.#crosswordModel.width.toString(),
+    );
 
     addClass(this.#crosswordGridView, 'crossword-grid');
 
