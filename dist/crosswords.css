@@ -1,7 +1,12 @@
+:root {
+  /* default grid size, this is overriden in JS */
+  --row-count: 15;
+  --column-count: 15;
+}
 @media screen and (max-width: 391px) {
   .crossword-grid {
-    grid-template-rows: repeat(15, 1.3rem);
-    grid-template-columns: repeat(15, 1.3rem);
+    grid-template-rows: repeat(var(--row-count), 1.3rem);
+    grid-template-columns: repeat(var(--column-count), 1.3rem);
   }
   .crossword-grid input {
     font-size: 1.14rem;
@@ -19,8 +24,8 @@
 }
 @media screen and (min-width: 392px) and (max-width: 555px) {
   .crossword-grid {
-    grid-template-rows: repeat(15, 1.5625rem);
-    grid-template-columns: repeat(15, 1.5625rem);
+    grid-template-rows: repeat(var(--row-count), 1.5625rem);
+    grid-template-columns: repeat(var(--column-count), 1.5625rem);
   }
   .crossword-grid input {
     font-size: 1.14rem;
@@ -38,8 +43,8 @@
 }
 @media screen and (min-width: 556px) {
   .crossword-grid {
-    grid-template-rows: repeat(15, 2.25rem);
-    grid-template-columns: repeat(15, 2.25rem);
+    grid-template-rows: repeat(var(--row-count), 2.25rem);
+    grid-template-columns: repeat(var(--column-count), 2.25rem);
   }
   .crossword-grid input {
     font-size: 1.7rem;
