@@ -264,7 +264,7 @@ function cleanCell(controller, cell, content = ' ') {
   const clearRevealed = wrongLetter;
   // is the current cell letter incorrect?
   if (wrongLetter) {
-    setCellText(controller, cell, cleanCell, clearRevealed);
+    setCellText(controller, cell, content, clearRevealed);
     // remove visual flags in cell
     hideElement(controller.incorrectElement(cell));
   }
