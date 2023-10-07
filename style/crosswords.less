@@ -1,10 +1,16 @@
 @import url('../style/cwdimensions.less');
 @import url('../style/cwcolors.less');
 
+:root {
+  // Default grid size, this is overridden in JS
+  --row-count: 15;
+  --column-count: 15;
+}
+
 @media screen and (max-width: 391px) {
   .crossword-grid {
-    grid-template-rows: repeat(@row-count, @grid-cell-size-0);
-    grid-template-columns: repeat(@column-count, @grid-cell-size-0);
+    grid-template-rows: repeat(var(--row-count), @grid-cell-size-0);
+    grid-template-columns: repeat(var(--column-count), @grid-cell-size-0);
 
     input {
       font-size: @letter-size-0;
@@ -29,8 +35,8 @@
 
 @media screen and (min-width: 392px) and (max-width: 555px) {
   .crossword-grid {
-    grid-template-rows: repeat(@row-count, @grid-cell-size-1);
-    grid-template-columns: repeat(@column-count, @grid-cell-size-1);
+    grid-template-rows: repeat(var(--row-count), @grid-cell-size-1);
+    grid-template-columns: repeat(var(--column-count), @grid-cell-size-1);
 
     input {
       font-size: @letter-size-1;
@@ -55,8 +61,8 @@
 
 @media screen and (min-width: 556px) {
   .crossword-grid {
-    grid-template-rows: repeat(@row-count, @grid-cell-size-2);
-    grid-template-columns: repeat(@column-count, @grid-cell-size-2);
+    grid-template-rows: repeat(var(--row-count), @grid-cell-size-2);
+    grid-template-columns: repeat(var(--column-count), @grid-cell-size-2);
 
     input {
       font-size: @letter-size-2;

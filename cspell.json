@@ -2,11 +2,7 @@
   "enabled": true,
   "language": "en-GB",
   "allowCompoundWords": true,
-  "ignorePaths": [
-    "node_modules",
-    "vendor",
-    ".*"
-  ],
+  "ignorePaths": ["node_modules", "vendor", ".*"],
   "enabledLanguageIds": [
     "css",
     "html",
@@ -23,6 +19,7 @@
   "words": [
     "abraxive",
     "alberich",
+    "bobspr",
     "bruxelles",
     "catherineparr",
     "celldom",
