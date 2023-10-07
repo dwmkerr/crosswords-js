@@ -255,7 +255,7 @@ function resetCrossword(controller) {
   });
 }
 
-function cleanCell(controller, cell, content = ' ') {
+function cleanCell(controller, cell) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
   // trace(`cleanCell:(${cell.x},${cell.y})`);
@@ -264,7 +264,7 @@ function cleanCell(controller, cell, content = ' ') {
   const clearRevealed = wrongLetter;
   // is the current cell letter incorrect?
   if (wrongLetter) {
-    setCellText(controller, cell, content, clearRevealed);
+    setCellText(controller, cell, ' ', clearRevealed);
     // remove visual flags in cell
     hideElement(controller.incorrectElement(cell));
   }
