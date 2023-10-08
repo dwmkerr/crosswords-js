@@ -1,14 +1,115 @@
-import { first, last, trace } from './helpers.mjs';
-// Parse the groups: /^numberGroup\.clueGroup\(answerGroup\)$/
-const clueRegex = /^(.*?)\.(.*)\((.*?)\)$/;
-// Parse numberGroup into 1+ clue segment labels
-const numberGroupRegex = /^(\d+[ad]?)(,(\d+[ad]?.*))*$/;
-// Parse clueGroup from surrounding whitespace
-const clueGroupRegex = /^\s*(.*?)\s*$/;
-// Parse answerGroup into 1+ single-word or multi-word lengths
-const answerGroupRegex = /^(\d+)(([,-])(\d+.*))*$/;
+import { trace } from './helpers.mjs';
 
-const cluePattern = '<NumberText>.<ClueText>(<AnswerText>)';
+const cluePattern = 'LabelText.ClueText(LengthText)';
+
+// Parse the groups: /^\s*LabelText\.ClueText\(LengthText\)\s*$/
+// 'LabelText' is all characters from start up to but excluding the first period '.'.
+// Leading whitespace is ignored.
+// 'ClueText' is all characters after the first period up to but excluding the last
+// the last opening parenthesis '('
+// 'LengthText' is all characters after the last opening parenthesis up to but excluding
+// the last subsequent closing parenthesis ')'. Trailing whitespace is allowed.
+const clueRegex = /^\s*(.*?)\.(.*)\((.*)\)\s*$/;
+// Parse 'labelText' into 1+ clue segment labels: 1+ digits,
+// optionally followed by an 'a' or a 'd'.
+// The labels are separated by any sequence of 1+ non-alphanumeric
+// characters.
+const labelPartsRegex = /^([^bce-z]*?)(\d+[ad]?)\s*(.*)/;
+// Parse 'clueText' from all leading and trailing whitespace
+const clueTextRegex = /^\s*(.*?)\s*$/;
+// Parse 'lengthText' into 1+ whole-numbers.
+// The lengths are separated by any sequence of 1+ non-alphanumeric
+// characters, excluding parentheses.
+// Special case: acronyms
+// Acronym letters can including a trailing period for the last letter.
+// An example is clue 9a, The Age - Cryptic 08/09/2023
+// For example 'BBQ' -> (1.1.1.)
+const lengthPartsRegex = /^([^a-z()\d]*?)(\d+)[\s.]*(.*)/;
+
+// Refer to design document: ../docs/clue-markup.md
+
+// Clue markdown regular expressions
+const boldAsteriskRegex = /(.*?)(\*\*.+?\*\*)(.*)$/;
+const boldItalicAsteriskRegex = /(.*?)(\*\*\*.+?\*\*\*)(.*)$/;
+const italicAsteriskRegex = /(.*?)(\*[^*]+?\*)(.*)$/;
+const boldUnderscoreRegex = /(.*?)(__.+?__)(.*)$/;
+const boldItalicUnderscoreRegex = /(.*?)(___.+?___)(.*)$/;
+const italicUnderscoreRegex = /(.*?)(_[^_]+?_)(.*)$/;
+
+// Order is significant - decreasing markdown sequence length
+// Do NOT change!
+const markdownTransforms = [
+  {
+    tag: '***',
+    regex: boldItalicAsteriskRegex,
+    html: { open: '<span class="cw-bold cw-italic">', close: '</span>' },
+  },
+  {
+    tag: '___',
+    regex: boldItalicUnderscoreRegex,
+    html: { open: '<span class="cw-bold cw-italic">', close: '</span>' },
+  },
+  {
+    tag: '**',
+    regex: boldAsteriskRegex,
+    html: { open: '<span class="cw-bold">', close: '</span>' },
+  },
+  {
+    tag: '__',
+    regex: boldUnderscoreRegex,
+    html: { open: '<span class="cw-bold">', close: '</span>' },
+  },
+  {
+    tag: '*',
+    regex: italicAsteriskRegex,
+    html: { open: '<span class="cw-italic">', close: '</span>' },
+  },
+  {
+    tag: '_',
+    regex: italicUnderscoreRegex,
+    html: { open: '<span class="cw-italic">', close: '</span>' },
+  },
+];
+
+/**
+ *  Convert any markdown in _text_ to HTML.
+ * @param {*} text source string with Markdown, or not!
+ * @returns converted string
+ */
+function parseMarkdown(text) {
+  // Initialise return value
+  let result = text;
+
+  // Iterate through all transforms, modifying result for all matches
+  markdownTransforms.forEach((mt) => {
+    let prelude,
+      match,
+      // Initialise remainder with converted 'text' to date
+      remainder = result;
+
+    // Test for transform match
+    if (mt.regex.test(remainder)) {
+      // Extract matching groups in regex from 'remainder'
+      let groups = mt.regex.exec(remainder);
+      // Reset result
+      result = '';
+      while (groups?.length === 4) {
+        [, prelude, match, remainder] = groups;
+        // Replace opening tag
+        match = match.replace(mt.tag, mt.html.open);
+        // Replace closing tag
+        match = match.replace(mt.tag, mt.html.close);
+        // Append processed text to result
+        result += prelude + match;
+        groups = mt.regex.exec(remainder);
+      }
+      // Append any remainder after matches exhausted
+      result += remainder;
+    }
+  });
+
+  return result;
+}
 
 //  Helper for newClueModel()
 function validateClueStructure(cdClue) {
@@ -84,72 +185,85 @@ function validateClueModelArguments(cdClue, isAcrossClue) {
 }
 
 // Helper for newClueModel()
-function buildClueLabelSegments(clueLabelText, cdClue) {
-  let remainingText = clueLabelText;
-  let clueLabelSegments = [];
-  while (numberGroupRegex.test(remainingText)) {
-    // Discard leading "," before residual
-    const [, labelSegment, , residual] = numberGroupRegex.exec(remainingText);
-    clueLabelSegments.push(labelSegment);
+function buildClueSegmentLabels(clueLabelText, cdClue) {
+  // Ensure any clue id values use lower case for the trailing 'a' or 'd'.
+  let remainingText = clueLabelText.toLowerCase();
+  let clueSegmentLabels = [];
+  while (labelPartsRegex.test(remainingText)) {
+    // Discard separator between segmentLabel and residual - see labelPartsRegex comments.
+    const [, , segmentLabel, residual] = labelPartsRegex.exec(remainingText);
+    clueSegmentLabels.push(segmentLabel);
     remainingText = residual;
   }
 
-  if (remainingText != undefined) {
+  // remainingText should be an empty string ('')
+  if (remainingText) {
     throw new Error(
-      `'${cdClue.clue}' Error in <numberText> near <${remainingText}>`,
+      `'${cdClue.clue}' Error in <LabelText> near <${remainingText}>`,
     );
   }
-  return clueLabelSegments;
+  return clueSegmentLabels;
 }
 
 // Helper for newClueModel()
-function buildConnectedDirectedClues(clueLabelSegments) {
-  // Helper
-  function directionFromClueLabel(clueLabel) {
-    if (clueLabel.endsWith('a')) {
+function buildTailDescriptors(clueSegmentLabels) {
+  // Nested helper
+  function directionFromClueSegmentLabel(clueSegmentLabel) {
+    if (clueSegmentLabel.endsWith('a')) {
       return 'across';
-    } else if (clueLabel.endsWith('d')) {
+    } else if (clueSegmentLabel.endsWith('d')) {
       return 'down';
     } else {
       return null;
     }
   }
 
-  let connectedSegments = clueLabelSegments.slice(1);
-  let connectedDirectedClues = [];
+  // Copy clueSegmentLabels and remove head/first segment
+  let tailSegmentLabels = clueSegmentLabels.slice(1);
+  let tailDescriptors = [];
 
-  // build connected clues
-  if (connectedSegments) {
-    connectedDirectedClues = connectedSegments.map((cs) => ({
-      number: parseInt(cs, 10),
-      direction: directionFromClueLabel(cs),
+  // build tailDescriptors for multi-segment clue
+  if (tailSegmentLabels.length > 0) {
+    tailDescriptors = tailSegmentLabels.map((cs) => ({
+      headNumber: parseInt(cs, 10),
+      direction: directionFromClueSegmentLabel(cs),
     }));
   }
-  return connectedDirectedClues;
+  return tailDescriptors;
 }
 
 // Helper for newClueModel()
-function buildAnswerSegments(answerGroup, cdClue) {
-  let answerSegments = [];
-  let remainingText = answerGroup;
+function buildWordLengths(lengthParts, cdClue) {
+  let wordLengths = [];
+  let remainingText = lengthParts;
 
-  while (answerGroupRegex.test(remainingText)) {
-    const [, length, , terminator, residual] =
-      answerGroupRegex.exec(remainingText);
-    answerSegments.push({
-      length: parseInt(length, 10),
-      terminator: terminator ?? '',
-    });
+  while (lengthPartsRegex.test(remainingText)) {
+    const [, , length, residual] = lengthPartsRegex.exec(remainingText);
+    wordLengths.push(parseInt(length, 10));
     remainingText = residual;
   }
 
-  if (remainingText != undefined) {
+  // remainingText should be an empty string
+  if (remainingText) {
     throw new Error(
-      `'${cdClue.clue}' Error in <answerText> near <${remainingText}>`,
+      `'${cdClue.clue}' Error in <LengthText> near <${remainingText}>`,
     );
   }
-  return answerSegments;
+  return wordLengths;
 }
+
+// Helper for newClueModel()
+const getClueId = (headSegmentLabel, isAcrossClue) => {
+  // clueId is headNumber followed by direction suffix ('a' or 'd')...
+  // Check last character of headSegmentLabel and append if required
+  const directionSuffix = (isAcross) => {
+    return isAcross ? 'a' : 'd';
+  };
+  const directionSuffixRegex = /[ad]$/;
+  return directionSuffixRegex.test(headSegmentLabel)
+    ? headSegmentLabel
+    : headSegmentLabel + directionSuffix(isAcrossClue);
+};
 
 /**
  * Create a clue model from a clue read from a
@@ -168,13 +282,15 @@ function newClueModel(cdClue, isAcrossClue) {
   // Test the properties and types of the cdClue argument
   validateClueStructure(cdClue);
 
-  // Extract simple properties
-  const x = cdClue.x - 1; //  Definitions are 1 based, models are more useful 0 based.
-  const y = cdClue.y - 1;
-
-  const isAcross = isAcrossClue;
-  // Initialise array of crossword grid elements - populated as part of crossword DOM
+  // Initialise array of crossword grid cell elements associated with
+  // clue - populated as part of crossword DOM
   const cells = [];
+
+  //// Extract simple properties
+
+  const x = cdClue.x - 1; //  Clue labels are 1 based, clue models are more useful 0 based.
+  const y = cdClue.y - 1;
+  const isAcross = isAcrossClue;
   // Initialise setter's solution for clue
   const solution = cdClue.solution
     ? // Strip out everything from solution except alphabetical characters
@@ -187,42 +303,34 @@ function newClueModel(cdClue, isAcrossClue) {
       cdClue.revealed.toUpperCase()
     : undefined;
 
-  //  Get the clue components.
-  const [, numberGroup, clueGroup, answerGroup] = clueRegex.exec(cdClue.clue);
+  //  Extract the clue components from the clue text in the crosswordDefinition
+  const [, labelParts, clueGroup, lengthParts] = clueRegex.exec(cdClue.clue);
 
-  //// Parse numberGroup
+  //// Parse labelParts
 
-  const clueLabelSegments = buildClueLabelSegments(numberGroup, cdClue);
-  const connectedDirectedClues = buildConnectedDirectedClues(clueLabelSegments);
-
-  const anchorSegment = first(clueLabelSegments);
-  const number = parseInt(anchorSegment, 10);
-  const clueLabel = number.toString();
-
-  // Code is number followed by 'a' or 'd'...
-  // Check last character of anchorSegment and append if required
-
-  const code =
-    anchorSegment.endsWith('a') || anchorSegment.endsWith('d')
-      ? anchorSegment
-      : anchorSegment + (isAcrossClue ? 'a' : 'd');
+  const clueSegmentLabels = buildClueSegmentLabels(labelParts, cdClue);
+  const tailDescriptors = buildTailDescriptors(clueSegmentLabels);
+  //  headSegmentLabel is first of clueSegmentLabels
+  const [headSegmentLabel] = clueSegmentLabels;
+  const headNumber = parseInt(headSegmentLabel, 10);
+  const labelText = headNumber.toString();
+  const clueId = getClueId(headSegmentLabel, isAcross);
 
   //// Parse clueGroup
 
-  const [, clueText] = clueGroupRegex.exec(clueGroup);
+  const [, rawClueText] = clueTextRegex.exec(clueGroup);
+  const clueText = parseMarkdown(rawClueText);
 
-  //// Parse answerGroup
+  //// Parse lengthParts
 
-  const answerSegments = buildAnswerSegments(answerGroup, cdClue);
+  const lengthText = `(${lengthParts})`;
+  const wordLengths = buildWordLengths(lengthParts, cdClue);
+  //  Calculate the total length of the clue segment.
+  // Sum the lengths of the clue words
+  const segmentLength = wordLengths.reduce((current, wd) => current + wd, 0);
 
-  //  Calculate the total length of the answer.
-  const answerLength = answerSegments.reduce(
-    (current, as) => current + as.length,
-    0,
-  );
+  //// Initialise punter's answer for clue
 
-  // trace(`cdClue.answer: <${cdClue.answer}>`);
-  // Initialise punter's answer for clue
   const answer = cdClue.answer
     ? cdClue.answer
         // convert to uppercase
@@ -230,46 +338,59 @@ function newClueModel(cdClue, isAcrossClue) {
         // replace illegal characters with spaces
         .replaceAll(/[^ A-Z]/g, ' ')
         // pad out if required
-        .padEnd(answerLength)
+        .padEnd(segmentLength)
     : // pad out null or undefined answer with spaces
-      ''.padEnd(answerLength);
-  // trace(`newClueModel: answer:<${answer}> solution:<${solution}>`);
+      ''.padEnd(segmentLength);
 
-  //  Also create the answer segments as text.
-  const answerLengthText = `(${answerGroup})`;
-
-  // Test if clue solution length matches answerLength
-  if (solution && solution.length !== answerLength) {
+  // Test if clue solution length matches segmentLength
+  if (solution && solution.length !== segmentLength) {
     throw new Error(
-      `Length of clue solution '${solution}' does not match the answer length '${answerLengthText}'`,
+      `Length of clue solution '${solution}' does not match the lengthText '${lengthText}'`,
     );
   }
 
-  // Test if clue revealed length matches answerLength
-  if (revealed && revealed.length !== answerLength) {
+  // Test if clue revealed length matches segmentLength
+  if (revealed && revealed.length !== segmentLength) {
     throw new Error(
-      `Length of clue revealed characters '${revealed}' does not match the answer length: ${answerLength}`,
+      `Length of clue revealed characters '${revealed}' does not match the lengthText: ${segmentLength}`,
     );
   }
 
   // Combine elements into object and exit
   return {
     answer,
-    answerLength,
-    answerLengthText,
-    answerSegments,
     cells,
-    clueLabel,
+    clueId,
     clueText,
-    code,
-    connectedDirectedClues,
+    headNumber,
     isAcross,
-    number,
+    labelText,
+    lengthText,
     revealed,
+    segmentLength,
     solution,
+    tailDescriptors,
+    wordLengths,
     x,
     y,
+    toString: () => {
+      return `${clueId}`;
+    },
   };
 }
 
-export { newClueModel, cluePattern };
+export {
+  boldAsteriskRegex,
+  boldItalicAsteriskRegex,
+  boldItalicUnderscoreRegex,
+  boldUnderscoreRegex,
+  cluePattern,
+  clueRegex,
+  clueTextRegex,
+  italicAsteriskRegex,
+  italicUnderscoreRegex,
+  labelPartsRegex,
+  lengthPartsRegex,
+  newClueModel,
+  parseMarkdown,
+};

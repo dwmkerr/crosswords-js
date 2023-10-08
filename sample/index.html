@@ -112,7 +112,7 @@
       <hr />
       <p ng-if="currentClue">
         {{currentClue.clueLabel}} {{currentClue.clueText}}
-        {{currentClue.answerLengthText}}
+        {{currentClue.lengthText}}
       </p>
       <div id="crossword1"></div>
       <table>
@@ -124,9 +124,7 @@
               ng-click="selectClue(clue)"
               ng-class="{selectedClue: isHighlightedClue(clue)}"
             >
-              <p>
-                {{clue.clueLabel}} {{clue.clueText}} {{clue.answerLengthText}}
-              </p>
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.lengthText}}</p>
             </div>
           </td>
           <td>
@@ -136,9 +134,7 @@
               ng-click="selectClue(clue)"
               ng-class="{selectedClue: isHighlightedClue(clue)}"
             >
-              <p>
-                {{clue.clueLabel}} {{clue.clueText}} {{clue.answerLengthText}}
-              </p>
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.lengthText}}</p>
             </div>
           </td>
         </tr>

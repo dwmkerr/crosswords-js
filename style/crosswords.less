@@ -2,7 +2,8 @@
 @import url('../style/cwcolors.less');
 
 :root {
-  /* default grid size, this is overriden in JS */
+  // Default grid size, this may be overridden
+  // in ../src/crossword-gridview.mjs: newCrosswordGridView()
   --row-count: 15;
   --column-count: 15;
 }
@@ -21,6 +22,7 @@
     }
 
     .cwcell-revealed {
+      // display a triangle base on border intersections
       border-left: @revealed-size-0 solid transparent;
       border-bottom: @revealed-size-0 solid @cell-revealed-color;
     }
@@ -47,6 +49,7 @@
     }
 
     .cwcell-revealed {
+      // display a triangle base on border intersections
       border-left: @revealed-size-1 solid transparent;
       border-bottom: @revealed-size-1 solid @cell-revealed-color;
     }
@@ -73,6 +76,7 @@
     }
 
     .cwcell-revealed {
+      // display a triangle base on border intersections
       border-left: @revealed-size-2 solid transparent;
       border-bottom: @revealed-size-2 solid @cell-revealed-color;
     }
@@ -90,12 +94,10 @@
 
   display: grid;
   gap: @grid-line-size;
-  border-collapse: collapse;
-  box-sizing: border-box;
-  // border around outside of grid
+  // Any border and padding is outside grids width and height
+  box-sizing: content-box;
+  // padding around outside of grid
   padding: @grid-line-size;
-  width: min-content;
-
   background-color: @grid-background-color;
   color: @grid-text-color;
   font-family: sans-serif;
@@ -127,8 +129,6 @@
     padding: 0;
     // Border must be disabled
     border: 0;
-    //fix to bottom
-    align-self: end;
     height: 100%;
     width: 100%;
     background-color: @cell-background-light-color;
@@ -153,6 +153,8 @@
   .cwclue-label {
     margin: 1px 0px 0px 1px;
     position: absolute;
+    // top & left
+    place-self: start;
     // click events need to pass through to input element
     pointer-events: none;
   }
@@ -162,11 +164,8 @@
   .cwcell-revealed {
     // visibility: hidden;
     position: absolute;
-    // right
-    justify-self: end;
-    // bottom
-    align-self: end;
-    // display a triangle base on border intersections
+    // bottom & right
+    place-self: end;
     // click events must pass through to input element
     pointer-events: none;
   }
@@ -230,4 +229,11 @@
   .current-clue-segment {
     background-color: @clue-background-current-color;
   }
+}
+
+.cw-italic {
+  font-style: italic;
+}
+.cw-bold {
+  font-weight: bold;
 }

@@ -2,6 +2,7 @@
 node_modules/
 artifacts/
 .DS_Store
+commit-description.txt
 
 # Project artefacts
 crosswords.css
@@ -10,3 +11,7 @@ dev/dist/
 # VS Code artefacts
 *.code-workspace
 .vscode/
+
+# Rebase artefacts
+git-rebase-todo*
+rebase*.log

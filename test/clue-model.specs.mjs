@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { newClueModel, cluePattern } from '../src/clue-model.mjs';
 const isAcrossClue = true;
-const cd = [];
+const cd = {};
 cd['missing-clue'] = { x: 12, y: 9 };
 cd['null-clue'] = { x: 12, y: 9, clue: null };
 cd['missing-label'] = { x: 12, y: 9, clue: 'Red or green fruit (5)' };
@@ -58,11 +58,6 @@ cd['valid-multi-word-hyphenated-answer'] = {
   y: 9,
   clue: '9. Clue (5,3-4)',
 };
-cd['invalid-multi-word-hyphenated-answer'] = {
-  x: 12,
-  y: 9,
-  clue: '9. Clue (5,3-4-,6)',
-};
 cd['valid-multi-segment-number'] = { x: 12, y: 9, clue: '9,3a,4d,6. Clue (5)' };
 cd['invalid-multi-segment-number'] = { x: 12, y: 9, clue: '9,3b,4. Clue (5)' };
 (cd['valid-answer-solution-revealed'] = {
@@ -91,6 +86,11 @@ cd['invalid-multi-segment-number'] = { x: 12, y: 9, clue: '9,3b,4. Clue (5)' };
     // cspell:disable-next-line
     answer: 'a nxxxxx n',
     revealed: 'a n    ',
+  }),
+  (cd['no-answer-no-solution'] = {
+    x: 6,
+    y: 5,
+    clue: '1. Red or green fruit (5)',
   });
 
 describe('newClueModel()', () => {
@@ -166,6 +166,17 @@ describe('newClueModel()', () => {
     }).to.throw("'cdClue.y (true)' must be a number");
   });
 
+  it('should have undefined solution if cdClue has no solution', () => {
+    const clueModel = newClueModel(cd['no-answer-no-solution'], isAcrossClue);
+    expect(clueModel.solution).to.equal(undefined);
+  });
+
+  it('should have padded empty answer if cdClue has no user answer', () => {
+    const clueModel = newClueModel(cd['no-answer-no-solution'], isAcrossClue);
+    expect(clueModel.answer).to.equal('     ');
+    expect(clueModel.solution).to.equal(undefined);
+  });
+
   it('should fail if cdClue has unexpected properties', () => {
     expect(() => {
       newClueModel(cd['unexpected-properties'], isAcrossClue);
@@ -210,7 +221,7 @@ describe('newClueModel()', () => {
   it('should fail if the clue number is not numeric', () => {
     expect(() => {
       newClueModel(cd['non-numeric-label'], isAcrossClue);
-    }).to.throw(`'a. Red or green fruit (5)' Error in <numberText> near <a>`);
+    }).to.throw(`'a. Red or green fruit (5)' Error in <LabelText> near <a>`);
   });
 
   it('should fail if the answer structure is not provided', () => {
@@ -224,17 +235,17 @@ describe('newClueModel()', () => {
   it('should fail if the answer structure is not numeric', () => {
     expect(() => {
       newClueModel(cd['non-numeric-answer'], isAcrossClue);
-    }).to.throw(`'3. Red or green fruit (a)' Error in <answerText> near <a>`);
+    }).to.throw(`'3. Red or green fruit (a)' Error in <LengthText> near <a>`);
   });
 
-  it('should compile the number, code and answer lengths of a clue string', () => {
+  it('should compile the headNumber, clueId and answer lengths of a clue string', () => {
     const clueModel = newClueModel(cd['valid-single-segment'], false);
-    expect(clueModel.number).to.eql(3);
-    expect(clueModel.code).to.eql('3d');
+    expect(clueModel.headNumber).to.eql(3);
+    expect(clueModel.clueId).to.eql('3d');
     expect(clueModel.clueText).to.eql('Red or green fruit');
-    expect(clueModel.answerLength).to.eql(5);
-    expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: '' }]);
-    expect(clueModel.answerLengthText).to.eql('(5)', isAcrossClue);
+    expect(clueModel.segmentLength).to.eql(5);
+    expect(clueModel.wordLengths).to.eql([5]);
+    expect(clueModel.lengthText).to.eql('(5)', isAcrossClue);
   });
 
   it('should compile multi-word and hyphenated answers', () => {
@@ -242,21 +253,37 @@ describe('newClueModel()', () => {
       cd['valid-multi-word-hyphenated-answer'],
       isAcrossClue,
     );
-    expect(clueModel.number).to.eql(9);
+    expect(clueModel.headNumber).to.eql(9);
     expect(clueModel.clueText).to.eql('Clue');
-    expect(clueModel.answerLength).to.eql(12);
-    expect(clueModel.answerSegments).to.eql([
-      { length: 5, terminator: ',' },
-      { length: 3, terminator: '-' },
-      { length: 4, terminator: '' },
-    ]);
-    expect(clueModel.answerLengthText).to.eql('(5,3-4)', isAcrossClue);
+    expect(clueModel.segmentLength).to.eql(12);
+    expect(clueModel.wordLengths).to.eql([5, 3, 4]);
+    expect(clueModel.lengthText).to.eql('(5,3-4)', isAcrossClue);
   });
 
-  it('should fail on error in multi-word and hyphenated answer', () => {
+  it('should fail on multi-word with embedded parentheses', () => {
+    let clue = {
+      x: 12,
+      y: 9,
+      clue: '9. Clue (5(3)4)',
+    };
     expect(() => {
-      newClueModel(cd['invalid-multi-word-hyphenated-answer'], isAcrossClue);
-    }).to.throw("'9. Clue (5,3-4-,6)' Error in <answerText> near <4-,6>");
+      newClueModel(clue, isAcrossClue);
+    }).to.throw("'9. Clue (5(3)4)' Error in <LengthText> near <)4>");
+
+    clue.clue = '9. Clue (5)3)4)';
+    expect(() => {
+      newClueModel(clue, isAcrossClue);
+    }).to.throw("'9. Clue (5)3)4)' Error in <LengthText> near <)3)4>");
+
+    clue.clue = '9. Clue (5(3(4))';
+    expect(() => {
+      newClueModel(clue, isAcrossClue);
+    }).to.throw("'9. Clue (5(3(4))' Error in <LengthText> near <)>");
+
+    clue.clue = '9. Clue (5(3(4)';
+    let model = newClueModel(clue, isAcrossClue);
+    expect(model.clueText).to.eql('Clue (5(3');
+    expect(model.lengthText).to.eql('(4)');
   });
 
   it('should compile multi-segment clue numbers', () => {
@@ -264,37 +291,37 @@ describe('newClueModel()', () => {
       cd['valid-multi-segment-number'],
       isAcrossClue,
     );
-    expect(clueModel.number).to.eql(9);
+    expect(clueModel.headNumber).to.eql(9);
     expect(clueModel.clueText).to.eql('Clue');
-    expect(clueModel.answerLength).to.eql(5);
-    expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: '' }]);
-    expect(clueModel.answerLengthText).to.eql('(5)');
-    expect(clueModel.connectedDirectedClues).to.eql([
-      { number: 3, direction: 'across' },
-      { number: 4, direction: 'down' },
-      { number: 6, direction: null },
+    expect(clueModel.segmentLength).to.eql(5);
+    expect(clueModel.wordLengths).to.eql([5]);
+    expect(clueModel.lengthText).to.eql('(5)');
+    expect(clueModel.tailDescriptors).to.eql([
+      { headNumber: 3, direction: 'across' },
+      { headNumber: 4, direction: 'down' },
+      { headNumber: 6, direction: null },
     ]);
   });
 
   it('should fail on error in multi-segment clue number', () => {
     expect(() => {
       newClueModel(cd['invalid-multi-segment-number'], isAcrossClue);
-    }).to.throw("'9,3b,4. Clue (5)' Error in <numberText> near <3b,4>");
+    }).to.throw("'9,3b,4. Clue (5)' Error in <LabelText> near <b,4>");
   });
 
-  it('should compile the number, code and answer lengths of a clue string', () => {
+  it('should compile the number, clueId and answer lengths of a clue string', () => {
     const clueModel = newClueModel(cd['valid-single-segment'], isAcrossClue);
     expect(clueModel.answer).to.eql('     ');
-    expect(clueModel.answerSegments).to.eql([{ length: 5, terminator: '' }]);
-    expect(clueModel.answerLengthText).to.eql('(5)', isAcrossClue);
+    expect(clueModel.wordLengths).to.eql([5]);
+    expect(clueModel.lengthText).to.eql('(5)', isAcrossClue);
     expect(clueModel.cells).to.eql([]);
-    expect(clueModel.clueLabel).to.eql('3');
+    expect(clueModel.labelText).to.eql('3');
     expect(clueModel.revealed).to.eql(undefined);
     expect(clueModel.solution).to.eql(undefined);
     expect(clueModel.clueText).to.eql('Red or green fruit');
-    expect(clueModel.number).to.eql(3);
-    expect(clueModel.code).to.eql('3a');
-    expect(clueModel.answerLength).to.eql(5);
+    expect(clueModel.headNumber).to.eql(3);
+    expect(clueModel.clueId).to.eql('3a');
+    expect(clueModel.segmentLength).to.eql(5);
     expect(clueModel.x).to.eql(11);
     expect(clueModel.y).to.eql(8);
   });
@@ -306,37 +333,34 @@ describe('newClueModel()', () => {
     );
     // cspell:disable-next-line
     expect(clueModel.answer).to.eql('A NXXXXX N');
-    expect(clueModel.answerSegments).to.eql([
-      { length: 4, terminator: ',' },
-      { length: 6, terminator: '' },
-    ]);
-    expect(clueModel.answerLengthText).to.eql('(4,6)', isAcrossClue);
+    expect(clueModel.wordLengths).to.eql([4, 6]);
+    expect(clueModel.lengthText).to.eql('(4,6)', isAcrossClue);
     expect(clueModel.cells).to.eql([]);
-    expect(clueModel.clueLabel).to.eql('13');
+    expect(clueModel.labelText).to.eql('13');
     expect(clueModel.revealed).to.eql('A N      N');
     expect(clueModel.solution).to.eql('ANNEBOLEYN');
     expect(clueModel.clueText).to.eql(
       'Woman who suffered capital loss in Lebanon, beaten by fluctuating yen',
     );
-    expect(clueModel.number).to.eql(13);
-    expect(clueModel.answerLength).to.eql(10);
+    expect(clueModel.headNumber).to.eql(13);
+    expect(clueModel.segmentLength).to.eql(10);
     expect(clueModel.x).to.eql(5);
     expect(clueModel.y).to.eql(4);
   });
 
-  it('should fail if solution length does not match answer length in clue text', () => {
+  it('should fail if solution length does not match lengthText in clue text', () => {
     expect(() => {
       newClueModel(cd['invalid-solution'], isAcrossClue);
     }).to.throw(
-      "Length of clue solution 'CATHERINEPARR' does not match the answer length '(4,6)'",
+      "Length of clue solution 'CATHERINEPARR' does not match the lengthText '(4,6)'",
     );
   });
 
-  it('should fail if revealed characters length does not match answer length in clue text', () => {
+  it('should fail if revealed characters length does not match lengthText in clue text', () => {
     expect(() => {
       newClueModel(cd['invalid-revealed'], isAcrossClue);
     }).to.throw(
-      "Length of clue revealed characters 'A N    ' does not match the answer length: 10",
+      "Length of clue revealed characters 'A N    ' does not match the lengthText: 10",
     );
   });
 });

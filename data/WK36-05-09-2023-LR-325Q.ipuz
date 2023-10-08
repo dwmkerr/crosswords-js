@@ -1,0 +1,1144 @@
+{
+    "showenumerations": true,
+    "notes": "",
+    "puzzle": [
+        [
+            1,
+            2,
+            ":",
+            3,
+            ":",
+            4,
+            ":",
+            "#",
+            "#",
+            5,
+            ":",
+            6,
+            ":",
+            7,
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            8,
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            9,
+            ":",
+            ":",
+            ":",
+            "#",
+            10,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            11,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            12,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            13,
+            14,
+            ":",
+            ":",
+            ":",
+            15,
+            "#",
+            16,
+            ":",
+            ":",
+            ":",
+            17,
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            18,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            19,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#"
+        ],
+        [
+            20,
+            ":",
+            ":",
+            21,
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            22,
+            ":",
+            ":",
+            ":",
+            23,
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            24,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            25,
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            26,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            "#",
+            27,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ]
+    ],
+    "copyright": "",
+    "intro": "",
+    "version": "http://ipuz.org/v2",
+    "origin": "Crossword Compiler 11.1",
+    "empty": ":",
+    "title": "",
+    "kind": [
+        "http://ipuz.org/crossword#1"
+    ],
+    "clues": {
+        "Across": [
+            {
+                "enumeration": "7",
+                "number": 1,
+                "clue": "Photographic devices"
+            },
+            {
+                "enumeration": "6",
+                "number": 5,
+                "clue": "Bear witness"
+            },
+            {
+                "enumeration": "4",
+                "number": 9,
+                "clue": "A gender"
+            },
+            {
+                "enumeration": "10",
+                "number": 10,
+                "clue": "Curious"
+            },
+            {
+                "enumeration": "6",
+                "number": 11,
+                "clue": "Trounced"
+            },
+            {
+                "enumeration": "8",
+                "number": 12,
+                "clue": "Think too highly of"
+            },
+            {
+                "enumeration": "6",
+                "number": 13,
+                "clue": "Brave"
+            },
+            {
+                "enumeration": "8",
+                "number": 16,
+                "clue": "Having a stab"
+            },
+            {
+                "enumeration": "8",
+                "number": 18,
+                "clue": "Convict"
+            },
+            {
+                "enumeration": "6",
+                "number": 19,
+                "clue": "Rant"
+            },
+            {
+                "answer": "BLACK EYE",
+                "enumeration": "5 3",
+                "number": 20,
+                "clue": "Result of a whack to the face"
+            },
+            {
+                "enumeration": "6",
+                "number": 22,
+                "clue": "Type of pastry"
+            },
+            {
+                "enumeration": "10",
+                "number": 24,
+                "clue": "Take another look"
+            },
+            {
+                "enumeration": "4",
+                "number": 25,
+                "clue": "Countess's husband"
+            },
+            {
+                "enumeration": "6",
+                "number": 26,
+                "clue": "Rocks"
+            },
+            {
+                "enumeration": "7",
+                "number": 27,
+                "clue": "Symbol of lightness"
+            }
+        ],
+        "Down": [
+            {
+                "enumeration": "5",
+                "number": 2,
+                "clue": "Flabbergast"
+            },
+            {
+                "enumeration": "9",
+                "number": 3,
+                "clue": "Subatomic particles"
+            },
+            {
+                "enumeration": "5",
+                "number": 4,
+                "clue": "Extraterrestrial"
+            },
+            {
+                "enumeration": "9",
+                "number": 5,
+                "clue": "Contract"
+            },
+            {
+                "enumeration": "5",
+                "number": 6,
+                "clue": "Stun gun"
+            },
+            {
+                "enumeration": "9",
+                "number": 7,
+                "clue": "Added sugar"
+            },
+            {
+                "answer": "AT LOGGERHEADS",
+                "enumeration": "2 11",
+                "number": 8,
+                "clue": "Quarrelling"
+            },
+            {
+                "enumeration": "9",
+                "number": 14,
+                "clue": "Registration"
+            },
+            {
+                "enumeration": "9",
+                "number": 15,
+                "clue": "General agreement"
+            },
+            {
+                "enumeration": "9",
+                "number": 17,
+                "clue": "Most peculiar"
+            },
+            {
+                "enumeration": "5",
+                "number": 21,
+                "clue": "Sing"
+            },
+            {
+                "enumeration": "5",
+                "number": 22,
+                "clue": "Sad song"
+            },
+            {
+                "enumeration": "5",
+                "number": 23,
+                "clue": "Binge"
+            }
+        ]
+    },
+    "dimensions": {
+        "width": 15,
+        "height": 15
+    },
+    "author": "",
+    "solution": [
+        [
+            {
+                "value": "C",
+                "cell": 1
+            },
+            {
+                "value": "A",
+                "cell": 2
+            },
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": 3
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": 4
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            {
+                "value": "A",
+                "cell": 5
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": 6
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": 7
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "A",
+                "cell": 8
+            },
+            "#",
+            {
+                "value": "G",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "W",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "M",
+                "cell": 9
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "I",
+                "cell": 10
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "Z",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "C",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "B",
+                "cell": 11
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "O",
+                "cell": 12
+            },
+            {
+                "value": "V",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            "#",
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "G",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "H",
+                "cell": 13
+            },
+            {
+                "value": "E",
+                "cell": 14
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "C",
+                "cell": 15
+            },
+            "#",
+            {
+                "value": "G",
+                "cell": 16
+            },
+            {
+                "value": "U",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": 17
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "G",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "P",
+                "cell": 18
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "T",
+                "cell": 19
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "H",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#"
+        ],
+        [
+            {
+                "value": "B",
+                "cell": 20
+            },
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "C",
+                "cell": 21
+            },
+            {
+                "value": "K",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "Y",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "D",
+                "cell": 22
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": 23
+            },
+            {
+                "value": "H",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "G",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "P",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "R",
+                "cell": 24
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "C",
+                "cell": ":"
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": 25
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "L",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "U",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "G",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "S",
+                "cell": 26
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            {
+                "value": "F",
+                "cell": 27
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "H",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            }
+        ]
+    ]
+}

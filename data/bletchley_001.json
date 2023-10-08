@@ -1,0 +1,176 @@
+{
+  "document": {
+    "mimetype": "application/vnd.js-crossword",
+    "version": "1.0"
+  },
+  "source": {
+    "title": "Bletchley Park Cryptic Crosswords - Number 1",
+    "url": "https://www.amazon.com/Bletchley-Cryptic-Crosswords-Arcturus-Publishing/dp/1788280431/"
+  },
+  "setter": {
+    "title": "Anonymous",
+    "url": "https://bletchleypark.org.uk/"
+  },
+  "width": 13,
+  "height": 13,
+  "acrossClues": [
+    {
+      "x": 1,
+      "y": 1,
+      "clue": "1. He's in unrivalled command (6)",
+      "solution": "behest"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "clue": "4.  Salad for an emperor? (6)",
+      "solution": "Caesar"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "clue": "9. None was heard for prayer? (3)",
+      "solution": "nun"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "clue": "10. Extra, we hear, noticed about line in computing trend (6,3)",
+      "solution": "Moores Law"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "clue": "11. Idea's wasted in private comment (5)",
+      "solution": "aside"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "clue": "12. Place in wild for bird (7)",
+      "solution": "pelican"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "clue": "14. Fault of contrived author, riveting work largely ruined? (11)",
+      "solution": "overwriting"
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "clue": "17. Fruit from a tropic is cultivated (7)",
+      "solution": "apricot"
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "clue": "18. Lifted section of floor is enamelled (5)",
+      "solution": "risen"
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "clue": "20. Amphibian's drill perhaps, creates fungi (9)",
+      "solution": "toadstool"
+    },
+    {
+      "x": 11,
+      "y": 11,
+      "clue": "22. Garland male in boxing (3)",
+      "solution": "lei"
+    },
+    {
+      "x": 1,
+      "y": 13,
+      "clue": "23. Friendly touch in a sort of film (6)",
+      "solution": "patina"
+    },
+    {
+      "x": 8,
+      "y": 13,
+      "clue": "24. My pug's chewed soft mineral (6)",
+      "solution": "gypsum"
+    }
+  ],
+  "downClues": [
+    {
+      "x": 1,
+      "y": 1,
+      "clue": "1. Bar around some fig tree (6)",
+      "solution": "banyan"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "clue": "2. Language behind Indian houses (5)",
+      "solution": "hindi"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "clue": "3. Having exact correspondence (9)",
+      "solution": "symmetric"
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "clue": "5. Outstanding airman (3)",
+      "solution": "ace"
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "clue": "6. Fossil, I conclude, holds metalloid (7)",
+      "solution": "silicon"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "clue": "7. Argue with anonymous tree (5)",
+      "solution": "rowan"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "clue": "8. English in confined space getting share in assistance (11)",
+      "solution": "cooperation"
+    },
+    {
+      "x": 9,
+      "y": 5,
+      "clue": "13. Inspired European meeting with precision (9)",
+      "solution": "literally"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "clue": "15. Very short song not lacking heart? It's different (7)",
+      "solution": "variant"
+    },
+    {
+      "x": 13,
+      "y": 8,
+      "clue": "16. Popular company devoid of strength (6)",
+      "solution": "infirm"
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "clue": "17. Malfunction in part of play increased (3,2)",
+      "solution": "act up"
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "clue": "19. Speak of people and fish (5)",
+      "solution": "soles"
+    },
+    {
+      "x": 5,
+      "y": 11,
+      "clue": "21. Do wrong in cursing (3)",
+      "solution": "sin"
+    }
+  ]
+}
