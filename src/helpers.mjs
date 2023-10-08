@@ -29,7 +29,6 @@ function assert(condition, message) {
 //// Shortcut functions
 
 const eid = (elementId, dom = document) => {
-  // trace(`eid: elementId=${elementId}, dom=${dom}`);
   return dom.getElementById(elementId);
 };
 
@@ -64,7 +63,7 @@ function replaceStrAt(original, index, str) {
       // Normalise negative index values
       pos = original.length + pos;
     }
-    if (pos >= 0 && str && original.length > pos) {
+    if (pos >= 0 && original.length > pos) {
       result = `${original.slice(0, pos)}${str}${original.slice(
         pos + str.length,
       )}`;
@@ -170,10 +169,17 @@ const tracing = (enabled) => {
 
 /**
  * trace - console logging
+ * @param action - 'log', 'warn' or 'error'. Default is 'log'
  * @param message - string to be logged
  */
-const trace = (message) => {
-  if (tracingEnabled) console.log(message);
+const trace = (message, action = 'log') => {
+  if (tracingEnabled) {
+    assert(
+      ['log', 'warn', 'error'].includes(action),
+      `Unsupported action'${action}'.`,
+    );
+    console[action](message);
+  }
 };
 
 // https://dev.to/adancarrasco/implementing-pub-sub-in-javascript-3l2e
@@ -227,7 +233,6 @@ export {
   first,
   last,
   memoize,
-  newEnum,
   newPubSub,
   removeClass,
   replaceStrAt,
