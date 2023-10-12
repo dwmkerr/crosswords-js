@@ -34,6 +34,8 @@ The data structure:
 
 The **clueModel** is the data structure built by the `newClueModel` function found in [`src/clue-model.mjs`][5].
 
+For _multi-segment_ clues, the _clueModel_ is modified by the `newCrosswordModel` function found in [`src/crossword-model.mjs`][1]
+
 The data structure:
 
 ```js
@@ -41,61 +43,101 @@ The data structure:
   // Puzzle solver's upper-cased answer for clue, padded out with spaces
   // for missing characters.
   answer: string,
-  // Length of clue segment, or combined length of multi-word clue segment
-  // "(6)" -> 6, "(5,3,2)" -> 10
-  answerLength: number,
-  // Text of answer length, all the text between parentheses, e.g "(6,3)" -> "6,3"
-  answerLengthText: string,
-  // Array of answer segments, e.g.
-  // (5,3,2) => [
-  //   {length: 5, terminator: ","},
-  //   {length: 3, terminator: ","},
-  //   {length: 2, terminator: ""},
-  // ]
-  answerSegments: array,
-  // Array [0..answerLength) of cells
+
+  // Array[segmentLength] of cells
+  // Note, JavaScript Array indexes run from '0' to 'segmentLength - 1'
   cells: array,
-  // String: numerical component of anchor-segment label
-  // "5,3." -> "5", or "5a,3d." -> "5"
-  clueLabel: string,
+
+  // Unique identifier string for clue. Direction-qualified head segment
+  // "5,3." -> "5a", or "5a,3d." -> "5a"
+  clueId: string,
+
   // White-space-stripped clue text (excludes clue label and answer text)
   // "12. Put to rest in Tintern Abbey (5)" -> "Put to rest in Tintern Abbey"
   clueText: string,
-  // String: anchor-segment label
-  // "5,3." -> "5", or "5a,3d." -> "5a"
-  code: string,
-  // Array of tail (non-anchor) segment structures of multi-segment clues
-  // empty array for single-segment clue
-  // "5a,3d." -> [{ number: 3, direction: "down"}]
-  connectedDirectedClues: array,
+
+  // Numerical component of head-segment label
+  // "5,3." -> 5, or "5a,3d." -> 5
+  // Used for clue label in cell grid
+  headNumber: number,
+
+  // First clue-segment for all segments multi-segment-segments
+  // This is self-referential for head clue-segments and simple, one-segment
+  // clues. Assigned in newCrosswordModel()
+  headSegment: clueModel,
+
   // True for an "across" clue, false for a "down" clue
   isAcross: Boolean,
-  // Numerical component of anchor-segment label
-  // "5,3." -> 5, or "5a,3d." -> 5
-  number: number,
-  // Upper-cased revealed characters of solution; unrevealed characters are spaces
+
+  // The display label for the clue "number" - as seen in the clue-block HTML
+  // element. Note that the required trailing period(.) from the crossword
+  // source has been stripped.
+  // "5." -> "5", or "5,3." -> "5,3", or "5a,3d." -> "5,3"
+  labelText: string,
+
+  // All the text, including parentheses in clue "length", e.g "(6,3)"
+  // Reset to the empty string ("") for tail segments of a multi-segment string
+  // in newCrosswordModel().
+  lengthText: string,
+
+  // Upper-cased revealed characters of solution.
+  // Unrevealed characters are represented by space characters (ASCII #32)
   revealed: string,
-  // Upper-cased and "normalised" puzzle-setter's solution for clue:
-  // Non-alphabetic characters are stripped out of solution
+
+  // Length (number of grid characters) for the clue segment, or combined
+  // length of a multi-word clue segment
+  // "(6)" -> 6, "(5,3,2)" -> 10
+  segmentLength: number,
+
+  // Upper-cased and "normalised" puzzle-setter's solution for the
+  // clue-segment. Non-alphabetic characters in the crossword source are
+  // stripped out of the solution
   solution: string,
-  // Column number for first character of clue in grid [1..crosswordModel.width]
+
+  // Ordered array of non-head clue-segments (clueModels)
+  // Non-empty for the head segment of a multi-segment clue
+  // Empty for simple (single-segment) clues and tail segments of multi-segment
+  // clues. Assigned in newCrosswordModel()
+  tailSegments: array,
+
+  // Array of tail segment structures of multi-segment clues
+  // Empty array for single-segment clue and tail segments of multi-segment clues
+  // "5a,3d." -> [{ headNumber: 3, direction: "down"}]
+  tailDescriptors: array,
+
+  // Emits a unique identifier for the clue "(clueId)", for example "(16a)"
+  // This is automatically invoked whenever a string version of the clue is required.
+  toString(),
+
+  // Array of word lengths of clue segment.
+  // A one-element array for a single-word clue segment.
+  wordLengths: array,
+
+  // Display column number for the first character of the clue segment in the grid.
+  // Note that this is one-based, and taken verbatim from the crossword source.
+  // Range: [1..crosswordModel.width]
   x: number,
-  // Row number for first character of clue in grid [1..crosswordModel.height]
+
+  // Display row number for the first character of the clue segment in the grid.
+  // Note that this is one-based, and taken verbatim from the crossword source.
+  // Range: [1..crosswordModel.height]
   y: number,
-  // Array of connected clueModels for a multi-segment clue, otherwise undefined.
+```
 
-  //// The remaining properties are only defined for multi-segment clues...
+> The remaining properties are only defined for multi-segment clues...
 
-  // Ordered array of connected clue-segments (clueModels)
-  connectedClues: array,
-  // First clue-segment of connected clue-segments,
-  parentClue: clueModel,
-  // The prior clue-segment for non-anchor-segments, undefined otherwise
+```js
+  // The prior clue-segment for tail-segments, undefined otherwise.
+  // Assigned in newCrosswordModel().
+  // (5) => (undefined)
+  // (5,3,2) => (undefined, 5, 3)
   previousClueSegment: clueModel,
-  // The next clue-segment for non-tail-segments, undefined otherwise
-  nextClueSegment: clueModel,
-  // true
-  isConnectedClue: Boolean
+
+  // The next clue-segment for non-terminal segments, undefined otherwise.
+  // Assigned in newCrosswordModel().
+  // (5) => (undefined)
+  // (5,3,2) => (3, 2, undefined)
+  nextClueSegment: clueModel
 };
 ```
 
@@ -117,29 +159,42 @@ Each _cell_ has the structure:
   // For a "clue" cell, aka "light" cell, otherwise undefined
   light: true,
 
-  // For an "across" clue, otherwise undefined
-  acrossClue: clueModel,
-  acrossClueLetterIndex: number, // [0..acrossClue.length]
-  // For the last letter of non-terminal word in a multi-word answer, otherwise undefined
-  acrossTerminator: string,
+  // Emits a unique id string for the cell "(x,y)", for example "(3,2)"
+  // This is automatically invoked where a string version of the cell is required.
+  toString(),
+```
 
-  // For a "down" clue, otherwise undefined
-  downClue: clueModel,
-  downClueLetterIndex: number, // [0..downClue.length]
-  // For the last letter of non-terminal word in a multi-word answer, otherwise undefined
-  downTerminator: string,
+> For an "across" clue only, otherwise undefined
 
-  // If the clue has an "answer" property, otherwise " " (space).
+```js
+    acrossClue: clueModel,
+    acrossClueLetterIndex: number, // [0..acrossClue.length)
+    // For the last letter of non-terminal word in a multi-word answer, otherwise undefined
+    acrossTerminator: true,
+```
+
+> For a "down" clue only, otherwise undefined
+
+```js
+    downClue: clueModel,
+    downClueLetterIndex: number, // [0..downClue.length)
+    // For the last letter of non-terminal word in a multi-word answer, otherwise undefined
+    downTerminator: true,
+```
+
+All clues...
+
+```js
+// If the clue has an "answer" property, otherwise " " (space).
   answer: clueModel.answer[letterIndex],
 
   // If the clue has a "solution" property, otherwise " " (space).
   solution: clueModel.solution[letterIndex],
 
   // For the first letter of a clue only, otherwise undefined
-  //"Number" of the clue from the crosswordDefinition (1-based)
-  clueLabel: number
+  //"headNumber" of the clueModel (1-based)
+  labelText: number
 };
-
 ```
 
 [1]: ../src/crossword-model.mjs

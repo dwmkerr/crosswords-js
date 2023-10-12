@@ -1,0 +1,1145 @@
+{
+    "showenumerations": true,
+    "notes": "",
+    "puzzle": [
+        [
+            1,
+            2,
+            ":",
+            3,
+            ":",
+            4,
+            ":",
+            "#",
+            "#",
+            5,
+            ":",
+            6,
+            ":",
+            7,
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            8,
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            9,
+            ":",
+            ":",
+            ":",
+            "#",
+            10,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            11,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            12,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            13,
+            14,
+            ":",
+            ":",
+            ":",
+            15,
+            "#",
+            16,
+            ":",
+            ":",
+            ":",
+            17,
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            18,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            19,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#",
+            ":",
+            "#",
+            "#",
+            "#"
+        ],
+        [
+            20,
+            ":",
+            ":",
+            21,
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            22,
+            ":",
+            ":",
+            ":",
+            23,
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            24,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            25,
+            ":",
+            ":",
+            ":"
+        ],
+        [
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#",
+            ":",
+            "#"
+        ],
+        [
+            26,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            "#",
+            "#",
+            27,
+            ":",
+            ":",
+            ":",
+            ":",
+            ":",
+            ":"
+        ]
+    ],
+    "copyright": "",
+    "intro": "",
+    "version": "http://ipuz.org/v2",
+    "origin": "Crossword Compiler 11.1",
+    "empty": ":",
+    "title": "",
+    "kind": [
+        "http://ipuz.org/crossword#1"
+    ],
+    "clues": {
+        "Across": [
+            {
+                "enumeration": "7",
+                "number": 1,
+                "clue": "Witness mobster dropping megaton beside empty village"
+            },
+            {
+                "enumeration": "6",
+                "number": 5,
+                "clue": "So, friend gets behind religious education"
+            },
+            {
+                "enumeration": "4",
+                "number": 9,
+                "clue": "Small group get cross with South American city"
+            },
+            {
+                "enumeration": "10",
+                "number": 10,
+                "clue": "Hyped to interrupt smart animals charging"
+            },
+            {
+                "enumeration": "6",
+                "number": 11,
+                "clue": "Eye problem starts to make your old pet iguana anxious"
+            },
+            {
+                "enumeration": "8",
+                "number": 12,
+                "clue": "Proof of new device releasing tungsten pollution"
+            },
+            {
+                "enumeration": "6",
+                "number": 13,
+                "clue": "Boyfriend carried a Tesla in boat"
+            },
+            {
+                "enumeration": "8",
+                "number": 16,
+                "clue": "Sigh about a tango with woman in hot weather"
+            },
+            {
+                "answer": "FREEZE UP",
+                "enumeration": "6 2",
+                "number": 18,
+                "clue": "Reportedly becomes available... to be like a deer in headlights"
+            },
+            {
+                "enumeration": "6",
+                "number": 19,
+                "clue": "Remove middle of deck made between 2013-2023"
+            },
+            {
+                "enumeration": "8",
+                "number": 20,
+                "clue": "Island shopping centre with killer whale"
+            },
+            {
+                "enumeration": "6",
+                "number": 22,
+                "clue": "Smiles, depositing 500 pounds"
+            },
+            {
+                "enumeration": "10",
+                "number": 24,
+                "clue": "Butchers giggling in boat"
+            },
+            {
+                "enumeration": "4",
+                "number": 25,
+                "clue": "Facing extinction, Elon kills last of native birds"
+            },
+            {
+                "enumeration": "6",
+                "number": 26,
+                "clue": "UK royal composed war dance piece"
+            },
+            {
+                "enumeration": "7",
+                "number": 27,
+                "clue": "Abandon pro with rice wine"
+            }
+        ],
+        "Down": [
+            {
+                "enumeration": "5",
+                "number": 2,
+                "clue": "Fruit place underground, say"
+            },
+            {
+                "enumeration": "9",
+                "number": 3,
+                "clue": "Energy companies start to pollute this place - a habitable zone"
+            },
+            {
+                "enumeration": "5",
+                "number": 4,
+                "clue": "Scooter velocity squashed peas"
+            },
+            {
+                "enumeration": "9",
+                "number": 5,
+                "clue": "Admonish agent on border circulating genetic material"
+            },
+            {
+                "enumeration": "5",
+                "number": 6,
+                "clue": "Headless duck's walk to confuse"
+            },
+            {
+                "answer": "long covid",
+                "enumeration": "4 5",
+                "number": 7,
+                "clue": "Loving doc treated chronic cough"
+            },
+            {
+                "answer": "SAVE THE PLANET",
+                "enumeration": "4 3 6",
+                "number": 8,
+                "clue": "Exploit a vet's elephant for environmental slogan"
+            },
+            {
+                "enumeration": "9",
+                "number": 14,
+                "clue": "&quot;Dear Liam, I failed&quot; - sent by pilot"
+            },
+            {
+                "enumeration": "9",
+                "number": 15,
+                "clue": "Discovered menu near the dairy section"
+            },
+            {
+                "enumeration": "9",
+                "number": 17,
+                "clue": "We can kiss, perhaps? Absurdity!"
+            },
+            {
+                "enumeration": "5",
+                "number": 21,
+                "clue": "Girl left atmosphere"
+            },
+            {
+                "enumeration": "5",
+                "number": 22,
+                "clue": "Enthusiasm to go around United States intersection"
+            },
+            {
+                "enumeration": "5",
+                "number": 23,
+                "clue": "Intoxicated 'eartthrob follows clinician"
+            }
+        ]
+    },
+    "dimensions": {
+        "width": 15,
+        "height": 15
+    },
+    "author": "",
+    "solution": [
+        [
+            {
+                "value": "O",
+                "cell": 1
+            },
+            {
+                "value": "B",
+                "cell": 2
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": 3
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "V",
+                "cell": 4
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            {
+                "value": "R",
+                "cell": 5
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": 6
+            },
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            {
+                "value": "L",
+                "cell": 7
+            },
+            {
+                "value": "Y",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "C",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "S",
+                "cell": 8
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "T",
+                "cell": 9
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "S",
+                "cell": 10
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            {
+                "value": "P",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "G",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "P",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "V",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "G",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "M",
+                "cell": 11
+            },
+            {
+                "value": "Y",
+                "cell": ":"
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "P",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": 12
+            },
+            {
+                "value": "V",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "C",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            "#",
+            "#",
+            {
+                "value": "H",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "B",
+                "cell": 13
+            },
+            {
+                "value": "A",
+                "cell": 14
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "U",
+                "cell": 15
+            },
+            "#",
+            {
+                "value": "H",
+                "cell": 16
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "W",
+                "cell": 17
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "V",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "F",
+                "cell": 18
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "Z",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "U",
+                "cell": ":"
+            },
+            {
+                "value": "P",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "D",
+                "cell": 19
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "C",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#",
+            {
+                "value": "K",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            "#"
+        ],
+        [
+            {
+                "value": "M",
+                "cell": 20
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            {
+                "value": "L",
+                "cell": 21
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "C",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "G",
+                "cell": 22
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": 23
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "I",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "U",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "S",
+                "cell": 24
+            },
+            {
+                "value": "L",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "U",
+                "cell": ":"
+            },
+            {
+                "value": "G",
+                "cell": ":"
+            },
+            {
+                "value": "H",
+                "cell": ":"
+            },
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": 25
+            },
+            {
+                "value": "M",
+                "cell": ":"
+            },
+            {
+                "value": "U",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            }
+        ],
+        [
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "E",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "T",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            "#",
+            {
+                "value": "N",
+                "cell": ":"
+            },
+            "#"
+        ],
+        [
+            {
+                "value": "E",
+                "cell": 26
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            {
+                "value": "W",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "D",
+                "cell": ":"
+            },
+            "#",
+            "#",
+            {
+                "value": "F",
+                "cell": 27
+            },
+            {
+                "value": "O",
+                "cell": ":"
+            },
+            {
+                "value": "R",
+                "cell": ":"
+            },
+            {
+                "value": "S",
+                "cell": ":"
+            },
+            {
+                "value": "A",
+                "cell": ":"
+            },
+            {
+                "value": "K",
+                "cell": ":"
+            },
+            {
+                "value": "E",
+                "cell": ":"
+            }
+        ]
+    ]
+}

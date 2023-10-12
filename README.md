@@ -32,20 +32,27 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 - [Quickstart](#quickstart)
   - [Application Programming Interface (API)](#application-programming-interface-api)
   - [Sample applications](#sample-applications)
-- [Developer Guide](#developer-guide)
+- [Contributor guide](#contributor-guide)
   - [Setting up your dev environment](#setting-up-your-dev-environment)
+    - [1a. If you are in a Linux environment...](#1a-if-you-are-in-a-linux-environment)
+    - [1b. If you are NOT in a Linux environment...](#1b-if-you-are-not-in-a-linux-environment)
+    - [2. Once you've started the development server](#2-once-youve-started-the-development-server)
+  - [Maintaining your dev environment](#maintaining-your-dev-environment)
   - [Documentation](#documentation)
   - [Quality assurance](#quality-assurance)
   - [Building the dev environment assets for production](#building-the-dev-environment-assets-for-production)
-- [Keyboard Functionality](#keyboard-functionality)
-- [Crossword Definition Tips](#crossword-definition-tips)
-- [Design Overview](#design-overview)
-- [Design Goals](#design-goals)
-- [Build Pipelines](#build-pipelines)
-  - [Pull Request Pipeline](#pull-request-pipeline)
-  - [Release Pipeline](#release-pipeline)
-- [Adding Contributors](#adding-contributors)
-- [Managing Releases](#managing-releases)
+- [Keyboard functionality](#keyboard-functionality)
+- [Crossword definition tips](#crossword-definition-tips)
+  - [1. How do I create a clue which spans multiple parts of a crossword? (multi-segment clue)](#1-how-do-i-create-a-clue-which-spans-multiple-parts-of-a-crossword-multi-segment-clue)
+  - [2. How do I style the clue content with **bold**, _italic_ and _**bold-italic**_ words?](#2-how-do-i-style-the-clue-content-with-bold-italic-and-bold-italic-words)
+  - [3. How do I handle different grid sizes?](#3-how-do-i-handle-different-grid-sizes)
+- [Design overview](#design-overview)
+- [Design goals](#design-goals)
+- [Build pipelines](#build-pipelines)
+  - [Pull-request pipeline](#pull-request-pipeline)
+  - [Release pipeline](#release-pipeline)
+- [Adding contributors](#adding-contributors)
+- [Managing releases](#managing-releases)
 - [Contributors](#contributors)
 - [TODO](#todo)
 
@@ -69,7 +76,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    <script src="node_modules/crosswords-js/dist/crosswords.js"></script>
    ```
 
-3. To create a crossword, locate or edit a [**CrosswordDefinition**][29], which can be `import`ed from a simple JSON file:
+3. To create a crossword, locate or edit a [**CrosswordSource**][29], which can be `import`ed from a simple JSON file to create a [**CrosswordDefinition**][52]:
 
    ```json
    {
@@ -98,7 +105,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    }
    ```
 
-   Complete _CrosswordDefinition_ source file examples can be found [here][21], [there][22] or [everywhere][36].
+   Complete _CrosswordSource_ file examples can be found [here][21], [there][22] or [everywhere][36].
 
    Further on, the _CrosswordDefinition_ needs to be compiled into a [**CrosswordModel**][37]. Compiling validates the the _CrosswordDefinition_, making sure that there are no incongruities in the structure, for example:
 
@@ -109,21 +116,11 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 4. In your JavaScript code, load the **crosswords-js** package and a _CrosswordDefinition_:
 
    ```js
-   import { compileCrossword, Controller } from './crosswords.js';
+   import { compileCrossword, newCrosswordController } from './crosswords.js';
    import crosswordDefinition from './crosswords/ftimes_17095.json';
    ```
 
-5. Compile `crosswordDefinition` - creating the [**CrosswordModel**][37] (`model`). Wrap the call to `compileCrossword` in a `try/catch` block, as any errors in `crosswordDefinition` will generate an exception:
-
-   ```js
-   try {
-     const model = compileCrossword(crosswordDefinition);
-   } catch (err) {
-     console.log(`Error compiling crossword: ${err}`);
-   }
-   ```
-
-6. Now get the [DOM][20] elements which will be the parents for the crossword grid and clues blocks:
+5. Now get the [DOM][20] elements which will be the parents for the crossword grid and clues blocks:
 
    > For example, if we have placeholder `div` elements somewhere in our webpage:
    >
@@ -141,10 +138,14 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
    > const cluesParent = document.getElementById('crossword-clues-placeholder');
    > ```
 
-7. And pass the `model`, `gridParent` and `viewParent` elements into the [**Controller**][38] constructor:
+6. And pass the `crosswordDefinition`, `gridParent` and `viewParent` elements into the [**Controller**][38] constructor:
 
    ```js
-   let controller = new Controller(model, gridParent, cluesParent);
+   let controller = newCrosswordController(
+     crosswordDefinition,
+     gridParent,
+     cluesParent,
+   );
    ```
 
    This binds the crossword **gridView** anf **cluesView** into the webpage [DOM][20].
@@ -206,19 +207,33 @@ The _development server_ is a pure [Node.js][32] application of the the **crossw
 
 ```bash
 # Open the development server on http://localhost:5173
-npm run dev
+npm start
 ```
 
 You can find an **Angular** application in the [sample][34] directory of this repository. To run the application:
 
 ```bash
 # Run the Angular sample app
+# Open the app on http://localhost:8080
+npm run start:angular
+```
+
+## Contributor guide
+
+### Setting up your dev environment
+
+#### 1a. If you are in a Linux environment...
+
+Check out the code, then:
+
+```bash
+# From the repository root, bootstrap the package and all tools
+bin/bootstrap-linux.sh
+# Open the development server
 npm start
 ```
 
-## Developer Guide
-
-### Setting up your dev environment
+#### 1b. If you are NOT in a Linux environment...
 
 Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
 
@@ -234,79 +249,96 @@ Check out the code, then, from the root directory of the repository, run:
 # Fetch all dependent packages
 npm install
 # Start the development server
-npm run dev
+npm start
 ```
 
-- The development server webpage is visible at [http://localhost:5173/][11]
+#### 2. Once you've started the development server
+
+- The development server webpage will be visible at [http://localhost:5173/][11]
   - _The webpage will dynamically refresh whenever you save your source edits_
-- Edit the development webpage HTML: [dev/index.html][23]
-- Edit the development webpage JavaScript: [dev/index.js][23]
-- Edit the development webpage CSS via the [**less**][24] source: [dev/index.less][25]
+- View the development webpage HTML: [dev/index.html][23]
+- View the development webpage JavaScript: [dev/index.js][31]
+- View the development webpage styles via the [**less**][24] source: [dev/index.less][25]
 - _Less files are dynamically compiled to CSS by [ViteJS][28] for the development server_.
+
+### Maintaining your dev environment
+
+If you have installed **Node Version Manager (nvm)** following the [recommended procedure][49], you can keep up with the latest versions of nvm, npm, node LTS, and the latest package versions for this module by regularly running:
+
+```bash
+# Update the tools and packages used in this environment
+npm run update
+```
 
 ### Documentation
 
 The project documentation is written in [Markdown][27] and is located in the repository at [`<repo-root>/docs`][42].
 
-- [Documentation index][40]
+- [Documentation index][41]
 
 ### Quality assurance
 
-We use [MochaJS][26] for unit testing. The test source code is located in the repository at `<repo-root>/test`. Run the tests with:
+1. We use [MochaJS][26] for unit testing. The test source code is located in the repository at `<repo-root>/test`. Run the tests with:
 
-```bash
-npm test
-```
+   ```bash
+   npm test
+   ```
 
-Linting is provided by [ESLint][43], which is also configured to use [Prettier][44] for code formatting:
+2. Linting is provided by [ESLint][43], which is also configured to use [Prettier][44] for code formatting:
 
-```bash
-# Lint the code.
-npm run lint
-# Lint and fix the code.
-npm run lint:fix
-```
+   ```bash
+   # Lint the code.
+   npm run lint
+   # Lint and fix the code.
+   npm run lint:fix
+   ```
 
-Documentation and HTML can be checked for standard conformance using [Prettier][44]:
+3. Documentation and HTML can be checked for standard conformance using [Prettier][44]:
 
-```bash
-# Check html and docs for correctness.
-npm run prettier
-# Check and fix html and docs for correctness.
-npm run prettier:fix
-```
+   ```bash
+   # Check html and docs for correctness.
+   npm run prettier
+   # Check and fix html and docs for correctness.
+   npm run prettier:fix
+   ```
 
-Spelling can be checked using [CSpell][45]:
+4. Spelling can be checked using [CSpell][45]:
 
-```bash
-# Check _staged_ files for spelling.
-npm run spell
-# Check new and changed files for spelling.
-npm run spell:changed
-# Check all files for spelling.
-npm run spell:all
-```
+   ```bash
+   # Check _staged_ files for spelling.
+   npm run spell
+   # Check new and changed files for spelling.
+   npm run spell:changed
+   # Check all files for spelling.
+   npm run spell:all
+   ```
 
-To automate all these checks on each commit to your local git repository, create a **pre-commit hook** in your repository. From the root directory of your repository:
+5. To automate checks 1-4 on each commit to your local git repository, create a **pre-commit hook** in your repository. From the root directory of your repository, run these commands:
 
-```bash
-cat << EOF > .git/hooks/pre-commit
-#!/bin/sh
-npm run spell && \\
-npm run prettier:fix && \\
-npm run lint:fix && \\
-npm test
-EOF
-chmod u+x .git/hooks/pre-commit
-```
+   ```bash
+   cat << EOF > .git/hooks/pre-commit
+   #!/bin/sh
+   # Assuming npm managed via nvm
+   export PATH=\$PATH:$NVM_BIN
+   npm run spell && \\
+   npm run prettier:fix && \\
+   npm run lint:fix && \\
+   npm test
+   EOF
+   chmod u+x .git/hooks/pre-commit
+   ```
 
-Please install our git **commit template**. This enables project commit guidelines to be prefixed to the standard git commit message.
+> If you ever need to bypass the automated commit checks above, stage your changes then run:
+>
+> ```bash
+> git commit --no-verify
+> ```
 
-From the root directory of your repository:
+6. Please install our git **commit template**. This enables project commit guidelines to be prefixed to the standard git commit message. From the root directory of your repository:
 
-```bash
-git config --local commit.template ./.git-commit-template.txt
-```
+   ```bash
+   git config --local commit.template ./.git-commit-template.txt
+   ```
 
 ### Building the dev environment assets for production
 
@@ -324,22 +356,27 @@ You can _preview_ the **production** assets by running the following command and
 npm run dev:prod
 ```
 
-## Keyboard Functionality
+## Keyboard functionality
 
 _You can also find these keyboard shortcuts in the [documentation][48]_
 
+These are the default shortcuts:
+
 - **Left**/**Right**/**Up**/**Down**: Move (if possible) to the cell in the direction specified.
 - **Space**: Move to the next cell in the focused clue, if one exists.
+- **Shift+Space**: Move to the previous cell in the focused clue, if one exists.
 - **Delete**: Delete the current cell.
 - **Backspace**: Delete the current cell, and move to the previous cell in the focused clue, if one exists.
-- **Tab**: Move to the first cell of the next clue, 'wrapping' to the first clue.
-- **Shift+Tab**: Move to the last cell of the previous clue, 'wrapping' to the last clue.
+- **Tab**: Move to the first cell of the next clue, 'wrapping' to the first clue in the opposite direction.
+- **Shift+Tab**: Move to the last cell of the previous clue, 'wrapping' to the last clue in the opposite direction.
 - **A**-**Z**: Enter the character. Not locale aware!
 - **Enter**: At a clue intersection, switch between across and down.
 
-## Crossword Definition Tips
+You can **override** the default shortcuts by create your own `eventBinding` sets. This is described in an [API use case][54].
 
-**How do I create a clue which spans multiple parts of a crossword?**
+## Crossword definition tips
+
+### 1. How do I create a clue which spans multiple parts of a crossword? ([multi-segment clue][51])
 
 This is a little fiddly. I have tried to ensure the syntax is as close to what a reader would see in a printed crossword to make this as clear as possible. Here is an example:
 
@@ -356,15 +393,33 @@ This is a little fiddly. I have tried to ensure the syntax is as close to what a
 }
 ```
 
-Note that the _answer structure_ (which would be `(9,3,5)` in a linear clue) has separated. However, the crossword will render the full answer structure for the first clue (and nothing for the others).
+Note that the [_LengthText_][50] (which would be `(9,3,5)` in a linear clue) has separated. However, the crossword [_GridView_][53] will render the full _LengthText_ for the first (head) clue segment (and nothing for the tail segments).
 
-An example of a crossword with many non-linear clues is at: <https://www.theguardian.com/crosswords/cryptic/28038> - I have used this crossword for testing (but not included the definition in the codebase as I don't have permissions to distribute it).
+An example of a crossword with many multi-segment clues is at: <https://www.theguardian.com/crosswords/cryptic/28038> - I have used this crossword for testing (but not included the definition in the codebase as I don't have permissions to distribute it).
 
-## Design Overview
+### 2. How do I style the clue content with **bold**, _italic_ and _**bold-italic**_ words?
+
+We support a subset of [Markdown][27].
+
+- Style a word or phrase by book-ending the text with _matching_ tags described below, for example: `**bold** text`. These Markdown tags are converted to CSS styles in the **cluesView**, or anywhere else clues are displayed.
+- You can style just a part of a word by embedding the tags _within_ the word, for example: `partial*italic*s`
+- You can even embed a style within a style, for example: `a _comp**lic**ated_ example`
+
+| Style       | Markdown tag   | Example                         | Associated CSS class                 |
+| ----------- | -------------- | ------------------------------- | ------------------------------------ |
+| italic      | `_` or `*`     | `Some _italic_ text.`           | `.cw-italic { font-style: italic; }` |
+| bold        | `__` or `**`   | `Some **bold** text.`           | `.cw-bold { font-weight: bold; }`    |
+| bold-italic | `___` or `***` | `Some ___bold, italic___ text.` | The classes above are combined.      |
+
+### 3. How do I handle different grid sizes?
+
+We determine the [GridView][55] dimensions dynamically whenever a [**CrosswordSource**][56] is loaded.
+
+## Design overview
 
 The design of this project follows the [Model-view-controller (MVC) design pattern][19]. The naming of files and code artifacts follow from this pattern.
 
-## Design Goals
+## Design goals
 
 This project is currently a work in progress. The overall design goals are:
 
@@ -372,11 +427,11 @@ This project is currently a work in progress. The overall design goals are:
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
 
-## Build Pipelines
+## Build pipelines
 
 There are two pipelines that run for the project:
 
-### Pull Request Pipeline
+### Pull-request pipeline
 
 Whenever a pull request is raised, the [Pull Request Workflow][12] is run. This will:
 
@@ -387,7 +442,7 @@ Whenever a pull request is raised, the [Pull Request Workflow][12] is run. This 
 
 Each stage is run on all recent Node versions, except for the **upload coverage** stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please][13] will open a Release Pull Request. When this request is merged, the [Release Pipeline][14] is run.
 
-### Release Pipeline
+### Release pipeline
 
 When a [Release Please][15] pull request is merged to main, the [Release Please Workflow][16] is run. This will:
 Node.js
@@ -402,7 +457,7 @@ Each stage is run on all recent Node versions, except for the **upload coverage*
 
 > ⚠️ Note that the NPM Publish step sets the package to public - don't forget to change this if you have a private module.
 
-## Adding Contributors
+## Adding contributors
 
 To add contributors, use a comment like the below in anNode.jsy pull request:
 
@@ -414,14 +469,14 @@ More detailed documentation is available at:
 
 [allcontributors.org/docs/en/bot/usage][17]
 
-## Managing Releases
+## Managing releases
 
 When changes to `main` are made, the **Release Please** stage of the pipeline will work out whether a new release should be generated (by checking if there are user facing changes) and also what the new version number should be (by checking the log of conventional commits). Once this is done, if a release is required, a new pull request is opened that will create the release.
 
 Force a specific release version with this command:
 
 ```bash
-# Specify your version. We use Semantic Versioning.
+# Specify your version. We use Semantic Versioning (https://semver.org/)
 version="0.1.0"
 git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${version}"
 ```
@@ -460,17 +515,17 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] bug: [Demo site][9] is not tracking latest version
 - [x] feat(docs): improve the demo site image (its an old one at the moment!)
 - [x] feat: show how we can check answers or highlight incorrect entries (see issue #9)
-- [ ] feat(samples): allow us to switch between 2-3 crosswords on the sample
+- [x] feat(samples): allow us to switch between 2-3 crosswords on the sample
 - [x] feat(samples): cursor initially on the first clue
-- [ ] feat(dom): support a keyboard scheme or configurable keybindings so that keys for navigating / editing the crossword can be specified in config (allowing for schemes such as 'the guardian' or 'the age')
+- [x] feat(dom): support a keyboard scheme or configurable keybindings so that keys for navigating / editing the crossword can be specified in config (allowing for schemes such as 'the guardian' or 'the age')
 - [x] fix: the border on word separators slightly offsets the rendering of the grid
-- [] fix: the border on word separators in 'down' clues. Only partially extends across cell-width. (See "14 down" clue in "Financial Times 17,095" test crossword)
+- [x] fix: the border on word separators in 'down' clues. Only partially extends across cell-width. (See "14 down" clue in "Financial Times 17,095" test crossword)
 - [ ] feat(accessibility): get screenreader requirements
 - [x] refactor: Simplify the static site by removing Angular and Bootstrap, keeping everything as lean and clean as possible. Later, replace with a React sample? OR have multiple samples, one for each common framework?
 - [x] refactor: finish refactoring
 - [x] feat: support clues which span non-contiguous ranges (such as large clues with go both across and down).
 - [x] feat: simplify the crossword model by using `a` or `d` for `across` or `down` in the clue text (meaning we don't have to have two arrays of clues)
-- [ ] feat: allow italics with underscores, or bold with stars (i.e. very basic markdown)...
+- [x] feat: allow italics with underscores, or bold with stars (i.e. very basic markdown)...
 - [x] feat: clicking the first letter of a clue which is part of another clue should allow for a toggle between directions
 - [x] todo: document the clue structure
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
@@ -501,11 +556,11 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [22]: data/ftimes_17095.json
 [23]: dev/index.html
 [24]: https://lesscss.org/functions/
-[25]: dev/index.css
+[25]: dev/index.less
 [26]: https://mochajs.org/
 [27]: https://www.markdownguide.org/
 [28]: https://vitejs.dev/
-[29]: docs/crossword-definition.md
+[29]: docs/crossword-domain.md#crossword-source
 [30]: docs/module-api.md
 [31]: dev/index.js
 [32]: https://nodejs.org/
@@ -516,7 +571,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [37]: docs/crossword-data-structures.md#crosswordmodel
 [38]: docs/module-api.md#overview
 [39]: docs/module-api.md#user-event-handlers
-[40]: docs/module-api.md#controller-events
+[40]: docs/module-api.md#published-events
 [41]: docs/README.md
 [42]: docs/
 [43]: https://eslint.org/
@@ -525,3 +580,11 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [46]: dev/dist/
 [47]: http://localhost:4173/
 [48]: docs/keyboard-shortcuts.md
+[49]: https://github.com/nvm-sh/nvm#installing-and-updating
+[50]: docs/crossword-domain.md#clue-segment
+[51]: docs/crossword-domain.md#multi-segment-clue
+[52]: docs/crossword-domain.md#crossword-definition
+[53]: docs/module-api.md#views
+[54]: docs/module-api.md#3-changing-keyboard-shortcuts
+[55]: docs/module-api.md#views
+[56]: docs/crossword-domain.md#crossword-source

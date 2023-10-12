@@ -38,6 +38,14 @@
     <div id="columns">
       <div id="first-column">
         <div id="title-block">
+          <div id="crossword-source">
+            <label for="crossword-file">Pick crossword</label>
+            <input
+              type="file"
+              id="crossword-file"
+              accept=".json,application/json,.yml,.yaml,application/yaml"
+            />
+          </div>
           <ul>
             <li>
               Source: <a href="" target="_blank" id="info-source-url"></a>
@@ -62,14 +70,14 @@
           </div>
           <div id="clue-buttons">
             <p>Clue</p>
-            <button id="test-clue">Test</button>
+            <button id="test-clue">Check</button>
             <button id="clean-clue">Clean</button>
             <button id="reveal-clue">Reveal</button>
             <button id="reset-clue">Reset</button>
           </div>
           <div id="grid-buttons">
             <p>Crossword</p>
-            <button id="test-crossword">Test</button>
+            <button id="test-crossword">Check</button>
             <button id="clean-crossword">Clean</button>
             <button id="reveal-crossword">Reveal</button>
             <button id="reset-crossword">Reset</button>
@@ -91,6 +99,10 @@
 
     <div id="clue-solved-notification">
       <h3><em>That's correct!</em></h3>
+      <h3>Keep going</h3>
+    </div>
+    <div id="incomplete-notification">
+      <h3><em>Correct so far!</em></h3>
       <h3>Keep going</h3>
     </div>
     <!-- Preload styles to avoid flash of unstyled content -->

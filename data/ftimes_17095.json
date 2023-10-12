@@ -1,11 +1,15 @@
 {
-  "info": {
-    "source": "https://www.fifteensquared.net/2022/05/16/financial-times-17095-by-alberich/",
+  "document": {
+    "mimetype": "application/vnd.js-crossword",
+    "version": "1.0"
+  },
+  "source": {
     "title": "Financial Times 17,095",
-    "setter": {
-      "title": "Alberich",
-      "url": "https://www.fifteensquared.net/2022/05/16/financial-times-17095-by-alberich/"
-    }
+    "url": "https://www.fifteensquared.net/2022/05/16/financial-times-17095-by-alberich/"
+  },
+  "setter": {
+    "title": "Alberich",
+    "url": "https://www.fifteensquared.net/2022/05/16/financial-times-17095-by-alberich/"
   },
   "width": 15,
   "height": 15,

@@ -1,11 +1,15 @@
 {
-  "info": {
-    "source": "http://www.alberichcrosswords.com/pages/id4.html",
+  "document": {
+    "mimetype": "application/vnd.js-crossword",
+    "version": "1.0"
+  },
+  "source": {
     "title": "Alberich Crosswords - Crossword 2",
-    "setter": {
-      "title": "Alberich",
-      "url": "http://www.alberichcrosswords.com/index.html"
-    }
+    "url": "http://www.alberichcrosswords.com/pages/id4.html"
+  },
+  "setter": {
+    "title": "Alberich",
+    "url": "http://www.alberichcrosswords.com/index.html"
   },
   "width": 15,
   "height": 15,
@@ -67,13 +71,13 @@
     {
       "x": 12,
       "y": 9,
-      "clue": "20. Who should really have written _Diary of a Nobody_? (4)",
+      "clue": "20. Who should really have written **Diary of a Nobody**? (4)",
       "solution": "anon"
     },
     {
       "x": 1,
       "y": 11,
-      "clue": "21. See 4 (3,5)",
+      "clue": "21. See 4-down (3,5)",
       "solution": "the great"
     },
     {
