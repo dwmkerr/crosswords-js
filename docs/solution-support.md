@@ -5,10 +5,13 @@
 - [Overview](#overview)
 - [Domain](#domain)
 - [Use cases](#use-cases)
+  - [Checking of solutions](#checking-of-solutions)
+  - [Revelation of solutions](#revelation-of-solutions)
+  - [Resetting of clues](#resetting-of-clues)
 - [Design](#design)
   - [1. Crossword definition extension](#1-crossword-definition-extension)
   - [2. Solution definition](#2-solution-definition)
-  - [Revelation of solutions](#revelation-of-solutions)
+- [Implementation](#implementation)
 
 ## Overview
 
@@ -16,10 +19,11 @@ This page describes the requirements and design of features to leverage a suppli
 
 ## Domain
 
-- **Punter**: The person solving the crossword.
+- **Solver**: The person solving the crossword.
 - **Setter**: The person who created the crossword.
-- **Answer**: A punter's response for a clue.
+- **Answer**: A solver's response for a clue.
 - **Solution**: The setter's solution for a clue.
+- **Revealed**: The revealed letters of a solution.
 
 ## Use cases
 
@@ -31,6 +35,24 @@ This page describes the requirements and design of features to leverage a suppli
 6. Reset an answer.
 7. Reset an entire crossword.
 
+### Checking of solutions
+
+Typically, incorrect clues or letters are indicated in the crossword grid.
+
+To support this, we need to track both the solver's answer and the setters solution for each clue.
+
+### Revelation of solutions
+
+Typically, revealed clues or letters are indicated in the crossword grid.
+
+To support this, we need to track the revealed clues and letters.
+
+This could be stored in each cell in the crossword grid. However, this data is not persisted and will be lost if the user session is terminated.
+
+### Resetting of clues
+
+To support this, we need to be able to clear the solver's answer(s) and clear any markers and data for incorrect letters and clues. We need to consider whether revealed makers and data are cleared when a clue or the whole crossword is reset.
+
 ## Design
 
 The format and description of the _crossword definition_ is covered [here][1].
@@ -39,7 +61,11 @@ I see two approaches to support the _crossword solution_ data, both of which cou
 
 ### 1. Crossword definition extension
 
-An extension of the JSON _crossword definition_ to include the _solution_ as an additional property of each _clue_.
+An extension of the JSON _crossword definition_ to include:
+
+- _Solution_ as an additional property of each _clue_.
+- _Answer_ as an additional property of each _clue_.
+- _Revealed_ as an additional property of each _clue_.
 
 ### 2. Solution definition
 
@@ -54,12 +80,8 @@ The _solution definition_ should:
 
 Currently the _crossword definition_ contains an optional `info` block. The `info.source` property is a URL which defines the location of the crossword. This property could be duplicated in the _solution definition_.
 
-### Revelation of solutions
+## Implementation
 
-Typically, revealed clues or letters are indicated in the crossword grid.
+We have proceeded with design option 1, being the simpler of the two approaches to implement, easier to validate, and less prone to setter errors.
 
-To support this, we need to track the revealed clues and letters.
-
-This could be stored in each cell in the crossword grid. However, this data is not persisted and will be lost if the user session is terminated.
-
-[1]: ./crossword-definition.md
+[1]: ./crossword-domain.md#crossword-definition

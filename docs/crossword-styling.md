@@ -7,7 +7,7 @@
 - [References](#references)
   - [Crossword grid](#crossword-grid)
   - [Crossword clues](#crossword-clues)
-  - [Reset stylesheets](#reset-stylesheets)
+  - ['Reset' stylesheets](#reset-stylesheets)
 
 ## Overview
 
@@ -47,7 +47,7 @@ The styles are spread across four files:
 - [CSS Flexbox][2]
 - [**CSS Tricks** reference Poster][4]
 
-### Reset stylesheets
+### 'Reset' stylesheets
 
 - [Eric Meyer's CSS Reset][15]
 - [CSS:resetr - CSS Reset Library][16]

@@ -1,12 +1,15 @@
 {
-  "info": {
-    "source": "https://www.theguardian.com/crosswords/quiptic/89",
+  "document": {
+    "mimetype": "application/vnd.js-crossword",
+    "version": "1.0"
+  },
+  "source": {
     "title": "Quiptic crossword No 89",
-    "setter": {
-      "title": "Moley",
-      "url": "https://www.theguardian.com/profile/moley"
-    },
-    "date": "2017-07-30"
+    "url": "https://www.theguardian.com/crosswords/quiptic/89"
+  },
+  "setter": {
+    "title": "Moley",
+    "url": "https://www.theguardian.com/profile/moley"
   },
   "width": 15,
   "height": 15,

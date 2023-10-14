@@ -1,0 +1,126 @@
+---
+document:
+  mimetype: application/vnd.js-crossword
+  version: '1.0'
+source:
+  title: Friday, August 18, 2023 - Quick
+  url: https://www.theage.com.au/puzzles/crosswords/quick/2023-08-18
+setter:
+  title: DA
+  url: https://davidastle.com/david-astle
+width: 15
+height: 15
+acrossClues:
+  - x: 1
+    y: 1
+    clue: 1. See 13-across (8)
+    solution: BULLDOGS
+  - x: 10
+    y: 1
+    clue: 5. See 23-across (6)
+    solution: HORROR
+  - x: 1
+    y: 3
+    clue: 9. Ascent without help or equipment (4,5)
+    solution: FREECLIMB
+  - x: 11
+    y: 3
+    clue: 11. Searches thoroughly (5)
+    solution: SIFTS
+  - x: 1
+    y: 5
+    clue: 12. Fidgety (7)
+    solution: RESTIVE
+  - x: 9
+    y: 5
+    clue: 13,1a. Footscray, rebadged (7)
+    solution: WESTERN
+  - x: 3
+    y: 7
+    clue: 14. Children's party game of diminishing furniture (7,6)
+    solution: MUSICAL CHAIRS
+  - x: 1
+    y: 9
+    clue: 17. Plucky (13)
+    solution: ADVENTURESOME
+  - x: 1
+    y: 11
+    clue: 19. Small infant (4,3)
+    solution: TINY TOT
+  - x: 9
+    y: 11
+    clue: 21. Infamous Ugandan dictator (3,4)
+    solution: IDI AMIN
+  - x: 1
+    y: 13
+    clue: 23,5a. Sensationalist (5)
+    solution: SHOCK
+  - x: 7
+    y: 13
+    clue: 24. Convoluted process (9)
+    solution: RIGMAROLE
+  - x: 1
+    y: 15
+    clue: 25. Deed; lawsuit (6)
+    solution: ACTION
+  - x: 8
+    y: 15
+    clue: 26. Blindfold to aid sleeping (8)
+    solution: EYESHADE
+downClues:
+  - x: 1
+    y: 1
+    clue: 1. Earlier (6)
+    solution: BEFORE
+  - x: 3
+    y: 1
+    clue: 2. Stares lasciviously (5)
+    solution: LEERS
+  - x: 5
+    y: 1
+    clue: 3. Celebrated US poet (1830-86), Emily (9)
+    solution: DICKINSON
+  - x: 7
+    y: 1
+    clue: 4. Radiation detector (6,7)
+    solution: GEIGER COUNTER
+  - x: 11
+    y: 1
+    clue: 6. Fertile sanctuary (5)
+    solution: OASIS
+  - x: 13
+    y: 1
+    clue: 7. Of a verb, havIng identical subject and object (9)
+    solution: REFLEXIVE
+  - x: 15
+    y: 1
+    clue: 8. Impetuousity (8)
+    solution: RASHNESS
+  - x: 9
+    y: 3
+    clue: 10. In a confounding manner (13)
+    solution: BEWILDERINGLY
+  - x: 3
+    y: 7
+    clue: 14. Leaving home for good (6,3)
+    solution: MOVING OUT
+  - x: 11
+    y: 7
+    clue: 15. Disruptive louts (9)
+    solution: HOOLIGANS
+  - x: 1
+    y: 8
+    clue: 16. Dreamland (8)
+    solution: FANTASIA
+  - x: 15
+    y: 10
+    clue: 18. Explosive allergy sign (6)
+    solution: SNEEZE
+  - x: 5
+    y: 11
+    clue: 20. Japan's capital (5)
+    solution: TOKYO
+  - x: 13
+    y: 11
+    clue: 22. Slang for money - variant (5)
+    solution: MOOLA

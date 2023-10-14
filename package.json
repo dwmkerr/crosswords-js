@@ -10,6 +10,9 @@
     "style"
   ],
   "type": "module",
+  "dependencies": {
+    "yaml": "^2.3.1"
+  },
   "devDependencies": {
     "chai": "^4.3.7",
     "connect-livereload": "^0.6.1",
@@ -37,23 +40,24 @@
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "lint": "eslint *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample/*.{js,mjs}",
-    "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
     "build": "webpack && lessc style/crosswords.less dist/crosswords.css",
-    "prettier": "prettier --check *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} style/*.less data/*.{json,yml}",
-    "prettier:fix": "prettier --write *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less data/*.{json,yml}",
-    "spell": "export DIFFLIST=/tmp/sd97sfnsvsi && git diff --staged --diff-filter=AM --name-only > $DIFFLIST && if [ -s $DIFFLIST ]; then npx cspell --file-list stdin < $DIFFLIST; fi",
-    "spell:changed": "export DIFFLIST=/tmp/sd97sfnsvsi && git diff --staged --diff-filter=AMU --name-only > $DIFFLIST && if [ -s $DIFFLIST ]; then npx cspell --file-list stdin < $DIFFLIST; fi",
-    "spell:all": "cspell *.{html,js,md,mjs} docs/**/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less",
-    "start": "webpack-dev-server",
-    "start:angular": "webpack-dev-server",
-    "dev": "vite serve dev",
+    "cssgrid": "vite serve test",
     "dev:build": "vite build dev",
     "dev:prod": "vite build dev && vite preview dev",
-    "test": "mocha",
+    "dev": "vite serve dev",
+    "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
+    "lint": "eslint *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample/*.{js,mjs}",
+    "prettier:fix": "prettier --write *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less data/*.{json,yml}",
+    "prettier": "prettier --check *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} style/*.less data/*.{json,yml}",
+    "spell:all": "cspell *.{html,js,md,mjs} docs/**/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less",
+    "spell:changed": "git diff --staged --diff-filter=AMU --name-only | npx cspell --no-summary --no-progress --no-must-find-files --file-list stdin",
+    "spell": "git diff --staged --diff-filter=AM --name-only | npx cspell --no-summary --no-progress --no-must-find-files --file-list stdin",
+    "start:angular": "webpack-dev-server",
+    "start": "vite serve dev",
     "test:cov": "nyc mocha",
     "test:debug": "mocha --inspect-brk -w",
-    "cssgrid": "vite serve test"
+    "test": "mocha",
+    "update": "bin/update-package.sh"
   },
   "keywords": [
     "crossword"

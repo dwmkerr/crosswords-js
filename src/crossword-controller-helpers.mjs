@@ -1,28 +1,15 @@
-import { assert, newEnum, memoize, trace, setLetter } from './helpers.mjs';
-
-const hideElement = (element) => {
-  element && element.classList.add('hidden');
-};
-const showElement = (element) => {
-  element && element.classList.remove('hidden');
-};
-
-// Helper function to filter single-segment and anchor-segment clues
-// from clue array
-const anchorSegmentClues = memoize((clues) => {
-  return clues.filter((x) => !x.previousClueSegment);
-});
+import { assert, trace, setLetter } from './helpers.mjs';
+import { hideElement, showElement } from './crossword-gridview.mjs';
 
 function revealCell(controller, cell) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
-  // trace(`revealCell:(${cell.x},${cell.y})`);
   const clue = cell.acrossClue ? cell.acrossClue : cell.downClue;
   const letterIndex = cell.acrossClue
     ? cell.acrossClueLetterIndex
     : cell.downClueLetterIndex;
-  const solutionLetter = clue.solution[letterIndex];
-  // trace(`revealCell: solution:${clue.solution},letterIndex:${letterIndex})`);
+  const solutionLetter =
+    letterIndex < clue.solution?.length ? clue.solution[letterIndex] : ' ';
   const clearRevealed = false;
   setCellText(controller, cell, solutionLetter, clearRevealed);
   // set visual flag in cell that letter has been revealed
@@ -34,34 +21,34 @@ function revealCell(controller, cell) {
 function revealClue(controller, clue) {
   assert(controller, '<controller> is null or undefined');
   assert(clue, '<clue> is null or undefined');
-  trace(`revealClue: '${clue.code}'`);
-  const clues = clue.parentClue
-    ? [clue.parentClue].concat(clue.parentClue.connectedClues)
-    : [clue];
-  clues.forEach((c) => {
-    c.cells.forEach((cell) => {
-      revealCell(controller, cell);
-    });
+  trace(`revealClue: '${clue}'`);
+  clue.headSegment.flatCells.forEach((cell) => {
+    revealCell(controller, cell);
   });
 }
 
 function revealCrossword(controller) {
   assert(controller, '<controller> is null or undefined');
-  trace('revealCrossword');
-  controller.crosswordModel.cells.forEach((row) => {
-    row
-      .filter((x) => x.light)
-      .forEach((cell) => {
-        revealCell(controller, cell);
-      });
+  controller.model.lightCells.forEach((cell) => {
+    revealCell(controller, cell);
   });
 }
 
-const Outcome = newEnum([
-  'Correct', // 0 elements empty, N elements correct
-  'Incorrect', // 1+ elements incorrect
-  'Incomplete', // 1+ elements empty, 0 elements incorrect
-]);
+const Outcome = Object.freeze({
+  correct: 0, // 0 elements empty, N elements correct
+  incorrect: 1, // 1+ elements incorrect
+  incomplete: 2, // 1+ elements empty, 0 elements incorrect
+});
+
+function getOutcome(incorrect, incomplete) {
+  if (incorrect) {
+    return Outcome.incorrect;
+  } else if (incomplete) {
+    return Outcome.incomplete;
+  } else {
+    return Outcome.correct;
+  }
+}
 
 function testCell(controller, cell, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
@@ -73,18 +60,13 @@ function testCell(controller, cell, showIncorrect = true) {
     ? [cell.acrossClue, cell.acrossClueLetterIndex]
     : [cell.downClue, cell.downClueLetterIndex];
   const answerLetter = clue.answer[letterIndex];
-  const solutionLetter = clue.solution[letterIndex];
-  const outcome =
-    answerLetter === solutionLetter
-      ? Outcome.Correct
-      : answerLetter === ' ' || answerLetter === undefined
-      ? Outcome.Incomplete
-      : Outcome.Incorrect;
-  // trace(
-  //   `testCell(${cell.x},${cell.y}): [${answerLetter}] [${solutionLetter}] ${outcome}`
-  // );
+  const solutionLetter = clue.solution ? clue.solution[letterIndex] : undefined;
+  const outcome = getOutcome(
+    !(answerLetter === solutionLetter || answerLetter === ' '),
+    answerLetter === ' ' || answerLetter === undefined,
+  );
 
-  if (outcome === Outcome.Incorrect && showIncorrect) {
+  if (outcome === Outcome.incorrect && showIncorrect) {
     // set visual flag in cell that answer letter is incorrect
     showElement(controller.incorrectElement(cell));
   }
@@ -94,96 +76,67 @@ function testCell(controller, cell, showIncorrect = true) {
 function testClue(controller, clue, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
   assert(clue, '<clue> is null or undefined');
-  trace(`testClue: '${clue.code}'`);
+  trace(`testClue: '${clue}'`);
 
   let incorrect = 0,
     incomplete = 0;
-  const clues = clue.parentClue
-    ? [clue.parentClue].concat(clue.parentClue.connectedClues)
-    : [clue];
-  clues.forEach((c) => {
-    // short-circuit an incorrect result`- use find()
-    c.cells.forEach((cell) => {
-      const outcome = testCell(controller, cell, showIncorrect);
-      if (outcome === Outcome.Incorrect) {
-        incorrect += 1;
-        // trace(`incorrect: ${incorrect}`);
-      } else if (outcome === Outcome.Incomplete) {
-        incomplete += 1;
-        // trace(`incomplete: ${incomplete}`);
-      }
-    });
+
+  clue.headSegment.flatCells.forEach((cell) => {
+    const outcome = testCell(controller, cell, showIncorrect);
+    if (outcome === Outcome.incorrect) {
+      incorrect += 1;
+    } else if (outcome === Outcome.incomplete) {
+      incomplete += 1;
+    }
   });
-  return incorrect > 0
-    ? Outcome.Incorrect
-    : incomplete > 0
-    ? Outcome.Incomplete
-    : Outcome.Correct;
+
+  return getOutcome(incorrect > 0, incomplete > 0);
 }
 
 function testCrossword(controller, showIncorrect = true) {
   assert(controller, '<controller> is null or undefined');
-  // trace('testCrossword');
   let incorrect = 0,
     incomplete = 0;
-  controller.crosswordModel.cells.forEach((row) => {
-    row
-      .filter((x) => x.light)
-      .forEach((cell) => {
-        const outcome = testCell(controller, cell, showIncorrect);
-        if (outcome === Outcome.Incorrect) {
-          incorrect += 1;
-          // trace(`incorrect: ${incorrect}`);
-        } else if (outcome === Outcome.Incomplete) {
-          incomplete += 1;
-          // trace(`incomplete: ${incomplete}`);
-        }
-      });
+
+  controller.model.lightCells.forEach((cell) => {
+    const outcome = testCell(controller, cell, showIncorrect);
+    if (outcome === Outcome.incorrect) {
+      incorrect += 1;
+    } else if (outcome === Outcome.incomplete) {
+      incomplete += 1;
+    }
   });
 
-  return incorrect > 0
-    ? Outcome.Incorrect
-    : incomplete > 0
-    ? Outcome.Incomplete
-    : Outcome.Correct;
+  return getOutcome(incorrect > 0, incomplete > 0);
 }
 
 function checkSolved(controller) {
-  // trace('checkSolved');
   assert(controller, '<controller> is null or undefined');
   let incorrect = 0,
     incomplete = 0;
   const showIncorrect = false;
   // short-circuit a non-correct result - use find()
-  controller.crosswordModel.cells.find((row) => {
-    return row
-      .filter((x) => x.light)
-      .find((cell) => {
-        const outcome = testCell(controller, cell, showIncorrect);
-        if (outcome === Outcome.Incorrect) {
-          incorrect = 1;
-          // trace(`incorrect: ${incorrect}`);
-          return true;
-        } else if (outcome === Outcome.Incomplete) {
-          incomplete = 1;
-          // trace(`incomplete: ${incomplete}`);
-          return true;
-        }
-      });
+  controller.model.lightCells.find((cell) => {
+    const outcome = testCell(controller, cell, showIncorrect);
+    if (outcome === Outcome.incorrect) {
+      incorrect += 1;
+      return true;
+    } else if (outcome === Outcome.incomplete) {
+      incomplete += 1;
+      return true;
+    }
   });
 
-  return incorrect > 0
-    ? Outcome.Incorrect
-    : incomplete > 0
-    ? Outcome.Incomplete
-    : Outcome.Correct;
+  return getOutcome(incorrect > 0, incomplete > 0);
 }
 
-function setCellText(controller, cell, newText, clearRevealed) {
+function setCellText(controller, cell, newText, clearRevealed = true) {
+  assert(controller, '<controller> is null or undefined');
   assert(
-    cell && (cell.acrossClue || cell.downClue),
-    'setCellText: cell is null or not part of a clue',
+    cell?.acrossClue || cell?.downClue,
+    'cell is null or not part of a clue',
   );
+  assert(newText?.length === 1, 'newText must be a single character');
 
   function adjustClue(clue, letterIndex) {
     let result = clue;
@@ -191,7 +144,6 @@ function setCellText(controller, cell, newText, clearRevealed) {
     if (clearRevealed) {
       result.revealed = setLetter(result.revealed, letterIndex, newText);
     }
-    return result;
   }
   // Cell can be part of BOTH across and down clues
 
@@ -201,7 +153,7 @@ function setCellText(controller, cell, newText, clearRevealed) {
     // get index of cell-letter in clue
     const letterIndex = cell.acrossClueLetterIndex;
     // set stored values
-    clue = adjustClue(clue, letterIndex);
+    adjustClue(clue, letterIndex);
   }
 
   // Outcome for down clue
@@ -210,57 +162,48 @@ function setCellText(controller, cell, newText, clearRevealed) {
     // get index of cell-letter in clue
     const letterIndex = cell.downClueLetterIndex;
     // set stored values
-    clue = adjustClue(clue, letterIndex);
+    adjustClue(clue, letterIndex);
   }
   // eslint-disable-next-line no-param-reassign
   controller.inputElement(cell).value = newText;
 }
 
-function resetCell(controller, cell) {
+function resetCell(controller, cell, clearRevealed = false) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
-  // trace(`resetCell:(${cell.x},${cell.y})`);
 
-  const clearRevealed = true;
   // put a space in the cell
-  setCellText(controller, cell, ' ', clearRevealed);
+  setCellText(controller, cell, ' ');
   // remove visual flags in cell
   hideElement(controller.incorrectElement(cell));
+  if (clearRevealed) {
+    hideElement(controller.revealedElement(cell));
+  }
 }
 
 function resetClue(controller, clue) {
   assert(controller, '<controller> is null or undefined');
   assert(clue, '<clue> is null or undefined');
-  trace(`resetClue: '${clue.code}'`);
+  trace(`resetClue: '${clue}'`);
 
-  const clues = clue.parentClue
-    ? [clue.parentClue].concat(clue.parentClue.connectedClues)
-    : [clue];
-  clues.forEach((c) => {
-    c.cells.forEach((cell) => {
-      resetCell(controller, cell);
-    });
+  clue.headSegment.flatCells.forEach((cell) => {
+    resetCell(controller, cell);
   });
 }
 
 function resetCrossword(controller) {
-  trace('resetCrossword');
   assert(controller, '<controller> is null or undefined');
-  controller.crosswordModel.cells.forEach((row) => {
-    row
-      .filter((x) => x.light)
-      .forEach((cell) => {
-        resetCell(controller, cell);
-      });
+  controller.model.lightCells.forEach((cell) => {
+    const clearRevealed = true;
+    resetCell(controller, cell, clearRevealed);
   });
 }
 
 function cleanCell(controller, cell) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
-  // trace(`cleanCell:(${cell.x},${cell.y})`);
 
-  const wrongLetter = testCell(controller, cell) === Outcome.Incorrect;
+  const wrongLetter = testCell(controller, cell) === Outcome.incorrect;
   const clearRevealed = wrongLetter;
   // is the current cell letter incorrect?
   if (wrongLetter) {
@@ -273,42 +216,31 @@ function cleanCell(controller, cell) {
 function cleanClue(controller, clue) {
   assert(controller, '<controller> is null or undefined');
   assert(clue, '<clue> is null or undefined');
-  trace(`cleanClue: '${clue.code}'`);
-  const clues = clue.parentClue
-    ? [clue.parentClue].concat(clue.parentClue.connectedClues)
-    : [clue];
-  clues.forEach((c) => {
-    c.cells.forEach((cell) => {
-      cleanCell(controller, cell);
-    });
+  trace(`cleanClue: '${clue}'`);
+  clue.headSegment.flatCells.forEach((cell) => {
+    cleanCell(controller, cell);
   });
 }
 
 function cleanCrossword(controller) {
   trace('cleanCrossword');
   assert(controller, '<controller> is null or undefined');
-  controller.crosswordModel.cells.forEach((row) => {
-    row
-      .filter((x) => x.light)
-      .forEach((cell) => {
-        cleanCell(controller, cell);
-      });
+  controller.model.lightCells.forEach((cell) => {
+    cleanCell(controller, cell);
   });
 }
 
 export {
-  anchorSegmentClues,
   checkSolved,
   cleanClue,
   cleanCrossword,
-  hideElement,
   Outcome,
   resetClue,
   resetCrossword,
   revealCell,
   revealClue,
   revealCrossword,
-  showElement,
+  setCellText,
   testClue,
   testCrossword,
 };
