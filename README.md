@@ -201,6 +201,12 @@ For further information on these topics, consult the [module API][30] documentat
 
 For examples, refer to the [development server code][31].
 
+### Styling
+
+The library ships with some simple default styles, under `./dist/crosswords.css`, which can be applied in the normal way (e.g. `import 'crosswords-js/dist/crosswords.css'`, if your bundler has a CSS file loader). The styles use [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) to set styles. Some of these variables can be overridden to customise the look and feel of the crosswords on your web page. Refer to `./style/cwdimensions.less` to see variables related to UI sizing and dimensions, at various breakpoints (screen widths). See `./style/cwcolors.less` for variables related to colors (highlight/active/grid colors, etc.).
+
+The crossword uses [CSS grid](https://www.w3schools.com/css/css_grid.asp) to arrange the cells, so the styles that we recommend you do _not_ modify are the properties related to that. That is, the `grid-template-rows` and `grid-template-columns` properties, as well as the CSS variables `--row-count` and `--column-count` which are set directly from JavaScript. Changing them can break the visual layout of the crossword.
+
 ### Sample applications
 
 The _development server_ is a pure [Node.js][32] application of the the **crosswords-js** package. It exercises nearly all the available functionality. The code is found in the [dev][33] directory of this repository.
