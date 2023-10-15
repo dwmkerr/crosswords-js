@@ -1,3 +1,4 @@
+// use less variables for media queries because you can't use css variables in those: https://www.w3.org/TR/css-variables-1/#using-variables
 @medium-screen-min-width: 392px;
 @large-screen-min-width: 556px;
 
@@ -12,21 +13,21 @@
   --grid-cell-size: 1.3rem;
   --letter-size: 1.14rem;
   --label-size: 0.4rem;
-  --reavealed-size: 0.4rem;
+  --revealed-size: 0.4rem;
   --clue-text-width: 17rem;
 }
 
-@media screen and (max-width: calc(@medium-screen-min-width - 1px)) {
+@media screen and (max-width: (@medium-screen-min-width - 1px)) {
   .crosswords-js {
     --grid-cell-size: 1.3rem;
     --letter-size: 1.14rem;
     --label-size: 0.4rem;
-    --reavealed-size: 0.4rem;
+    --revealed-size: 0.4rem;
     --clue-text-width: 17rem;
   }
 }
 
-@media screen and (min-width: @medium-screen-min-width) and (max-width: calc(@large-screen-min-width - 1px)) {
+@media screen and (min-width: @medium-screen-min-width) and (max-width: (@large-screen-min-width - 1px)) {
   .crosswords-js {
     --grid-cell-size: 1.5625rem;
     --letter-size: 1.14rem;

@@ -6,19 +6,19 @@
   --grid-cell-size: 1.3rem;
   --letter-size: 1.14rem;
   --label-size: 0.4rem;
-  --reavealed-size: 0.4rem;
+  --revealed-size: 0.4rem;
   --clue-text-width: 17rem;
 }
-@media screen and (max-width: calc(392px - 1px)) {
+@media screen and (max-width: 391px) {
   .crosswords-js {
     --grid-cell-size: 1.3rem;
     --letter-size: 1.14rem;
     --label-size: 0.4rem;
-    --reavealed-size: 0.4rem;
+    --revealed-size: 0.4rem;
     --clue-text-width: 17rem;
   }
 }
-@media screen and (min-width: 392px) and (max-width: calc(556px - 1px)) {
+@media screen and (min-width: 392px) and (max-width: 555px) {
   .crosswords-js {
     --grid-cell-size: 1.5625rem;
     --letter-size: 1.14rem;
@@ -79,8 +79,8 @@
 }
 .crossword-grid .cwcell-revealed {
   /* display a triangle base on border intersections */
-  border-left: var(--reavealed-size) solid transparent;
-  border-bottom: var(--reavealed-size) solid var(--cell-revealed-color);
+  border-left: var(--revealed-size) solid transparent;
+  border-bottom: var(--revealed-size) solid var(--cell-revealed-color);
 }
 .crossword-grid .crossword-clues .crossword-clue-text {
   max-width: var(--clue-text-width);
