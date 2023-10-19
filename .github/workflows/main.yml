@@ -1,8 +1,9 @@
-# The 'release-please' workflow is used to create the 'Release Please' pull
-# request. This PR is opened when we have a new commit to main.
+# The 'main' workflow builds the code, tests it, deploys the demo site, and
+# also creates the release please PR if needed. If the release please PR is
+# merged, it releases to NPM.
 # See:
 #   https://github.com/googleapis/release-please
-name: Release Please
+name: main
 
 on:
   push:
@@ -86,9 +87,44 @@ jobs:
         with:
           directory: ./artifacts/coverage
 
+  deploy-demo-site:
+    # The 'deploy demo site' job will only run if successfully complete the
+    # 'validate-main' job.
+    needs: validate-main
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Setup the right version of Node.js.
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_LTS_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      # Fixup Git URLs, see:
+      # https://stackoverflow.com/questions/70663523/the-unauthenticated-git-protocol-on-port-9418-is-no-longer-supported
+      - name: Fix up git URLs
+        run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
+
+      # Build the demo site.
+      - name: Build Demo Site
+        run: |
+          make build-sample-site
+
+      # Publish the demo site to GitHub pages.
+      - name: Publish Demo Site to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          folder: artifacts/sample-site
+
   release-please:
     # The 'release please' job will only run if successfully complete the
-    # 'validate-main' job.
+    # 'validate-main' job. The deployment steps only occur if this is a release
+    # merge.
     needs: validate-main
 
     runs-on: ubuntu-20.04
@@ -133,12 +169,15 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
 
-      # Publish the site to GitHub pages.
-      - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BASE_BRANCH: main                     # Deploy from main...
-          BRANCH: gh-pages                      # ...to GitHub pages...
-          BUILD_SCRIPT: make build-sample-site  # ...run the build action...
-          FOLDER: artifacts/sample-site         # ...copy the distribution folder.
+      # Build the demo site.
+      - name: Build Demo Site
+        run: |
+          make build-sample-site
+        if: ${{ steps.release.outputs.release_created }}
+
+      # Publish the demo site to GitHub pages.
+      - name: Publish Demo Site to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          folder: artifacts/sample-site
+        if: ${{ steps.release.outputs.release_created }}
