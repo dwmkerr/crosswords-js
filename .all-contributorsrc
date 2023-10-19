@@ -27,7 +27,7 @@
         "code",
         "test"
       ]
-    },
+    }
   ],
   "contributorsPerLine": 7,
   "skipCi": true,
