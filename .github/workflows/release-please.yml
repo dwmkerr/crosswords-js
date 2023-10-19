@@ -133,12 +133,15 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
 
-      # Publish the site to GitHub pages.
-      - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BASE_BRANCH: main                     # Deploy from main...
-          BRANCH: gh-pages                      # ...to GitHub pages...
-          BUILD_SCRIPT: make build-sample-site  # ...run the build action...
-          FOLDER: artifacts/sample-site         # ...copy the distribution folder.
+      # Build the demo site.
+      - name: Build Demo Site
+        run: |
+          make build-sample-site
+        if: ${{ steps.release.outputs.release_created }}
+
+      # Publish the demo site to GitHub pages.
+      - name: Publish Demo Site to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          folder: artifacts/sample-site
+        if: ${{ steps.release.outputs.release_created }}
