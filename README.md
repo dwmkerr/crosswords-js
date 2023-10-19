@@ -512,7 +512,8 @@ git commit --allow-empty -m "chore: release ${version}" -m "Release-As: ${versio
 This is a scattergun list of things to work on, once a good chunk of these have been done the larger bits can be moved to GitHub Issues:
 
 - [x] bug: backspace moves backwards, I think that deleting the letter is a better action for this (with left/up/ key to move backwards)
-- [ ] bug: [Demo site][9] is not tracking latest version
+- [x] bug: [Demo site][9] is not tracking latest version
+- [ ] bug: [Demo site][9] seems to have loading issues
 - [x] feat(docs): improve the demo site image (its an old one at the moment!)
 - [x] feat: show how we can check answers or highlight incorrect entries (see issue #9)
 - [x] feat(samples): allow us to switch between 2-3 crosswords on the sample
@@ -533,8 +534,8 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 
 [1]: https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square
 [2]: #contributors-
-[3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yml/badge.svg
-[4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/release-please.yaml
+[3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/main.yml/badge.svg
+[4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/main.yml
 [5]: https://img.shields.io/npm/v/crosswords-js
 [6]: https://www.npmjs.com/package/crosswords-js
 [7]: https://codecov.io/gh/dwmkerr/crosswords-js/branch/main/graph/badge.svg
