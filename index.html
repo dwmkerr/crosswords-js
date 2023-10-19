@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" ng-app="sampleapp">
   <head>
     <meta charset="utf-8" />
@@ -82,9 +82,37 @@
         Original source: <a href="{{info.source}}">{{info.source}}</a>.
       </p>
       <hr />
+      <div id="cell-buttons">
+        <button id="reveal-cell" (click)="revealCurrentCell()">
+          Reveal Cell
+        </button>
+      </div>
+      <div id="clue-buttons">
+        <button id="test-clue" (click)="testCurrentClue()">Test Clue</button>
+        <button id="clean-clue" (click)="cleanCurrentClue()">Clean Clue</button>
+        <button id="reveal-clue" (click)="revealCurrentClue()">
+          Reveal Clue
+        </button>
+        <button id="reset-clue" (click)="resetCurrentClue()">Reset Clue</button>
+      </div>
+      <div id="grid-buttons">
+        <button id="test-crossword" (click)="testCrossword()">
+          Test Crossword
+        </button>
+        <button id="clean-crossword" (click)="cleanCrossword()">
+          Clean Crossword
+        </button>
+        <button id="reveal-crossword" (click)="revealCrossword()">
+          Reveal Crossword
+        </button>
+        <button id="reset-crossword" (click)="resetCrossword()">
+          Reset Crossword
+        </button>
+      </div>
+      <hr />
       <p ng-if="currentClue">
         {{currentClue.clueLabel}} {{currentClue.clueText}}
-        {{currentClue.answerStructureText}}
+        {{currentClue.lengthText}}
       </p>
       <div id="crossword1"></div>
       <table>
@@ -96,10 +124,7 @@
               ng-click="selectClue(clue)"
               ng-class="{selectedClue: isHighlightedClue(clue)}"
             >
-              <p>
-                {{clue.clueLabel}} {{clue.clueText}}
-                {{clue.answerStructureText}}
-              </p>
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.lengthText}}</p>
             </div>
           </td>
           <td>
@@ -109,10 +134,7 @@
               ng-click="selectClue(clue)"
               ng-class="{selectedClue: isHighlightedClue(clue)}"
             >
-              <p>
-                {{clue.clueLabel}} {{clue.clueText}}
-                {{clue.answerStructureText}}
-              </p>
+              <p>{{clue.clueLabel}} {{clue.clueText}} {{clue.lengthText}}</p>
             </div>
           </td>
         </tr>
