@@ -8,6 +8,7 @@
   --label-size: 0.4rem;
   --revealed-size: 0.4rem;
   --clue-text-width: 17rem;
+  --clue-label-width: 3rem;
 }
 @media screen and (max-width: 391px) {
   .crosswords-js {
@@ -161,6 +162,7 @@
 }
 .crossword-clues .crossword-clue-label {
   display: inline-block;
+  width: var(--clue-label-width);
   vertical-align: top;
 }
 .crossword-clues .crossword-clue-text {
