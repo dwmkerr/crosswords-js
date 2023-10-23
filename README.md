@@ -31,6 +31,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 - [Quickstart](#quickstart)
   - [Application Programming Interface (API)](#application-programming-interface-api)
+  - [Styling](#styling)
   - [Sample applications](#sample-applications)
 - [Contributor guide](#contributor-guide)
   - [Setting up your dev environment](#setting-up-your-dev-environment)
@@ -200,6 +201,10 @@ You can use the `controller` to programmatically manipulate the **gridView** - t
 For further information on these topics, consult the [module API][30] documentation.
 
 For examples, refer to the [development server code][31].
+
+### Styling
+
+The library ships with some simple default styles out of the box, but aims to be easily customisable. See [`crossword-styling.md`][35] for details.
 
 ### Sample applications
 

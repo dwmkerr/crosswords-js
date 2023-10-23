@@ -75,6 +75,7 @@ function newCrosswordCluesView(document, controller) {
     downClues: newClueBlockElement('crossword-down-clues', 'Down'),
   };
 
+  addClass(view.wrapper, 'crosswords-js');
   addClass(view.wrapper, 'crossword-clues');
 
   addClueElements(controller, view.acrossClues, controller.model.acrossClues);
