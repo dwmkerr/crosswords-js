@@ -1,105 +1,44 @@
 @import url('../style/cwdimensions.less');
 @import url('../style/cwcolors.less');
 
-:root {
-  // Default grid size, this may be overridden
-  // in ../src/crossword-gridview.mjs: newCrosswordGridView()
-  --row-count: 15;
-  --column-count: 15;
-}
-
-@media screen and (max-width: 391px) {
-  .crossword-grid {
-    grid-template-rows: repeat(var(--row-count), @grid-cell-size-0);
-    grid-template-columns: repeat(var(--column-count), @grid-cell-size-0);
-
-    input {
-      font-size: @letter-size-0;
-    }
-
-    .cwclue-label {
-      font-size: @label-size-0;
-    }
-
-    .cwcell-revealed {
-      // display a triangle base on border intersections
-      border-left: @revealed-size-0 solid transparent;
-      border-bottom: @revealed-size-0 solid @cell-revealed-color;
-    }
-  }
-
-  .crossword-clues {
-    .crossword-clue-text {
-      max-width: @clue-text-width-0;
-    }
-  }
-}
-
-@media screen and (min-width: 392px) and (max-width: 555px) {
-  .crossword-grid {
-    grid-template-rows: repeat(var(--row-count), @grid-cell-size-1);
-    grid-template-columns: repeat(var(--column-count), @grid-cell-size-1);
-
-    input {
-      font-size: @letter-size-1;
-    }
-
-    .cwclue-label {
-      font-size: @label-size-1;
-    }
-
-    .cwcell-revealed {
-      // display a triangle base on border intersections
-      border-left: @revealed-size-1 solid transparent;
-      border-bottom: @revealed-size-1 solid @cell-revealed-color;
-    }
-  }
-
-  .crossword-clues {
-    .crossword-clue-text {
-      max-width: @clue-text-width-1;
-    }
-  }
-}
-
-@media screen and (min-width: 556px) {
-  .crossword-grid {
-    grid-template-rows: repeat(var(--row-count), @grid-cell-size-2);
-    grid-template-columns: repeat(var(--column-count), @grid-cell-size-2);
-
-    input {
-      font-size: @letter-size-2;
-    }
-
-    .cwclue-label {
-      font-size: @label-size-2;
-    }
-
-    .cwcell-revealed {
-      // display a triangle base on border intersections
-      border-left: @revealed-size-2 solid transparent;
-      border-bottom: @revealed-size-2 solid @cell-revealed-color;
-    }
-  }
-
-  .crossword-clues {
-    .crossword-clue-text {
-      max-width: @clue-text-width-2;
-    }
-  }
-}
-
 .crossword-grid {
-  @letter-weight: bold;
+  --letter-weight: bold;
 
   display: grid;
-  gap: @grid-line-size;
+  grid-template-rows: repeat(var(--row-count), var(--grid-cell-size));
+  grid-template-columns: repeat(var(--column-count), var(--grid-cell-size));
+
+  input {
+    font-size: var(--letter-size);
+  }
+
+  .cwclue-label {
+    font-size: var(--label-size);
+  }
+
+  .cwcell-revealed {
+    /* display a triangle base on border intersections */
+    border-left: var(--revealed-size) solid transparent;
+    border-bottom: var(--revealed-size) solid var(--cell-revealed-color);
+  }
+
+  .crossword-clues {
+    .crossword-clue-text {
+      max-width: var(--clue-text-width);
+    }
+  }
+
+  gap: var(--grid-line-size);
+  border-collapse: collapse;
+  box-sizing: border-box;
+  // padding around outside of grid
+  padding: var(--grid-line-size);
+  width: min-content;
+
+  background-color: var(--grid-background-color);
+  color: var(--grid-text-color);
   // Any border and padding is outside grids width and height
   box-sizing: content-box;
-  // padding around outside of grid
-  padding: @grid-line-size;
-  background-color: @grid-background-color;
-  color: @grid-text-color;
   font-family: sans-serif;
   font-size: x-large;
 
@@ -114,36 +53,36 @@
     display: grid;
 
     &.dark {
-      background-color: @cell-background-dark-color;
+      background-color: var(--cell-background-dark-color);
     }
 
     &.light {
-      background-color: @cell-background-light-color;
+      background-color: var(--cell-background-light-color);
     }
   }
 
   input {
     text-align: center;
-    font-weight: @letter-weight;
+    font-weight: var(--letter-weight);
     // Padding must be disabled
     padding: 0;
     // Border must be disabled
     border: 0;
     height: 100%;
     width: 100%;
-    background-color: @cell-background-light-color;
+    background-color: var(--cell-background-light-color);
 
     &.active {
-      background-color: @clue-background-current-color;
+      background-color: var(--clue-background-current-color);
     }
 
     &.highlighted {
-      background-color: @cell-background-current-color;
+      background-color: var(--cell-background-current-color);
     }
 
     &:focus {
       outline-width: medium;
-      outline-color: @focus-outline-color;
+      outline-color: var(--focus-outline-color);
       outline-style: dotted;
       outline-offset: -2px;
       caret-color: transparent;
@@ -159,7 +98,7 @@
     pointer-events: none;
   }
 
-  // right-triangle with side length @revealed-size
+  // right-triangle with side length var(--revealed-size)
   // in bottom right corner
   .cwcell-revealed {
     // visibility: hidden;
@@ -178,8 +117,8 @@
     background-image: linear-gradient(
       135deg,
       transparent 47%,
-      @cell-incorrect-color 47%,
-      @cell-incorrect-color 53%,
+      var(--cell-incorrect-color) 47%,
+      var(--cell-incorrect-color) 53%,
       transparent 53%
     );
     // To avoid multiple instances
@@ -190,17 +129,17 @@
   }
 
   .cw-across-word-separator {
-    box-shadow: inset -3px 0px 0px 0px @word-separator-color;
+    box-shadow: inset -3px 0px 0px 0px var(--word-separator-color);
   }
 
   .cw-down-word-separator {
-    box-shadow: inset 0px -3px 0px 0px @word-separator-color;
+    box-shadow: inset 0px -3px 0px 0px var(--word-separator-color);
   }
 
   // Combinations of across and down separators on a single element
   .cw-across-word-separator + .cw-down-word-separator,
   .cw-down-word-separator + .cw-across-word-separator {
-    box-shadow: inset -3px -3px 0px 0px @word-separator-color;
+    box-shadow: inset -3px -3px 0px 0px var(--word-separator-color);
   }
 
   .hidden {
@@ -218,7 +157,7 @@
 
   .crossword-clue-label {
     display: inline-block;
-    width: @clue-label-width;
+    width: var(--clue-label-width);
     vertical-align: top;
   }
 
@@ -227,7 +166,7 @@
   }
 
   .current-clue-segment {
-    background-color: @clue-background-current-color;
+    background-color: var(--clue-background-current-color);
   }
 }
 

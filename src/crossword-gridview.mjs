@@ -28,6 +28,7 @@ function newCrosswordGridView(document, model, cellMap) {
   );
 
   let gridView = document.createElement('div');
+  addClass(gridView, 'crosswords-js');
   addClass(gridView, 'crossword-grid');
 
   // Set the grid size variables, refer to style/crosswords.less

@@ -1,27 +1,49 @@
-//// Crossword grid sizes
+// use less variables for media queries because you can't use css variables in those: https://www.w3.org/TR/css-variables-1/#using-variables
+@medium-screen-min-width: 392px;
+@large-screen-min-width: 556px;
 
-@grid-line-size: 1px;
+.crosswords-js {
+  /* default grid size, this is overriden in JS */
+  --row-count: 15;
+  --column-count: 15;
 
-// Media query max-width 360
-@grid-cell-size-0: 1.3rem;
-@letter-size-0: 1.14rem;
-@label-size-0: 0.4rem;
-@revealed-size-0: 0.4rem;
-@clue-text-width-0: 17rem;
+  --grid-line-size: 1px;
 
-// Media query min-width 361, max-width 499
-@grid-cell-size-1: 1.5625rem;
-@letter-size-1: 1.14rem;
-@label-size-1: 0.4rem;
-@revealed-size-1: 0.4rem;
-@clue-text-width-1: 20rem;
+  // minimum sizes:
+  --grid-cell-size: 1.3rem;
+  --letter-size: 1.14rem;
+  --label-size: 0.4rem;
+  --revealed-size: 0.4rem;
+  --clue-text-width: 17rem;
+  --clue-label-width: 3rem;
+}
 
-// Media query min-width 500
-@grid-cell-size-2: 2.25rem;
-@letter-size-2: 1.7rem;
-@label-size-2: 0.4em;
-@revealed-size-2: 0.6rem;
-@clue-text-width-2: 20rem;
+@media screen and (max-width: (@medium-screen-min-width - 1px)) {
+  .crosswords-js {
+    --grid-cell-size: 1.3rem;
+    --letter-size: 1.14rem;
+    --label-size: 0.4rem;
+    --revealed-size: 0.4rem;
+    --clue-text-width: 17rem;
+  }
+}
 
-//// Crossword clue sizes
-@clue-label-width: 3rem;
+@media screen and (min-width: @medium-screen-min-width) and (max-width: (@large-screen-min-width - 1px)) {
+  .crosswords-js {
+    --grid-cell-size: 1.5625rem;
+    --letter-size: 1.14rem;
+    --label-size: 0.4rem;
+    --revealed-size: 0.4rem;
+    --clue-text-width: 20rem;
+  }
+}
+
+@media screen and (min-width: @large-screen-min-width) {
+  .crosswords-js{
+    --grid-cell-size: 2.25rem;
+    --letter-size: 1.7rem;
+    --label-size: 0.4em;
+    --revealed-size: 0.6rem;
+    --clue-text-width: 20rem;
+  }
+}

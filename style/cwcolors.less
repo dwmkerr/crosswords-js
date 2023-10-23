@@ -1,20 +1,22 @@
-@dark-color: black;
-@light-color: white;
-@incorrect-color: red;
-@revealed-color: lighten(purple, 15%);
-@focus-outline-color: red;
-@cell-current-color: #f7f469;
-@clue-current-color: #04aa6d;
+.crosswords-js {
+  --dark-color: black;
+  --light-color: white;
+  --incorrect-color: red;
+  --revealed-color: lighten(purple, 15%);
+  --focus-outline-color: red;
+  --cell-current-color: #f7f469;
+  --clue-current-color: #04aa6d;
 
-@grid-background-color: @dark-color;
-@grid-line-color: @dark-color;
-@grid-text-color: @dark-color;
+  --grid-background-color: var(--dark-color);
+  --grid-line-color: var(--dark-color);
+  --grid-text-color: var(--dark-color);
 
-@clue-background-current-color: @clue-current-color;
-@cell-background-current-color: @cell-current-color;
-@cell-background-dark-color: @dark-color;
-@cell-background-light-color: @light-color;
-@cell-incorrect-color: @incorrect-color;
-@cell-revealed-color: @revealed-color;
+  --clue-background-current-color: var(--clue-current-color);
+  --cell-background-current-color: var(--cell-current-color);
+  --cell-background-dark-color: var(--dark-color);
+  --cell-background-light-color: var(--light-color);
+  --cell-incorrect-color: var(--incorrect-color);
+  --cell-revealed-color: var(--revealed-color);
 
-@word-separator-color: @grid-line-color;
+  --word-separator-color: var(--grid-line-color);
+}
