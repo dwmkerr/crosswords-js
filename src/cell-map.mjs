@@ -7,8 +7,8 @@ class CellMap {
 
   /**
    * Adds a Cell <-> Cell Element mapping.
-   * @param {*} modelCell 
-   * @param {HTMLDivElement} cellElement 
+   * @param {*} modelCell
+   * @param {HTMLDivElement} cellElement
    */
   add(modelCell, cellElement) {
     assert(modelCell, 'modelCell is null or undefined');
@@ -19,7 +19,7 @@ class CellMap {
 
   /**
    * Gets the DOM element for a modelCell.
-   * @param {*} modelCell 
+   * @param {*} modelCell
    * @returns {HTMLDivElement}
    */
   cellElement = (modelCell) => {
