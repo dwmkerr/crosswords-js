@@ -3,7 +3,8 @@
 @large-screen-min-width: 556px;
 
 .crosswords-js {
-  /* default grid size, this is overriden in JS */
+  // Default grid size, this may be overridden
+  // in ../src/crossword-gridview.mjs: newCrosswordGridView()
   --row-count: 15;
   --column-count: 15;
 
@@ -14,8 +15,8 @@
   --letter-size: 1.14rem;
   --label-size: 0.4rem;
   --revealed-size: 0.4rem;
-  --clue-text-width: 17rem;
   --clue-label-width: 3rem;
+  --clue-text-width: 17rem;
 }
 
 @media screen and (max-width: (@medium-screen-min-width - 1px)) {
@@ -39,7 +40,7 @@
 }
 
 @media screen and (min-width: @large-screen-min-width) {
-  .crosswords-js{
+  .crosswords-js {
     --grid-cell-size: 2.25rem;
     --letter-size: 1.7rem;
     --label-size: 0.4em;

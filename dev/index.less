@@ -35,6 +35,7 @@ body {
   background-color: @background-color;
   padding: 5px;
   font-family: @font-family;
+
   h1 {
     background-color: @highlight-color;
     color: @highlight-text-color;
@@ -106,9 +107,11 @@ a {
     box-shadow: @box-shadow;
     padding: 0px 5px;
   }
+
   &:visited {
     color: @link-visited-color;
   }
+
   &:active {
     color: lighten(@link-color, 25%);
   }
@@ -119,12 +122,14 @@ a {
   color: @highlight-text-color;
   padding: 10px;
   box-shadow: @box-shadow;
+
   .title {
     font-size: @banner-text-size;
     font-weight: bold;
     display: inline-block;
     padding: 0px 10px 10px;
   }
+
   .description {
     font-style: italic;
     font-size: large;
@@ -148,8 +153,10 @@ a {
       font-weight: 100;
       font-size: @text-font-size;
       margin: 10px;
+
       #crossword-source {
         margin: 15px 0px;
+
         // Hide file-picker button
         #crossword-file {
           opacity: 0;
@@ -157,7 +164,7 @@ a {
           height: 0.1px;
           position: absolute;
         }
-        // label
+
         label {
           .button-styles();
         }
@@ -180,8 +187,11 @@ a {
       overflow-wrap: break-word;
 
       #current-clue-label {
+        --clue-label-width: 3rem;
+
         display: inline-block;
         width: var(--clue-label-width);
+        // width: 3em;
         vertical-align: top;
       }
 
@@ -215,6 +225,7 @@ a {
       #clue-buttons,
       #grid-buttons {
         padding: 5px;
+
         p {
           padding-bottom: 5px;
         }
@@ -236,19 +247,23 @@ a {
         font-weight: bold;
         padding-bottom: 10px;
       }
+
       .crossword-clue {
         font-size: medium;
         font-weight: 100;
         padding: 8px 0px;
         margin: 2px 0px;
+
         &:hover {
           transform: scale(1.1);
           box-shadow: @box-shadow;
         }
+
         .crossword-clue-label,
         .crossword-clue-text {
           padding-left: 5px;
         }
+
         .crossword-clue-label {
           font-weight: bold;
         }
@@ -277,6 +292,7 @@ a {
     #first-column {
       #current-clue {
         height: 4em;
+
         #current-clue-text {
           max-width: 15em;
         }
@@ -300,11 +316,13 @@ a {
           min-width: 5rem;
           width: 25%;
           padding: 0px;
+
           p {
             padding: 10px 10px 0px 0px;
             min-width: 5rem;
             text-align: left;
           }
+
           button {
             min-width: 4rem;
           }
@@ -368,6 +386,7 @@ a {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -377,9 +396,11 @@ a {
   0% {
     opacity: 1;
   }
+
   75% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
@@ -393,13 +414,10 @@ a {
 
 #clue-solved-notification,
 #incomplete-notification {
-  display: none; // Hidden by default
-  position: fixed; // Stay in place
-  z-index: 1; // Sit on top
-
   .crossword-dialog-styles();
+  z-index: 1; // Sit on top
+  display: none; // Hidden by default
   width: 12em;
-  // box-shadow: @box-shadow;
   // centre dialog in viewport
   position: absolute;
   top: 50%;

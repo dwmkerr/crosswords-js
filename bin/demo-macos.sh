@@ -9,10 +9,10 @@ export demoUrl=http://localhost:4173/
 export npmArtefacts=$HOME/.npm
 export nvmBootStrapUrl=https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
 export puzzlesLink=$HOME/crossword-demo-puzzles
-export repoUrl=https://github.com/pvspain/crosswords-js.git
+export repoUrl=https://github.com/dwmkerr/crosswords-js.git
 
 # Derived variables (non-sortable)
-export repoParent=$demoRoot/git/github/pvspain
+export repoParent=$demoRoot/git/github/dwmkerr
 export repoRoot=$repoParent/crosswords-js
 export repoPuzzles=$repoRoot/data
 

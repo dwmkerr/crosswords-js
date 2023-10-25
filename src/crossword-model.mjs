@@ -1,4 +1,4 @@
-import YAML from 'yaml';
+import yaml from 'js-yaml';
 import { newClueModel } from './clue-model.mjs';
 import { assert, setLetter, trace } from './helpers.mjs';
 
@@ -423,7 +423,7 @@ function newCrosswordDefinition(mimeType, crosswordSource) {
     case 'application/yaml':
     case 'application/x-yaml':
       try {
-        parsedDocument = YAML.parse(crosswordSource);
+        parsedDocument = yaml.load(crosswordSource);
       } catch (error) {
         trace(
           `newCrosswordDefinition: [documentText] is not a YAML object.\n` +

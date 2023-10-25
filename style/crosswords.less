@@ -8,29 +8,8 @@
   grid-template-rows: repeat(var(--row-count), var(--grid-cell-size));
   grid-template-columns: repeat(var(--column-count), var(--grid-cell-size));
 
-  input {
-    font-size: var(--letter-size);
-  }
-
-  .cwclue-label {
-    font-size: var(--label-size);
-  }
-
-  .cwcell-revealed {
-    /* display a triangle base on border intersections */
-    border-left: var(--revealed-size) solid transparent;
-    border-bottom: var(--revealed-size) solid var(--cell-revealed-color);
-  }
-
-  .crossword-clues {
-    .crossword-clue-text {
-      max-width: var(--clue-text-width);
-    }
-  }
-
   gap: var(--grid-line-size);
   border-collapse: collapse;
-  box-sizing: border-box;
   // padding around outside of grid
   padding: var(--grid-line-size);
   width: min-content;
@@ -38,9 +17,15 @@
   background-color: var(--grid-background-color);
   color: var(--grid-text-color);
   // Any border and padding is outside grids width and height
-  box-sizing: content-box;
+  box-sizing: border-box;
   font-family: sans-serif;
   font-size: x-large;
+
+  .crossword-clues {
+    .crossword-clue-text {
+      max-width: var(--clue-text-width);
+    }
+  }
 
   .cwcell {
     // .cwclue-label, .cwcell-revealed and .cwcell-incorrect
@@ -62,6 +47,7 @@
   }
 
   input {
+    font-size: var(--letter-size);
     text-align: center;
     font-weight: var(--letter-weight);
     // Padding must be disabled
@@ -89,15 +75,6 @@
     }
   }
 
-  .cwclue-label {
-    margin: 1px 0px 0px 1px;
-    position: absolute;
-    // top & left
-    place-self: start;
-    // click events need to pass through to input element
-    pointer-events: none;
-  }
-
   // right-triangle with side length var(--revealed-size)
   // in bottom right corner
   .cwcell-revealed {
@@ -107,6 +84,9 @@
     place-self: end;
     // click events must pass through to input element
     pointer-events: none;
+    // display a triangle base on border intersections
+    border-left: var(--revealed-size) solid transparent;
+    border-bottom: var(--revealed-size) solid var(--cell-revealed-color);
   }
 
   // diagonal stripe bottom-left to top-right
@@ -126,6 +106,16 @@
     // click events need to pass through to input element
     pointer-events: none;
     opacity: 0.5;
+  }
+
+  .cwclue-label {
+    font-size: var(--label-size);
+    margin: 1px 0px 0px 1px;
+    position: absolute;
+    // top & left
+    place-self: start;
+    // click events need to pass through to input element
+    pointer-events: none;
   }
 
   .cw-across-word-separator {

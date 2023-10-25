@@ -1,7 +1,9 @@
 # crosswords-js <!-- omit from toc -->
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Release Please][3]][4]
@@ -27,18 +29,20 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
 <!-- vim-markdown-toc GFM -->
 
+- [Documentation](#documentation)
 - [Quickstart](#quickstart)
-  - [Application Programming Interface (API)](#application-programming-interface-api)
-  - [Styling](#styling)
-  - [Sample applications](#sample-applications)
+- [Application Programming Interface (API)](#application-programming-interface-api)
+- [Styling](#styling)
+- [Sample applications](#sample-applications)
 - [Contributor guide](#contributor-guide)
   - [Setting up your dev environment](#setting-up-your-dev-environment)
-    - [1a. If you are in a Linux environment...](#1a-if-you-are-in-a-linux-environment)
-    - [1b. If you are NOT in a Linux environment...](#1b-if-you-are-not-in-a-linux-environment)
+    - [1a. Linux, MacOS](#1a-linux-macos)
+    - [1b. Windows](#1b-windows)
+    - [1c. Manual setup](#1c-manual-setup)
     - [2. Once you've started the development server](#2-once-youve-started-the-development-server)
   - [Maintaining your dev environment](#maintaining-your-dev-environment)
-  - [Documentation](#documentation)
   - [Quality assurance](#quality-assurance)
+    - [Manual checks](#manual-checks)
   - [Building the dev environment assets for production](#building-the-dev-environment-assets-for-production)
 - [Keyboard functionality](#keyboard-functionality)
 - [Crossword definition tips](#crossword-definition-tips)
@@ -56,6 +60,12 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 - [TODO](#todo)
 
 <!-- vim-markdown-toc -->
+
+## Documentation
+
+The project documentation is written in [Markdown][27] and is located in the repository at [`./docs`][61].
+
+- [Documentation index][41]
 
 ## Quickstart
 
@@ -149,7 +159,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
 
    This binds the crossword **gridView** anf **cluesView** into the webpage [DOM][20].
 
-### Application Programming Interface (API)
+## Application Programming Interface (API)
 
 You can use the `controller` to programmatically manipulate the **gridView** - the crossword grid [DOM][20] element.
 
@@ -200,11 +210,11 @@ For further information on these topics, consult the [module API][30] documentat
 
 For examples, refer to the [development server code][31].
 
-### Styling
+## Styling
 
 The library ships with some simple default styles out of the box, but aims to be easily customisable. See [`crossword-styling.md`][35] for details.
 
-### Sample applications
+## Sample applications
 
 The _development server_ is a pure [Node.js][32] application of the the **crosswords-js** package. It exercises nearly all the available functionality. The code is found in the [dev][33] directory of this repository.
 
@@ -225,20 +235,38 @@ npm run start:angular
 
 ### Setting up your dev environment
 
-#### 1a. If you are in a Linux environment...
+> We **strongly** recommend you follow the popular ["triangular" workflow][63], as recommended by GitHub, when working on this project. It aids collaboration by:
+>
+> - producing simple, linear commit sequences for pull-requests, and
+> - easily incorporating changes in the upstream repo.
 
-Check out the code, then:
+#### 1a. Linux, MacOS
+
+Check out the code and open the repository root directory...
+
+```bash
+git clone https://github.com/dwmkerr/crosswords-js.git &&
+cd crosswords-js
+```
+
+then...
 
 ```bash
 # From the repository root, bootstrap the package and all tools
-bin/bootstrap-linux.sh
+bin/bootstrap-posixish.sh
 # Open the development server
 npm start
 ```
 
-#### 1b. If you are NOT in a Linux environment...
+#### 1b. Windows
 
-Ensure you are using Node LTS. I recommend using [Node Version Manager][10] for this:
+If you are running a [modern version of Windows][58], you can add a Linux distro to your computer using [WSL][57] and then follow the Linux instructions [above][59].
+
+#### 1c. Manual setup
+
+If the scripts above failed or don't suit your environment...
+
+1. Ensure you are using Node LTS. I recommend using [Node Version Manager][10] to make it easier to keep up to date:
 
 ```bash
 # Install/update node to latest long-term-support (LTS) version, and install/update npm to latest version.
@@ -246,9 +274,16 @@ nvm install --lts --latest-npm
 nvm use --lts
 ```
 
-Check out the code, then, from the root directory of the repository, run:
+2. Check out the code...
 
 ```bash
+git clone https://github.com/dwmkerr/crosswords-js.git
+```
+
+3. Open the repository root directory, install the packages, and start the development server...
+
+```bash
+cd crosswords-js
 # Fetch all dependent packages
 npm install
 # Start the development server
@@ -273,15 +308,23 @@ If you have installed **Node Version Manager (nvm)** following the [recommended 
 npm run update
 ```
 
-### Documentation
-
-The project documentation is written in [Markdown][27] and is located in the repository at [`<repo-root>/docs`][42].
-
-- [Documentation index][41]
-
 ### Quality assurance
 
-1. We use [MochaJS][26] for unit testing. The test source code is located in the repository at `<repo-root>/test`. Run the tests with:
+> You can automate the manual checks [in the section below][62] on each commit to your local git repository.
+>
+> ```bash
+> npm run qa:install
+> ```
+>
+> If you ever need to bypass the automated checks, stage your changes then run:
+>
+> ```bash
+> git commit --no-verify
+> ```
+
+#### Manual checks
+
+1. We use [MochaJS][26] for unit testing. The test source code is located in the repository at [`./test`][42]. Run the tests with:
 
    ```bash
    npm test
@@ -316,26 +359,12 @@ The project documentation is written in [Markdown][27] and is located in the rep
    npm run spell:all
    ```
 
-5. To automate checks 1-4 on each commit to your local git repository, create a **pre-commit hook** in your repository. From the root directory of your repository, run these commands:
+5. Ensure you build and stage the production assets
 
    ```bash
-   cat << EOF > .git/hooks/pre-commit
-   #!/bin/sh
-   # Assuming npm managed via nvm
-   export PATH=\$PATH:$NVM_BIN
-   npm run spell && \\
-   npm run prettier:fix && \\
-   npm run lint:fix && \\
-   npm test
-   EOF
-   chmod u+x .git/hooks/pre-commit
+   # Build and stage the production assets
+   npm run build && git add dist/
    ```
-
-> If you ever need to bypass the automated commit checks above, stage your changes then run:
->
-> ```bash
-> git commit --no-verify
-> ```
 
 6. Please install our git **commit template**. This enables project commit guidelines to be prefixed to the standard git commit message. From the root directory of your repository:
 
@@ -356,7 +385,7 @@ You can _preview_ the **production** assets by running the following command and
 
 ```bash
 # Build the assets and preview locally at http://locahost:4173
-npm run dev:prod
+npm run dev:preview
 ```
 
 ## Keyboard functionality
@@ -536,7 +565,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 - [ ] refactor: re-theme site to a clean black and white serif style, more like a newspaper
 - [x] build: enforce linting (current it is allowed to fail)
 
-[1]: https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square
+[1]: https://img.shields.io/badge/all_co#1a-linuxntributors-2-orange.svg?style=flat-square
 [2]: #contributors-
 [3]: https://github.com/dwmkerr/crosswords-js/actions/workflows/main.yml/badge.svg
 [4]: https://github.com/dwmkerr/crosswords-js/actions/workflows/main.yml
@@ -578,7 +607,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [39]: docs/module-api.md#user-event-handlers
 [40]: docs/module-api.md#published-events
 [41]: docs/README.md
-[42]: docs/
+[42]: test/
 [43]: https://eslint.org/
 [44]: https://prettier.io/
 [45]: https://cspell.org/
@@ -593,3 +622,9 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [54]: docs/module-api.md#3-changing-keyboard-shortcuts
 [55]: docs/module-api.md#views
 [56]: docs/crossword-domain.md#crossword-source
+[57]: https://learn.microsoft.com/en-us/windows/wsl/install
+[58]: https://learn.microsoft.com/en-us/windows/wsl/install#prerequisites
+[59]: #1a-linux
+[61]: docs/
+[62]: #manual-checks
+[63]: https://gist.github.com/pvspain/0438b9b6733650d3e0f52f0d82ec993f

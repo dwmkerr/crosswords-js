@@ -2,10 +2,16 @@
   "name": "crosswords-js",
   "version": "0.1.14",
   "description": "Tiny, lightweight crosswords for HTML5/JS/CSS.",
-  "main": "src/index.js",
+  "main": "dist/crosswords.js",
+  "files": [
+    "data",
+    "dist",
+    "src",
+    "style"
+  ],
   "type": "module",
   "dependencies": {
-    "yaml": "^2.3.1"
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "chai": "^4.3.7",
@@ -23,19 +29,19 @@
     "vite": "^4.2.1"
   },
   "scripts": {
-    "build": "webpack && lessc style/crosswords.less dist/crosswords.css",
+    "build": "vite build",
     "cssgrid": "vite serve test",
     "dev:build": "vite build dev",
-    "dev:prod": "vite build dev && vite preview dev",
+    "dev:preview": "vite build dev && vite preview dev",
     "dev": "vite serve dev",
     "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
     "lint": "eslint *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample/*.{js,mjs}",
     "prettier:fix": "prettier --write *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less data/*.{json,yml}",
     "prettier": "prettier --check *.{html,js,json,md,mjs} docs/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs} {dev,test}/*.{css,html,js,json,less,md,mjs} style/*.less data/*.{json,yml}",
+    "qa:install": "bin/install-githook.sh",
     "spell:all": "cspell *.{html,js,md,mjs} docs/**/*.{html,js,json,md,mjs} src/**/*.{html,js,json,md,mjs} {dev,test}/*.{html,js,json,md,mjs} sample/*.{html,js,json,md,mjs}  style/*.less",
     "spell:changed": "git diff --staged --diff-filter=AMU --name-only | npx cspell --no-summary --no-progress --no-must-find-files --file-list stdin",
     "spell": "git diff --staged --diff-filter=AM --name-only | npx cspell --no-summary --no-progress --no-must-find-files --file-list stdin",
-    "start:angular": "webpack-dev-server",
     "start": "vite serve dev",
     "test:cov": "nyc mocha",
     "test:debug": "mocha --inspect-brk -w",
