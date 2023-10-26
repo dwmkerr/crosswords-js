@@ -78,7 +78,7 @@ function newCellElement(document, modelCell) {
   //  Light cells also need an input.
   const inputElement = document.createElement('input');
   // 'id' is not used, but assignment silences chromium-dev-tools issue.
-  inputElement.dataset.xy = `input-${modelCell}`;
+  inputElement.name = `input-${modelCell}`;
   inputElement.maxLength = 1;
   inputElement.size = 1;
   if (modelCell.answer) {
