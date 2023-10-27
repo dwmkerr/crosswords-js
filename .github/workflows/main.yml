@@ -57,20 +57,6 @@ jobs:
       - name: test
         run: npm run test:cov
 
-      # Build and upload the demo application.
-
-      - name: Build demo application
-        run: npm run dev:build
-      - name: Upload demo artifacts
-        # https://github.com/actions/upload-pages-artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          # Created by npm run dev:prod
-          path: dev/dist/
-        # Only upload artifacts for the build on the LTS version (we don't
-        # need artifacts per node version).
-        if: ${{ matrix.node-version == env.NODE_LTS_VERSION }}
-
   upload-coverage:
     # The 'upload coverage' job will only run if successfully complete the
     # 'validate-main' job.
@@ -152,9 +138,19 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
 
+      # Build and upload the demo application.
 
-      # Publish the previously uploaded demo (from "Upload demo artifacts") to GitHub pages. 
+      - name: Build demo application
+        run: npm run dev:build
+      - name: Upload demo artifacts
+        # https://github.com/actions/upload-pages-artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # Created by npm run dev:prod
+          path: dev/dist/
+      # Publish the demo (from "Upload demo artifacts") to GitHub pages. 
       - name: Deploy to GitHub Pages
         id: deployment
         # https://github.com/actions/deploy-pages
         uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
+

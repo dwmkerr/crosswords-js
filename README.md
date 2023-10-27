@@ -43,7 +43,7 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
   - [Maintaining your dev environment](#maintaining-your-dev-environment)
   - [Quality assurance](#quality-assurance)
     - [Manual checks](#manual-checks)
-  - [Building the dev environment assets for production](#building-the-dev-environment-assets-for-production)
+  - [Building the _dev environment_ assets for production](#building-the-dev-environment-assets-for-production)
 - [Keyboard functionality](#keyboard-functionality)
 - [Crossword definition tips](#crossword-definition-tips)
   - [1. How do I create a clue which spans multiple parts of a crossword? (multi-segment clue)](#1-how-do-i-create-a-clue-which-spans-multiple-parts-of-a-crossword-multi-segment-clue)
@@ -51,9 +51,9 @@ Demo: [dwmkerr.github.io/crosswords-js/][9]
   - [3. How do I handle different grid sizes?](#3-how-do-i-handle-different-grid-sizes)
 - [Design overview](#design-overview)
 - [Design goals](#design-goals)
-- [Build pipelines](#build-pipelines)
-  - [Pull-request pipeline](#pull-request-pipeline)
-  - [Release pipeline](#release-pipeline)
+- [Build workflows](#build-workflows)
+  - [Pull-request workflow](#pull-request-workflow)
+  - [Main workflow](#main-workflow)
 - [Adding contributors](#adding-contributors)
 - [Managing releases](#managing-releases)
 - [Contributors](#contributors)
@@ -125,8 +125,8 @@ The project documentation is written in [Markdown][27] and is located in the rep
 4. In your JavaScript code, load the **crosswords-js** package and a _CrosswordDefinition_:
 
    ```js
-   import { compileCrossword, newCrosswordController } from './crosswords.js';
-   import crosswordDefinition from './crosswords/ftimes_17095.json';
+   import { compileCrossword, newCrosswordController } from 'crosswords-js';
+   import crosswordDefinition from 'node_modules/crosswords-js/data/ftimes_17095.json';
    ```
 
 5. Now get the [DOM][20] elements which will be the parents for the crossword grid and clues blocks:
@@ -200,7 +200,7 @@ You can use the `controller` to programmatically manipulate the **gridView** - t
   controller.bindEventHandlersToIds();
 
   // Bind the user event handlers to ALL elements with
-  // the given class(es), passing an array of one class name
+  // the given class(es), passing an array of one or more class names
   controller.bindEventHandlersToClass(["reset-clue"]);
   ```
 
@@ -221,14 +221,6 @@ The _development server_ is a pure [Node.js][32] application of the the **crossw
 ```bash
 # Open the development server on http://localhost:5173
 npm start
-```
-
-You can find an **Angular** application in the [sample][34] directory of this repository. To run the application:
-
-```bash
-# Run the Angular sample app
-# Open the app on http://localhost:8080
-npm run start:angular
 ```
 
 ## Contributor guide
@@ -253,7 +245,7 @@ then...
 
 ```bash
 # From the repository root, bootstrap the package and all tools
-bin/bootstrap-posixish.sh
+bin/bootstrap-posix-ish.sh
 # Open the development server
 npm start
 ```
@@ -264,9 +256,9 @@ If you are running a [modern version of Windows][58], you can add a Linux distro
 
 #### 1c. Manual setup
 
-If the scripts above failed or don't suit your environment...
+If the script above failed or doesn't suit your environment...
 
-1. Ensure you are using Node LTS. I recommend using [Node Version Manager][10] to make it easier to keep up to date:
+1. Ensure you are using Node LTS. We recommend using [Node Version Manager][10] to make it easier to keep up to date:
 
 ```bash
 # Install/update node to latest long-term-support (LTS) version, and install/update npm to latest version.
@@ -359,7 +351,7 @@ npm run update
    npm run spell:all
    ```
 
-5. Ensure you build and stage the production assets
+5. Ensure you build and stage the _production_ assets
 
    ```bash
    # Build and stage the production assets
@@ -372,12 +364,12 @@ npm run update
    git config --local commit.template ./.git-commit-template.txt
    ```
 
-### Building the dev environment assets for production
+### Building the _dev environment_ assets for production
 
-The `dev` environment **production assets** are built by [ViteJS][28] at [`<repo-root>/dev/dist`][46]. The `dist` folder is created when the assets are built.
+The `dev` environment **production assets** are built by [ViteJS][28] at [`dev/dist`][46]. The `dist` folder is created when the assets are built.
 
 ```bash
-# Build the assets under <root>/dev/dist
+# Build the assets under dev/dist
 npm run dev:build
 ```
 
@@ -459,11 +451,11 @@ This project is currently a work in progress. The overall design goals are:
 2. This should be _accessible_, and show how to make interactive content which is inclusive and supports modern accessibility patterns.
 3. This project should be _simple to use_, without requiring a lot of third party dependencies or knowledge.
 
-## Build pipelines
+## Build workflows
 
-There are two pipelines that run for the project:
+There are two workflows that run for the project:
 
-### Pull-request pipeline
+### Pull-request workflow
 
 Whenever a pull request is raised, the [Pull Request Workflow][12] is run. This will:
 
@@ -472,18 +464,18 @@ Whenever a pull request is raised, the [Pull Request Workflow][12] is run. This 
 - Run Tests
 - Upload Coverage
 
-Each stage is run on all recent Node versions, except for the **upload coverage** stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please][13] will open a Release Pull Request. When this request is merged, the [Release Pipeline][14] is run.
+Each stage is run on all recent Node versions, except for the **upload coverage** stage which only runs for the Node.js LTS version. When a pull request is merged to the `main` branch, if the changes trigger a new release, then [Release Please][13] will open a Release Pull Request. When this request is merged, the [Main Workflow][14] is run.
 
-### Release pipeline
+### Main workflow
 
-When a [Release Please][15] pull request is merged to main, the [Release Please Workflow][16] is run. This will:
-Node.js
+When a [Release Please][15] pull request is merged to main, the [Main Workflow][16] is run. This will:
 
 - Install dependencies
 - Lint
 - Run Tests
 - Upload Coverage
 - Deploy to NPM if the `NPM_TOKEN` secret is set
+- Upload the new release to the [GitHub Pages site][9]
 
 Each stage is run on all recent Node versions, except for the **upload coverage** stage which only runs for the Node.js LTS version.
 
@@ -503,7 +495,7 @@ More detailed documentation is available at:
 
 ## Managing releases
 
-When changes to `main` are made, the **Release Please** stage of the pipeline will work out whether a new release should be generated (by checking if there are user facing changes) and also what the new version number should be (by checking the log of conventional commits). Once this is done, if a release is required, a new pull request is opened that will create the release.
+When changes to `main` are made, the **Release Please** stage of the workflow will work out whether a new release should be generated (by checking if there are user facing changes) and also what the new version number should be (by checking the log of conventional commits). Once this is done, if a release is required, a new pull request is opened that will create the release.
 
 Force a specific release version with this command:
 
@@ -577,11 +569,10 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [10]: https://github.com/nvm-sh/nvm
 [11]: http://localhost:5173/
 [12]: ./.github/workflows/pull-request.yaml
-[12]: ./.github/workflows/pull-request.yaml
 [13]: https://github.com/google-github-actions/release-please-action
 [14]: #release-pipeline
 [15]: https://github.com/google-github-actions/release-please-action
-[16]: ./.github/workflows/release-please
+[16]: ./.github/workflows/main.yml
 [17]: https://allcontributors.org/docs/en/bot/usage
 [18]: https://www.theguardian.com/crosswords
 [19]: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
@@ -601,7 +592,7 @@ This is a scattergun list of things to work on, once a good chunk of these have 
 [33]: dev/
 [34]: sample/
 [35]: docs/crossword-styling.md
-[36]: data/ftimes_17095.yml
+[36]: data/ftimes_17095.json
 [37]: docs/crossword-data-structures.md#crosswordmodel
 [38]: docs/module-api.md#overview
 [39]: docs/module-api.md#user-event-handlers

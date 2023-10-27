@@ -8,14 +8,14 @@ class CellMap {
   add(modelCell, cellElement) {
     assert(modelCell, 'modelCell is null or undefined');
     assert(cellElement, 'cellElement is null or undefined');
-    // cellElement.id set in CrosswordController.#newCellElement()
+    // cellElement.id set in ./crosswordGridView.mjs:newCellElement()
     this.#modelCells[cellElement.id] = modelCell;
   }
 
   //  Gets the DOM element for a modelCell.
   cellElement = (modelCell) => {
     assert(typeof modelCell === 'object', 'Cell is not an object');
-    // modelCell.cellElement set in CrosswordController.#newCellElement()
+    // modelCell.cellElement set in ./crosswordGridView.mjs:newCellElement()
     return modelCell.cellElement;
   };
 

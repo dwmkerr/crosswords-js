@@ -13,12 +13,14 @@ nvmBootStrapUrl=https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
         # Search for a supported package manager
         if [[ -x "$(which apt)" ]]; then
             packMan=apt
+        elif [[ -x "$(which dnf)" ]]; then
+            packMan=dnf
         elif [[ -x "$(which yum)" ]]; then
             packMan=yum
         elif [[ -x "$(which brew)" ]]; then
             packMan=brew
         else
-            printf "ERROR: No supported package manager found (apt,yum, brew). Exiting...\n"
+            printf "ERROR: No supported package manager found (apt, brew, dnf, yum). Exiting...\n"
             exit 1
         fi
 
@@ -58,7 +60,8 @@ nvmBootStrapUrl=https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh
     source "$bashrc" && source "$NVM_DIR/nvm.sh" &&
         nvm use --lts
 ) && (
-    if [ -f package.json ]; then
+    # Check PWD is repository root
+    if [[ -d .git ]] && [[ -f package.json ]]; then
 
         # Install project packages
 
@@ -77,7 +80,7 @@ EOF
 
     printf "\n7. Installing our git pre-commit hook for QA steps...\n\n"
     source "$bashrc" && source "$NVM_DIR/nvm.sh" &&
-        npm run githook
+        npm run qa:install
 
 ) && (
 

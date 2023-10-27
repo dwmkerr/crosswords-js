@@ -175,7 +175,7 @@ class CrosswordController {
   inputElement = (cell) => {
     assert(cell.light, `dark cell! ${cell}`);
     // The input element of a cellElement is the first child element.
-    // Refer to #newCellElement()
+    // Refer to ./crosswordGridView.mjs:newCellElement()
     return this.#cellMap.cellElement(cell).children[0];
   };
 
@@ -183,7 +183,7 @@ class CrosswordController {
   revealedElement = (cell) => {
     assert(cell.light, `dark cell! ${cell}`);
     // The revealed element of a cellElement is the second or third child element.
-    // Refer to #newCellElement()
+    // Refer to ./crosswordGridView.mjs:newCellElement()
     const childIndex = cell.labelText ? 2 : 1;
     return this.#cellMap.cellElement(cell).children[childIndex];
   };
@@ -192,7 +192,7 @@ class CrosswordController {
   incorrectElement = (cell) => {
     assert(cell.light, `dark cell! ${cell}`);
     // The incorrect element of a cellElement is the third or fourth child element.
-    // Refer to #newCellElement()
+    // Refer to ./crosswordGridView.mjs:newCellElement()
     const childIndex = cell.labelText ? 3 : 2;
     return this.#cellMap.cellElement(cell).children[childIndex];
   };

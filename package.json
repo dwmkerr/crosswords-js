@@ -31,7 +31,7 @@
   "scripts": {
     "build": "vite build",
     "cssgrid": "vite serve test",
-    "dev:build": "vite build dev",
+    "dev:build": "bin/build-dev.sh",
     "dev:preview": "vite build dev && vite preview dev",
     "dev": "vite serve dev",
     "lint:fix": "eslint --fix *.{js,mjs} src/**/*.{js,mjs} {test,dev}/*.{js,mjs} sample*/*.{js,mjs}",
