@@ -21,6 +21,11 @@
 @link-hover-color: lighten(@highlight-color, 20%);
 @link-visited-color: darken(@highlight-color, 20%);
 
+.crosswords-js {
+  --clue-current-color: @highlight-color;
+}
+
+
 // Restore visibility after html completes loading t0 avoid flash of unstyled content
 // https://stackoverflow.com/a/53364612/1090683
 html {
