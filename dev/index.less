@@ -3,10 +3,10 @@
 // Base styles for crossword grid and clue blocks
 @import url('../style/crosswords.less');
 
-@text-color: darken(white, 10%);
-@highlight-color: #6616b1;
-@background-color: lighten(black, 45%);
-@api-block-background-color: lighten(black, 40%);
+@text-color: white;
+@highlight-color: #026447;
+@background-color: lighten(black, 35%);
+@api-block-background-color: lighten(black, 25%);
 @shadow-color: darken(@background-color, 10%);
 @highlight-text-color: @text-color;
 @font-family: 'PT Sans', sans-serif;
@@ -17,14 +17,13 @@
 @modal-background-color: rgba(0, 0, 0, 0.3); // Black with opacity
 @modal-shadow-color: darken(@background-color, 25%);
 @modal-box-shadow: 10px 10px 10px @modal-shadow-color;
-@link-color: lighten(@highlight-color, 10%);
-@link-hover-color: lighten(@highlight-color, 20%);
-@link-visited-color: darken(@highlight-color, 20%);
+@link-color: lighten(@highlight-color, 70%);
+@link-hover-color: lighten(@highlight-color, 80%);
+@link-visited-color: darken(@highlight-color, 70%);
 
 .crosswords-js {
   --clue-current-color: @highlight-color;
 }
-
 
 // Restore visibility after html completes loading t0 avoid flash of unstyled content
 // https://stackoverflow.com/a/53364612/1090683
