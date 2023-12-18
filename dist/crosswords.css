@@ -1,5 +1,5 @@
 .crosswords-js {
-  /* default grid size, this is overriden in JS */
+  /* default grid size, this is overridden in JS */
   --row-count: 15;
   --column-count: 15;
   --grid-line-size: 1px;
@@ -68,15 +68,12 @@
   width: min-content;
   background-color: var(--grid-background-color);
   color: var(--grid-text-color);
-  box-sizing: content-box;
   font-family: sans-serif;
   font-size: x-large;
 }
-.crossword-grid input {
-  font-size: var(--letter-size);
-}
 .crossword-grid .cwclue-label {
   font-size: var(--label-size);
+  font-weight: 100;
 }
 .crossword-grid .cwcell-revealed {
   /* display a triangle base on border intersections */
@@ -91,15 +88,9 @@
   aspect-ratio: 1;
   z-index: 0;
   display: grid;
-}
-.crossword-grid .cwcell.dark {
-  background-color: var(--cell-background-dark-color);
-}
-.crossword-grid .cwcell.light {
-  background-color: var(--cell-background-light-color);
-}
-.crossword-grid input {
+  align-items: center;
   text-align: center;
+  font-size: var(--letter-size);
   font-weight: var(--letter-weight);
   padding: 0;
   border: 0;
@@ -107,13 +98,19 @@
   width: 100%;
   background-color: var(--cell-background-light-color);
 }
-.crossword-grid input.active {
+.crossword-grid .cwcell.dark {
+  background-color: var(--cell-background-dark-color);
+}
+.crossword-grid .cwcell.light {
+  background-color: var(--cell-background-light-color);
+}
+.crossword-grid .cwcell.active {
   background-color: var(--clue-background-current-color);
 }
-.crossword-grid input.highlighted {
+.crossword-grid .cwcell.highlighted {
   background-color: var(--cell-background-current-color);
 }
-.crossword-grid input:focus {
+.crossword-grid .cwcell:focus {
   outline-width: medium;
   outline-color: var(--focus-outline-color);
   outline-style: dotted;
@@ -155,6 +152,21 @@
   opacity: 0;
   transition: visibility 0s linear 500ms,
       opacity 500ms;
+}
+.crossword-grid .noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
 }
 .crossword-clues {
   display: flex;

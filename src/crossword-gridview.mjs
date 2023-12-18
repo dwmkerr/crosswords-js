@@ -75,16 +75,19 @@ function newCellElement(document, modelCell) {
     return cellElement;
   }
 
-  //  Light cells also need an input.
-  const inputElement = document.createElement('input');
-  // 'name' is not used, but assignment silences chromium-dev-tools issue.
-  inputElement.name = `input-${modelCell}`;
-  inputElement.maxLength = 1;
-  inputElement.size = 1;
-  if (modelCell.answer) {
-    inputElement.value = modelCell.answer;
-  }
-  cellElement.appendChild(inputElement);
+  // light cellElement needs to be tabbable - divs are tabbable in HTML5
+  // Settgin the index to 0 will not interrupt the tab order of the rest
+  // of the elements in the DOM.
+  cellElement.tabIndex = 0;
+  //  Make the cell text content unselectable
+  addClass(cellElement, 'noselect');
+  // Setting .innerHTML, .textContent or .innerText               on a div element will
+  // remove all the child elements created below. We can safely change
+  // only the text content of the div by explicitly creating a Text node,
+  // as the first child node of the cellElement div.
+  // The initial content is set to modelCell.answer or the default of the
+  // space character.
+  cellElement.appendChild(new Text(modelCell.answer ?? ' '));
 
   //  We may need to add a clue label.
   if (modelCell.labelText) {
@@ -106,10 +109,10 @@ function newCellElement(document, modelCell) {
 
   //  Check for clue answer segment terminators (across and/or down)
   if (modelCell.acrossTerminator) {
-    addClass(inputElement, 'cw-across-word-separator');
+    addClass(cellElement, 'cw-across-word-separator');
   }
   if (modelCell.downTerminator) {
-    addClass(inputElement, 'cw-down-word-separator');
+    addClass(cellElement, 'cw-down-word-separator');
   }
 
   return cellElement;
@@ -314,10 +317,10 @@ function deleteCellContent(crosswordController, event, eventCell) {
 }
 
 function setCellContent(crosswordController, event, character) {
-  const ec = crosswordController.cell(event.target.parentNode);
+  const ec = crosswordController.cell(event.target);
 
   //  eslint-disable-next-line no-param-reassign
-  event.target.value = character;
+  event.target.firstChild.nodeValue = character;
 
   //  We need to update the answers
   if (ec.acrossClue) {

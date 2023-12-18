@@ -8,12 +8,9 @@
   grid-template-rows: repeat(var(--row-count), var(--grid-cell-size));
   grid-template-columns: repeat(var(--column-count), var(--grid-cell-size));
 
-  input {
-    font-size: var(--letter-size);
-  }
-
   .cwclue-label {
     font-size: var(--label-size);
+    font-weight: 100;
   }
 
   .cwcell-revealed {
@@ -30,6 +27,8 @@
 
   gap: var(--grid-line-size);
   border-collapse: collapse;
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing
+  // Any border or padding does not grow cell size
   box-sizing: border-box;
   // padding around outside of grid
   padding: var(--grid-line-size);
@@ -37,13 +36,10 @@
 
   background-color: var(--grid-background-color);
   color: var(--grid-text-color);
-  // Any border and padding is outside grids width and height
-  box-sizing: content-box;
   font-family: sans-serif;
   font-size: x-large;
 
   .cwcell {
-    // .cwclue-label, .cwcell-revealed and .cwcell-incorrect
     // children use 'absolute' positioning, 'relative' to parent
     position: relative;
     aspect-ratio: 1;
@@ -51,6 +47,9 @@
     // Grid display still required for correct layout of
     // .cwclue-label, .cwcell-revealed and .cwcell-incorrect
     display: grid;
+    // centre text in cell
+    align-items: center;
+    text-align: center;
 
     &.dark {
       background-color: var(--cell-background-dark-color);
@@ -59,10 +58,8 @@
     &.light {
       background-color: var(--cell-background-light-color);
     }
-  }
 
-  input {
-    text-align: center;
+    font-size: var(--letter-size);
     font-weight: var(--letter-weight);
     // Padding must be disabled
     padding: 0;
@@ -149,6 +146,16 @@
       visibility 0s linear 500ms,
       opacity 500ms;
   }
+
+  .noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
 }
 
 .crossword-clues {
@@ -173,6 +180,7 @@
 .cw-italic {
   font-style: italic;
 }
+
 .cw-bold {
   font-weight: bold;
 }
