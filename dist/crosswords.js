@@ -1,16 +1,16 @@
 var Kr = Object.defineProperty;
 var Vr = (e, n, r) => n in e ? Kr(e, n, { enumerable: !0, configurable: !0, writable: !0, value: r }) : e[n] = r;
-var j = (e, n, r) => (Vr(e, typeof n != "symbol" ? n + "" : n, r), r), Ve = (e, n, r) => {
+var H = (e, n, r) => (Vr(e, typeof n != "symbol" ? n + "" : n, r), r), Ve = (e, n, r) => {
   if (!n.has(e))
     throw TypeError("Cannot " + r);
 };
-var p = (e, n, r) => (Ve(e, n, "read from private field"), r ? r.call(e) : n.get(e)), v = (e, n, r) => {
+var h = (e, n, r) => (Ve(e, n, "read from private field"), r ? r.call(e) : n.get(e)), v = (e, n, r) => {
   if (n.has(e))
     throw TypeError("Cannot add the same private member more than once");
   n instanceof WeakSet ? n.add(e) : n.set(e, r);
 }, D = (e, n, r, i) => (Ve(e, n, "write to private field"), i ? i.call(e, r) : n.set(e, r), r);
 var E = (e, n, r) => (Ve(e, n, "access private method"), r);
-function F(e, n) {
+function I(e, n) {
   e.classList.add(n);
 }
 function Le(e, n) {
@@ -77,14 +77,14 @@ class dn {
      * @param {*} modelCell
      * @returns {HTMLDivElement}
      */
-    j(this, "cellElement", (n) => (d(typeof n == "object", "Cell is not an object"), n.cellElement));
+    H(this, "cellElement", (n) => (d(typeof n == "object", "Cell is not an object"), n.cellElement));
     //  Gets the modelCell for a DOM element.
-    j(this, "modelCell", (n) => {
+    H(this, "modelCell", (n) => {
       switch (typeof n) {
         case "string":
-          return p(this, V)[n];
+          return h(this, V)[n];
         case "object":
-          return p(this, V)[n.dataset.xy];
+          return h(this, V)[n.dataset.xy];
         default:
           d(!0, 'Unexpected type for "cellElement"');
           break;
@@ -97,29 +97,29 @@ class dn {
    * @param {HTMLDivElement} cellElement
    */
   add(n, r) {
-    d(n, "modelCell is null or undefined"), d(r, "cellElement is null or undefined"), p(this, V)[r.dataset.xy] = n;
+    d(n, "modelCell is null or undefined"), d(r, "cellElement is null or undefined"), h(this, V)[r.dataset.xy] = n;
   }
   get modelCells() {
-    return Object.values(p(this, V));
+    return Object.values(h(this, V));
   }
 }
 V = new WeakMap();
-function zr(e, n) {
+function Qr(e, n) {
   x("newCrosswordCluesView"), d(e, "[document] is null or undefined"), d(n, "[controller] is null or undefined"), d(n.model, "[controller.model] is null or undefined");
   function r(o, u) {
     let s = e.createElement("div");
-    F(s, "crossword-clue-block"), s.id = o;
+    I(s, "crossword-clue-block"), s.id = o;
     let c = e.createElement("p");
-    return c.innerHTML = u, F(c, "crossword-clue-block-title"), s.appendChild(c), s;
+    return c.innerHTML = u, I(c, "crossword-clue-block-title"), s.appendChild(c), s;
   }
   function i(o, u, s) {
     s.forEach((c) => {
       let f = e.createElement("div");
-      F(f, "crossword-clue"), f.modelClue = c;
+      I(f, "crossword-clue"), f.modelClue = c;
       let a = e.createElement("span");
-      F(a, "crossword-clue-label"), a.innerHTML = `${c.labelText}`, f.appendChild(a);
+      I(a, "crossword-clue-label"), a.innerHTML = `${c.labelText}`, f.appendChild(a);
       let m = e.createElement("span");
-      F(m, "crossword-clue-text"), m.innerHTML = `${c.clueText} ${c.lengthText}`, f.appendChild(m), f.addEventListener("click", (g) => {
+      I(m, "crossword-clue-text"), m.innerHTML = `${c.clueText} ${c.lengthText}`, f.appendChild(m), f.addEventListener("click", (g) => {
         x(`clue(${c.labelText}):click`), o.lastMoveEvent = "click", o.currentClue = c;
       }), u.appendChild(f);
     });
@@ -140,12 +140,12 @@ function zr(e, n) {
   };
   return Le(l.wrapper, ["crosswords-js", "crossword-clues"]), i(n, l.acrossClues, n.model.acrossClues), l.wrapper.appendChild(l.acrossClues), i(n, l.downClues, n.model.downClues), l.wrapper.appendChild(l.downClues), n.addEventsListener(["clueSelected"], (o) => {
     for (const u of l.acrossClues.children)
-      t(u.modelClue) ? F(u, "current-clue-segment") : ke(u, "current-clue-segment");
+      t(u.modelClue) ? I(u, "current-clue-segment") : ke(u, "current-clue-segment");
     for (const u of l.downClues.children)
-      t(u.modelClue) ? F(u, "current-clue-segment") : ke(u, "current-clue-segment");
+      t(u.modelClue) ? I(u, "current-clue-segment") : ke(u, "current-clue-segment");
   }), l.wrapper;
 }
-function Qr(e, n, r) {
+function zr(e, n, r) {
   x("newCrosswordGridView"), d(
     e,
     "DOM root element [document] argument is null or undefined."
@@ -164,17 +164,16 @@ function Qr(e, n, r) {
 }
 function Xr(e, n) {
   let r = e.createElement("div");
-  if (r.dataset.xy = n, F(r, "cwcell"), n.cellElement = r, F(r, n.light ? "light" : "dark"), !n.light)
+  if (r.dataset.xy = n, I(r, "cwcell"), n.cellElement = r, I(r, n.light ? "light" : "dark"), !n.light)
     return r;
-  const i = e.createElement("input");
-  if (i.name = `input-${n}`, i.maxLength = 1, i.size = 1, n.answer && (i.value = n.answer), r.appendChild(i), n.labelText) {
-    const o = e.createElement("div");
-    F(o, "cwclue-label"), o.innerHTML = n.labelText, r.appendChild(o);
+  if (r.tabIndex = 0, I(r, "noselect"), r.appendChild(new Text(n.answer ?? " ")), n.labelText) {
+    const l = e.createElement("div");
+    I(l, "cwclue-label"), l.innerHTML = n.labelText, r.appendChild(l);
   }
+  const i = e.createElement("div");
+  Le(i, ["cwcell-revealed", "hidden"]), r.appendChild(i);
   const t = e.createElement("div");
-  Le(t, ["cwcell-revealed", "hidden"]), r.appendChild(t);
-  const l = e.createElement("div");
-  return Le(l, ["cwcell-incorrect", "hidden"]), r.appendChild(l), n.acrossTerminator && F(i, "cw-across-word-separator"), n.downTerminator && F(i, "cw-down-word-separator"), r;
+  return Le(t, ["cwcell-incorrect", "hidden"]), r.appendChild(t), n.acrossTerminator && I(r, "cw-across-word-separator"), n.downTerminator && I(r, "cw-down-word-separator"), r;
 }
 function Rn(e, n) {
   const [r, i, t] = [
@@ -259,8 +258,8 @@ function pn(e, n, r) {
   Kn(e, n, " "), ue(e.incorrectElement(r));
 }
 function Kn(e, n, r) {
-  const i = e.cell(n.target.parentNode);
-  n.target.value = r, i.acrossClue && (i.acrossClue.answer = oe(
+  const i = e.cell(n.target);
+  n.target.firstChild.nodeValue = r, i.acrossClue && (i.acrossClue.answer = oe(
     i.acrossClue.answer,
     i.acrossClueLetterIndex,
     r
@@ -279,11 +278,11 @@ function ei(e, n, r) {
   d(n, "newClue is undefined"), r == null || r.headSegment.flatCells.forEach((i) => {
     ke(e.inputElement(i), "active");
   }), n.headSegment.flatCells.forEach((i) => {
-    F(e.inputElement(i), "active");
+    I(e.inputElement(i), "active");
   });
 }
 function ni(e, n, r) {
-  d(n, "newCell is undefined"), r && ke(e.inputElement(r), "highlighted"), F(e.inputElement(n), "highlighted");
+  d(n, "newCell is undefined"), r && ke(e.inputElement(r), "highlighted"), I(e.inputElement(n), "highlighted");
 }
 const M = Object.freeze({
   backspace: "Backspace",
@@ -321,7 +320,7 @@ function ii(e) {
     rn(e, n);
   });
 }
-const T = Object.freeze({
+const _ = Object.freeze({
   correct: 0,
   // 0 elements empty, N elements correct
   incorrect: 1,
@@ -330,7 +329,7 @@ const T = Object.freeze({
   // 1+ elements empty, 0 elements incorrect
 });
 function Pe(e, n) {
-  return e ? T.incorrect : n ? T.incomplete : T.correct;
+  return e ? _.incorrect : n ? _.incomplete : _.correct;
 }
 function Ue(e, n, r = !0) {
   d(e, "<controller> is null or undefined"), d(n, "<cell> is null or undefined");
@@ -338,14 +337,14 @@ function Ue(e, n, r = !0) {
     !(l === o || l === " "),
     l === " " || l === void 0
   );
-  return u === T.incorrect && r && Vn(e.incorrectElement(n)), u;
+  return u === _.incorrect && r && Vn(e.incorrectElement(n)), u;
 }
 function ti(e, n, r = !0) {
   d(e, "<controller> is null or undefined"), d(n, "<clue> is null or undefined"), x(`testClue: '${n}'`);
   let i = 0, t = 0;
   return n.headSegment.flatCells.forEach((l) => {
     const o = Ue(e, l, r);
-    o === T.incorrect ? i += 1 : o === T.incomplete && (t += 1);
+    o === _.incorrect ? i += 1 : o === _.incomplete && (t += 1);
   }), Pe(i > 0, t > 0);
 }
 function li(e, n = !0) {
@@ -353,7 +352,7 @@ function li(e, n = !0) {
   let r = 0, i = 0;
   return e.model.lightCells.forEach((t) => {
     const l = Ue(e, t, n);
-    l === T.incorrect ? r += 1 : l === T.incomplete && (i += 1);
+    l === _.incorrect ? r += 1 : l === _.incomplete && (i += 1);
   }), Pe(r > 0, i > 0);
 }
 function oi(e) {
@@ -362,9 +361,9 @@ function oi(e) {
   const i = !1;
   return e.model.lightCells.find((t) => {
     const l = Ue(e, t, i);
-    if (l === T.incorrect)
+    if (l === _.incorrect)
       return n += 1, !0;
-    if (l === T.incomplete)
+    if (l === _.incomplete)
       return r += 1, !0;
   }), Pe(n > 0, r > 0);
 }
@@ -387,7 +386,7 @@ function Ye(e, n, r, i = !0) {
     const o = n.downClueLetterIndex;
     t(l, o);
   }
-  e.inputElement(n).value = r;
+  e.setInputElementText(n, r);
 }
 function qn(e, n, r = !1) {
   d(e, "<controller> is null or undefined"), d(n, "<cell> is null or undefined"), Ye(e, n, " "), ue(e.incorrectElement(n)), r && ue(e.revealedElement(n));
@@ -404,7 +403,7 @@ function si(e) {
 }
 function Gn(e, n) {
   d(e, "<controller> is null or undefined"), d(n, "<cell> is null or undefined");
-  const r = Ue(e, n) === T.incorrect;
+  const r = Ue(e, n) === _.incorrect;
   r && (Ye(e, n, " ", r), ue(e.incorrectElement(n)));
 }
 function ci(e, n) {
@@ -451,21 +450,21 @@ var gi = Wn, xi = fi, Ci = di, wi = pi, vi = mi, yi = hi, S = {
   isNegativeZero: vi,
   extend: yi
 };
-function zn(e, n) {
+function Qn(e, n) {
   var r = "", i = e.reason || "(unknown reason)";
   return e.mark ? (e.mark.name && (r += 'in "' + e.mark.name + '" '), r += "(" + (e.mark.line + 1) + ":" + (e.mark.column + 1) + ")", !n && e.mark.snippet && (r += `
 
 ` + e.mark.snippet), i + " " + r) : i;
 }
 function de(e, n) {
-  Error.call(this), this.name = "YAMLException", this.reason = e, this.mark = n, this.message = zn(this, !1), Error.captureStackTrace ? Error.captureStackTrace(this, this.constructor) : this.stack = new Error().stack || "";
+  Error.call(this), this.name = "YAMLException", this.reason = e, this.mark = n, this.message = Qn(this, !1), Error.captureStackTrace ? Error.captureStackTrace(this, this.constructor) : this.stack = new Error().stack || "";
 }
 de.prototype = Object.create(Error.prototype);
 de.prototype.constructor = de;
 de.prototype.toString = function(n) {
-  return this.name + ": " + zn(this, n);
+  return this.name + ": " + Qn(this, n);
 };
-var I = de;
+var F = de;
 function qe(e, n, r, i, t) {
   var l = "", o = "", u = Math.floor(t / 2) - 1;
   return i - n > u && (l = " ... ", n = i - u + l.length), r - i > u && (o = " ...", r = i + u - o.length), {
@@ -523,7 +522,7 @@ var Ai = Ei, bi = [
   "sequence",
   "mapping"
 ];
-function _i(e) {
+function Ti(e) {
   var n = {};
   return e !== null && Object.keys(e).forEach(function(r) {
     e[r].forEach(function(i) {
@@ -531,18 +530,18 @@ function _i(e) {
     });
   }), n;
 }
-function Ti(e, n) {
+function _i(e, n) {
   if (n = n || {}, Object.keys(n).forEach(function(r) {
     if (bi.indexOf(r) === -1)
-      throw new I('Unknown option "' + r + '" is met in definition of "' + e + '" YAML type.');
+      throw new F('Unknown option "' + r + '" is met in definition of "' + e + '" YAML type.');
   }), this.options = n, this.tag = e, this.kind = n.kind || null, this.resolve = n.resolve || function() {
     return !0;
   }, this.construct = n.construct || function(r) {
     return r;
-  }, this.instanceOf = n.instanceOf || null, this.predicate = n.predicate || null, this.represent = n.represent || null, this.representName = n.representName || null, this.defaultStyle = n.defaultStyle || null, this.multi = n.multi || !1, this.styleAliases = _i(n.styleAliases || null), Si.indexOf(this.kind) === -1)
-    throw new I('Unknown kind "' + this.kind + '" is specified for "' + e + '" YAML type.');
+  }, this.instanceOf = n.instanceOf || null, this.predicate = n.predicate || null, this.represent = n.represent || null, this.representName = n.representName || null, this.defaultStyle = n.defaultStyle || null, this.multi = n.multi || !1, this.styleAliases = Ti(n.styleAliases || null), Si.indexOf(this.kind) === -1)
+    throw new F('Unknown kind "' + this.kind + '" is specified for "' + e + '" YAML type.');
 }
-var _ = Ti;
+var T = _i;
 function mn(e, n) {
   var r = [];
   return e[n].forEach(function(i) {
@@ -572,49 +571,49 @@ function Li() {
     arguments[n].forEach(i);
   return e;
 }
-function ze(e) {
+function Qe(e) {
   return this.extend(e);
 }
-ze.prototype.extend = function(n) {
+Qe.prototype.extend = function(n) {
   var r = [], i = [];
-  if (n instanceof _)
+  if (n instanceof T)
     i.push(n);
   else if (Array.isArray(n))
     i = i.concat(n);
   else if (n && (Array.isArray(n.implicit) || Array.isArray(n.explicit)))
     n.implicit && (r = r.concat(n.implicit)), n.explicit && (i = i.concat(n.explicit));
   else
-    throw new I("Schema.extend argument should be a Type, [ Type ], or a schema definition ({ implicit: [...], explicit: [...] })");
+    throw new F("Schema.extend argument should be a Type, [ Type ], or a schema definition ({ implicit: [...], explicit: [...] })");
   r.forEach(function(l) {
-    if (!(l instanceof _))
-      throw new I("Specified list of YAML types (or a single Type object) contains a non-Type object.");
+    if (!(l instanceof T))
+      throw new F("Specified list of YAML types (or a single Type object) contains a non-Type object.");
     if (l.loadKind && l.loadKind !== "scalar")
-      throw new I("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.");
+      throw new F("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.");
     if (l.multi)
-      throw new I("There is a multi type in the implicit list of a schema. Multi tags can only be listed as explicit.");
+      throw new F("There is a multi type in the implicit list of a schema. Multi tags can only be listed as explicit.");
   }), i.forEach(function(l) {
-    if (!(l instanceof _))
-      throw new I("Specified list of YAML types (or a single Type object) contains a non-Type object.");
+    if (!(l instanceof T))
+      throw new F("Specified list of YAML types (or a single Type object) contains a non-Type object.");
   });
-  var t = Object.create(ze.prototype);
+  var t = Object.create(Qe.prototype);
   return t.implicit = (this.implicit || []).concat(r), t.explicit = (this.explicit || []).concat(i), t.compiledImplicit = mn(t, "implicit"), t.compiledExplicit = mn(t, "explicit"), t.compiledTypeMap = Li(t.compiledImplicit, t.compiledExplicit), t;
 };
-var Qn = ze, Xn = new _("tag:yaml.org,2002:str", {
+var zn = Qe, Xn = new T("tag:yaml.org,2002:str", {
   kind: "scalar",
   construct: function(e) {
     return e !== null ? e : "";
   }
-}), Zn = new _("tag:yaml.org,2002:seq", {
+}), Zn = new T("tag:yaml.org,2002:seq", {
   kind: "sequence",
   construct: function(e) {
     return e !== null ? e : [];
   }
-}), Jn = new _("tag:yaml.org,2002:map", {
+}), Jn = new T("tag:yaml.org,2002:map", {
   kind: "mapping",
   construct: function(e) {
     return e !== null ? e : {};
   }
-}), er = new Qn({
+}), er = new zn({
   explicit: [
     Xn,
     Zn,
@@ -633,7 +632,7 @@ function Ii() {
 function Fi(e) {
   return e === null;
 }
-var nr = new _("tag:yaml.org,2002:null", {
+var nr = new T("tag:yaml.org,2002:null", {
   kind: "scalar",
   resolve: ki,
   construct: Ii,
@@ -669,7 +668,7 @@ function Ni(e) {
 function $i(e) {
   return Object.prototype.toString.call(e) === "[object Boolean]";
 }
-var rr = new _("tag:yaml.org,2002:bool", {
+var rr = new T("tag:yaml.org,2002:bool", {
   kind: "scalar",
   resolve: Oi,
   construct: Ni,
@@ -760,7 +759,7 @@ function Hi(e) {
 function ji(e) {
   return Object.prototype.toString.call(e) === "[object Number]" && e % 1 === 0 && !S.isNegativeZero(e);
 }
-var ir = new _("tag:yaml.org,2002:int", {
+var ir = new T("tag:yaml.org,2002:int", {
   kind: "scalar",
   resolve: Bi,
   construct: Hi,
@@ -837,7 +836,7 @@ function Vi(e, n) {
 function qi(e) {
   return Object.prototype.toString.call(e) === "[object Number]" && (e % 1 !== 0 || S.isNegativeZero(e));
 }
-var tr = new _("tag:yaml.org,2002:float", {
+var tr = new T("tag:yaml.org,2002:float", {
   kind: "scalar",
   resolve: Ui,
   construct: Yi,
@@ -872,22 +871,22 @@ function Wi(e) {
   }
   return n[9] && (f = +n[10], a = +(n[11] || 0), c = (f * 60 + a) * 6e4, n[9] === "-" && (c = -c)), m = new Date(Date.UTC(r, i, t, l, o, u, s)), c && m.setTime(m.getTime() - c), m;
 }
-function zi(e) {
+function Qi(e) {
   return e.toISOString();
 }
-var cr = new _("tag:yaml.org,2002:timestamp", {
+var cr = new T("tag:yaml.org,2002:timestamp", {
   kind: "scalar",
   resolve: Gi,
   construct: Wi,
   instanceOf: Date,
-  represent: zi
+  represent: Qi
 });
-function Qi(e) {
+function zi(e) {
   return e === "<<" || e === null;
 }
-var ar = new _("tag:yaml.org,2002:merge", {
+var ar = new T("tag:yaml.org,2002:merge", {
   kind: "scalar",
-  resolve: Qi
+  resolve: zi
 }), tn = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=
 \r`;
 function Xi(e) {
@@ -917,7 +916,7 @@ function Ji(e) {
 function et(e) {
   return Object.prototype.toString.call(e) === "[object Uint8Array]";
 }
-var fr = new _("tag:yaml.org,2002:binary", {
+var fr = new T("tag:yaml.org,2002:binary", {
   kind: "scalar",
   resolve: Xi,
   construct: Zi,
@@ -949,7 +948,7 @@ function it(e) {
 function tt(e) {
   return e !== null ? e : [];
 }
-var dr = new _("tag:yaml.org,2002:omap", {
+var dr = new T("tag:yaml.org,2002:omap", {
   kind: "sequence",
   resolve: it,
   construct: tt
@@ -973,7 +972,7 @@ function ut(e) {
     i = o[n], t = Object.keys(i), l[n] = [t[0], i[t[0]]];
   return l;
 }
-var hr = new _("tag:yaml.org,2002:pairs", {
+var hr = new T("tag:yaml.org,2002:pairs", {
   kind: "sequence",
   resolve: ot,
   construct: ut
@@ -990,7 +989,7 @@ function ct(e) {
 function at(e) {
   return e !== null ? e : {};
 }
-var pr = new _("tag:yaml.org,2002:set", {
+var pr = new T("tag:yaml.org,2002:set", {
   kind: "mapping",
   resolve: ct,
   construct: at
@@ -1012,10 +1011,10 @@ function xn(e) {
 function B(e) {
   return e === 10 || e === 13;
 }
-function Q(e) {
+function z(e) {
   return e === 9 || e === 32;
 }
-function O(e) {
+function N(e) {
   return e === 9 || e === 32 || e === 10 || e === 13;
 }
 function ne(e) {
@@ -1056,9 +1055,9 @@ function yr(e, n) {
     line: e.line,
     column: e.position - e.lineStart
   };
-  return r.snippet = Ai(r), new I(n, r);
+  return r.snippet = Ai(r), new F(n, r);
 }
-function h(e, n) {
+function p(e, n) {
   throw yr(e, n);
 }
 function Oe(e, n) {
@@ -1067,15 +1066,15 @@ function Oe(e, n) {
 var wn = {
   YAML: function(n, r, i) {
     var t, l, o;
-    n.version !== null && h(n, "duplication of %YAML directive"), i.length !== 1 && h(n, "YAML directive accepts exactly one argument"), t = /^([0-9]+)\.([0-9]+)$/.exec(i[0]), t === null && h(n, "ill-formed argument of the YAML directive"), l = parseInt(t[1], 10), o = parseInt(t[2], 10), l !== 1 && h(n, "unacceptable YAML version of the document"), n.version = i[0], n.checkLineBreaks = o < 2, o !== 1 && o !== 2 && Oe(n, "unsupported YAML version of the document");
+    n.version !== null && p(n, "duplication of %YAML directive"), i.length !== 1 && p(n, "YAML directive accepts exactly one argument"), t = /^([0-9]+)\.([0-9]+)$/.exec(i[0]), t === null && p(n, "ill-formed argument of the YAML directive"), l = parseInt(t[1], 10), o = parseInt(t[2], 10), l !== 1 && p(n, "unacceptable YAML version of the document"), n.version = i[0], n.checkLineBreaks = o < 2, o !== 1 && o !== 2 && Oe(n, "unsupported YAML version of the document");
   },
   TAG: function(n, r, i) {
     var t, l;
-    i.length !== 2 && h(n, "TAG directive accepts exactly two arguments"), t = i[0], l = i[1], xr.test(t) || h(n, "ill-formed tag handle (first argument) of the TAG directive"), K.call(n.tagMap, t) && h(n, 'there is a previously declared suffix for "' + t + '" tag handle'), Cr.test(l) || h(n, "ill-formed tag prefix (second argument) of the TAG directive");
+    i.length !== 2 && p(n, "TAG directive accepts exactly two arguments"), t = i[0], l = i[1], xr.test(t) || p(n, "ill-formed tag handle (first argument) of the TAG directive"), K.call(n.tagMap, t) && p(n, 'there is a previously declared suffix for "' + t + '" tag handle'), Cr.test(l) || p(n, "ill-formed tag prefix (second argument) of the TAG directive");
     try {
       l = decodeURIComponent(l);
     } catch {
-      h(n, "tag prefix is malformed: " + l);
+      p(n, "tag prefix is malformed: " + l);
     }
     n.tagMap[t] = l;
   }
@@ -1085,22 +1084,22 @@ function Y(e, n, r, i) {
   if (n < r) {
     if (u = e.input.slice(n, r), i)
       for (t = 0, l = u.length; t < l; t += 1)
-        o = u.charCodeAt(t), o === 9 || 32 <= o && o <= 1114111 || h(e, "expected valid JSON character");
+        o = u.charCodeAt(t), o === 9 || 32 <= o && o <= 1114111 || p(e, "expected valid JSON character");
     else
-      dt.test(u) && h(e, "the stream contains non-printable characters");
+      dt.test(u) && p(e, "the stream contains non-printable characters");
     e.result += u;
   }
 }
 function vn(e, n, r, i) {
   var t, l, o, u;
-  for (S.isObject(r) || h(e, "cannot merge mappings; the provided source object is unacceptable"), t = Object.keys(r), o = 0, u = t.length; o < u; o += 1)
+  for (S.isObject(r) || p(e, "cannot merge mappings; the provided source object is unacceptable"), t = Object.keys(r), o = 0, u = t.length; o < u; o += 1)
     l = t[o], K.call(n, l) || (n[l] = r[l], i[l] = !0);
 }
 function re(e, n, r, i, t, l, o, u, s) {
   var c, f;
   if (Array.isArray(t))
     for (t = Array.prototype.slice.call(t), c = 0, f = t.length; c < f; c += 1)
-      Array.isArray(t[c]) && h(e, "nested arrays are not supported inside keys"), typeof t == "object" && xn(t[c]) === "[object Object]" && (t[c] = "[object Object]");
+      Array.isArray(t[c]) && p(e, "nested arrays are not supported inside keys"), typeof t == "object" && xn(t[c]) === "[object Object]" && (t[c] = "[object Object]");
   if (typeof t == "object" && xn(t) === "[object Object]" && (t = "[object Object]"), t = String(t), n === null && (n = {}), i === "tag:yaml.org,2002:merge")
     if (Array.isArray(l))
       for (c = 0, f = l.length; c < f; c += 1)
@@ -1108,7 +1107,7 @@ function re(e, n, r, i, t, l, o, u, s) {
     else
       vn(e, n, l, r);
   else
-    !e.json && !K.call(r, t) && K.call(n, t) && (e.line = o || e.line, e.lineStart = u || e.lineStart, e.position = s || e.position, h(e, "duplicated mapping key")), t === "__proto__" ? Object.defineProperty(n, t, {
+    !e.json && !K.call(r, t) && K.call(n, t) && (e.line = o || e.line, e.lineStart = u || e.lineStart, e.position = s || e.position, p(e, "duplicated mapping key")), t === "__proto__" ? Object.defineProperty(n, t, {
       configurable: !0,
       enumerable: !0,
       writable: !0,
@@ -1118,11 +1117,11 @@ function re(e, n, r, i, t, l, o, u, s) {
 }
 function on(e) {
   var n;
-  n = e.input.charCodeAt(e.position), n === 10 ? e.position++ : n === 13 ? (e.position++, e.input.charCodeAt(e.position) === 10 && e.position++) : h(e, "a line break is expected"), e.line += 1, e.lineStart = e.position, e.firstTabInLine = -1;
+  n = e.input.charCodeAt(e.position), n === 10 ? e.position++ : n === 13 ? (e.position++, e.input.charCodeAt(e.position) === 10 && e.position++) : p(e, "a line break is expected"), e.line += 1, e.lineStart = e.position, e.firstTabInLine = -1;
 }
 function b(e, n, r) {
   for (var i = 0, t = e.input.charCodeAt(e.position); t !== 0; ) {
-    for (; Q(t); )
+    for (; z(t); )
       t === 9 && e.firstTabInLine === -1 && (e.firstTabInLine = e.position), t = e.input.charCodeAt(++e.position);
     if (n && t === 35)
       do
@@ -1138,7 +1137,7 @@ function b(e, n, r) {
 }
 function Ke(e) {
   var n = e.position, r;
-  return r = e.input.charCodeAt(n), !!((r === 45 || r === 46) && r === e.input.charCodeAt(n + 1) && r === e.input.charCodeAt(n + 2) && (n += 3, r = e.input.charCodeAt(n), r === 0 || O(r)));
+  return r = e.input.charCodeAt(n), !!((r === 45 || r === 46) && r === e.input.charCodeAt(n + 1) && r === e.input.charCodeAt(n + 2) && (n += 3, r = e.input.charCodeAt(n), r === 0 || N(r)));
 }
 function un(e, n) {
   n === 1 ? e.result += " " : n > 1 && (e.result += S.repeat(`
@@ -1146,14 +1145,14 @@ function un(e, n) {
 }
 function vt(e, n, r) {
   var i, t, l, o, u, s, c, f, a = e.kind, m = e.result, g;
-  if (g = e.input.charCodeAt(e.position), O(g) || ne(g) || g === 35 || g === 38 || g === 42 || g === 33 || g === 124 || g === 62 || g === 39 || g === 34 || g === 37 || g === 64 || g === 96 || (g === 63 || g === 45) && (t = e.input.charCodeAt(e.position + 1), O(t) || r && ne(t)))
+  if (g = e.input.charCodeAt(e.position), N(g) || ne(g) || g === 35 || g === 38 || g === 42 || g === 33 || g === 124 || g === 62 || g === 39 || g === 34 || g === 37 || g === 64 || g === 96 || (g === 63 || g === 45) && (t = e.input.charCodeAt(e.position + 1), N(t) || r && ne(t)))
     return !1;
   for (e.kind = "scalar", e.result = "", l = o = e.position, u = !1; g !== 0; ) {
     if (g === 58) {
-      if (t = e.input.charCodeAt(e.position + 1), O(t) || r && ne(t))
+      if (t = e.input.charCodeAt(e.position + 1), N(t) || r && ne(t))
         break;
     } else if (g === 35) {
-      if (i = e.input.charCodeAt(e.position - 1), O(i))
+      if (i = e.input.charCodeAt(e.position - 1), N(i))
         break;
     } else {
       if (e.position === e.lineStart && Ke(e) || r && ne(g))
@@ -1167,7 +1166,7 @@ function vt(e, n, r) {
           break;
         }
     }
-    u && (Y(e, l, o, !1), un(e, e.line - s), l = o = e.position, u = !1), Q(g) || (o = e.position + 1), g = e.input.charCodeAt(++e.position);
+    u && (Y(e, l, o, !1), un(e, e.line - s), l = o = e.position, u = !1), z(g) || (o = e.position + 1), g = e.input.charCodeAt(++e.position);
   }
   return Y(e, l, o, !1), e.result ? !0 : (e.kind = a, e.result = m, !1);
 }
@@ -1182,8 +1181,8 @@ function yt(e, n) {
       else
         return !0;
     else
-      B(r) ? (Y(e, i, t, !0), un(e, b(e, !1, n)), i = t = e.position) : e.position === e.lineStart && Ke(e) ? h(e, "unexpected end of the document within a single quoted scalar") : (e.position++, t = e.position);
-  h(e, "unexpected end of the stream within a single quoted scalar");
+      B(r) ? (Y(e, i, t, !0), un(e, b(e, !1, n)), i = t = e.position) : e.position === e.lineStart && Ke(e) ? p(e, "unexpected end of the document within a single quoted scalar") : (e.position++, t = e.position);
+  p(e, "unexpected end of the stream within a single quoted scalar");
 }
 function Et(e, n) {
   var r, i, t, l, o, u;
@@ -1199,18 +1198,18 @@ function Et(e, n) {
         e.result += vr[u], e.position++;
       else if ((o = gt(u)) > 0) {
         for (t = o, l = 0; t > 0; t--)
-          u = e.input.charCodeAt(++e.position), (o = mt(u)) >= 0 ? l = (l << 4) + o : h(e, "expected hexadecimal character");
+          u = e.input.charCodeAt(++e.position), (o = mt(u)) >= 0 ? l = (l << 4) + o : p(e, "expected hexadecimal character");
         e.result += Ct(l), e.position++;
       } else
-        h(e, "unknown escape sequence");
+        p(e, "unknown escape sequence");
       r = i = e.position;
     } else
-      B(u) ? (Y(e, r, i, !0), un(e, b(e, !1, n)), r = i = e.position) : e.position === e.lineStart && Ke(e) ? h(e, "unexpected end of the document within a double quoted scalar") : (e.position++, i = e.position);
+      B(u) ? (Y(e, r, i, !0), un(e, b(e, !1, n)), r = i = e.position) : e.position === e.lineStart && Ke(e) ? p(e, "unexpected end of the document within a double quoted scalar") : (e.position++, i = e.position);
   }
-  h(e, "unexpected end of the stream within a double quoted scalar");
+  p(e, "unexpected end of the stream within a double quoted scalar");
 }
 function At(e, n) {
-  var r = !0, i, t, l, o = e.tag, u, s = e.anchor, c, f, a, m, g, C = /* @__PURE__ */ Object.create(null), y, A, N, w;
+  var r = !0, i, t, l, o = e.tag, u, s = e.anchor, c, f, a, m, g, C = /* @__PURE__ */ Object.create(null), y, A, $, w;
   if (w = e.input.charCodeAt(e.position), w === 91)
     f = 93, g = !1, u = [];
   else if (w === 123)
@@ -1220,9 +1219,9 @@ function At(e, n) {
   for (e.anchor !== null && (e.anchorMap[e.anchor] = u), w = e.input.charCodeAt(++e.position); w !== 0; ) {
     if (b(e, !0, n), w = e.input.charCodeAt(e.position), w === f)
       return e.position++, e.tag = o, e.anchor = s, e.kind = g ? "mapping" : "sequence", e.result = u, !0;
-    r ? w === 44 && h(e, "expected the node content, but found ','") : h(e, "missed comma between flow collection entries"), A = y = N = null, a = m = !1, w === 63 && (c = e.input.charCodeAt(e.position + 1), O(c) && (a = m = !0, e.position++, b(e, !0, n))), i = e.line, t = e.lineStart, l = e.position, se(e, n, Ie, !1, !0), A = e.tag, y = e.result, b(e, !0, n), w = e.input.charCodeAt(e.position), (m || e.line === i) && w === 58 && (a = !0, w = e.input.charCodeAt(++e.position), b(e, !0, n), se(e, n, Ie, !1, !0), N = e.result), g ? re(e, u, C, A, y, N, i, t, l) : a ? u.push(re(e, null, C, A, y, N, i, t, l)) : u.push(y), b(e, !0, n), w = e.input.charCodeAt(e.position), w === 44 ? (r = !0, w = e.input.charCodeAt(++e.position)) : r = !1;
+    r ? w === 44 && p(e, "expected the node content, but found ','") : p(e, "missed comma between flow collection entries"), A = y = $ = null, a = m = !1, w === 63 && (c = e.input.charCodeAt(e.position + 1), N(c) && (a = m = !0, e.position++, b(e, !0, n))), i = e.line, t = e.lineStart, l = e.position, se(e, n, Ie, !1, !0), A = e.tag, y = e.result, b(e, !0, n), w = e.input.charCodeAt(e.position), (m || e.line === i) && w === 58 && (a = !0, w = e.input.charCodeAt(++e.position), b(e, !0, n), se(e, n, Ie, !1, !0), $ = e.result), g ? re(e, u, C, A, y, $, i, t, l) : a ? u.push(re(e, null, C, A, y, $, i, t, l)) : u.push(y), b(e, !0, n), w = e.input.charCodeAt(e.position), w === 44 ? (r = !0, w = e.input.charCodeAt(++e.position)) : r = !1;
   }
-  h(e, "unexpected end of the stream within a flow collection");
+  p(e, "unexpected end of the stream within a flow collection");
 }
 function bt(e, n) {
   var r, i, t = We, l = !1, o = !1, u = n, s = 0, c = !1, f, a;
@@ -1234,15 +1233,15 @@ function bt(e, n) {
     return !1;
   for (e.kind = "scalar", e.result = ""; a !== 0; )
     if (a = e.input.charCodeAt(++e.position), a === 43 || a === 45)
-      We === t ? t = a === 43 ? gn : ft : h(e, "repeat of a chomping mode identifier");
+      We === t ? t = a === 43 ? gn : ft : p(e, "repeat of a chomping mode identifier");
     else if ((f = xt(a)) >= 0)
-      f === 0 ? h(e, "bad explicit indentation width of a block scalar; it cannot be less than one") : o ? h(e, "repeat of an indentation width identifier") : (u = n + f - 1, o = !0);
+      f === 0 ? p(e, "bad explicit indentation width of a block scalar; it cannot be less than one") : o ? p(e, "repeat of an indentation width identifier") : (u = n + f - 1, o = !0);
     else
       break;
-  if (Q(a)) {
+  if (z(a)) {
     do
       a = e.input.charCodeAt(++e.position);
-    while (Q(a));
+    while (z(a));
     if (a === 35)
       do
         a = e.input.charCodeAt(++e.position);
@@ -1261,7 +1260,7 @@ function bt(e, n) {
 `);
       break;
     }
-    for (i ? Q(a) ? (c = !0, e.result += S.repeat(`
+    for (i ? z(a) ? (c = !0, e.result += S.repeat(`
 `, l ? 1 + s : s)) : c ? (c = !1, e.result += S.repeat(`
 `, s + 1)) : s === 0 ? l && (e.result += " ") : e.result += S.repeat(`
 `, s) : e.result += S.repeat(`
@@ -1275,96 +1274,96 @@ function yn(e, n) {
   var r, i = e.tag, t = e.anchor, l = [], o, u = !1, s;
   if (e.firstTabInLine !== -1)
     return !1;
-  for (e.anchor !== null && (e.anchorMap[e.anchor] = l), s = e.input.charCodeAt(e.position); s !== 0 && (e.firstTabInLine !== -1 && (e.position = e.firstTabInLine, h(e, "tab characters must not be used in indentation")), !(s !== 45 || (o = e.input.charCodeAt(e.position + 1), !O(o)))); ) {
+  for (e.anchor !== null && (e.anchorMap[e.anchor] = l), s = e.input.charCodeAt(e.position); s !== 0 && (e.firstTabInLine !== -1 && (e.position = e.firstTabInLine, p(e, "tab characters must not be used in indentation")), !(s !== 45 || (o = e.input.charCodeAt(e.position + 1), !N(o)))); ) {
     if (u = !0, e.position++, b(e, !0, -1) && e.lineIndent <= n) {
       l.push(null), s = e.input.charCodeAt(e.position);
       continue;
     }
     if (r = e.line, se(e, n, gr, !1, !0), l.push(e.result), b(e, !0, -1), s = e.input.charCodeAt(e.position), (e.line === r || e.lineIndent > n) && s !== 0)
-      h(e, "bad indentation of a sequence entry");
+      p(e, "bad indentation of a sequence entry");
     else if (e.lineIndent < n)
       break;
   }
   return u ? (e.tag = i, e.anchor = t, e.kind = "sequence", e.result = l, !0) : !1;
 }
 function St(e, n, r) {
-  var i, t, l, o, u, s, c = e.tag, f = e.anchor, a = {}, m = /* @__PURE__ */ Object.create(null), g = null, C = null, y = null, A = !1, N = !1, w;
+  var i, t, l, o, u, s, c = e.tag, f = e.anchor, a = {}, m = /* @__PURE__ */ Object.create(null), g = null, C = null, y = null, A = !1, $ = !1, w;
   if (e.firstTabInLine !== -1)
     return !1;
   for (e.anchor !== null && (e.anchorMap[e.anchor] = a), w = e.input.charCodeAt(e.position); w !== 0; ) {
-    if (!A && e.firstTabInLine !== -1 && (e.position = e.firstTabInLine, h(e, "tab characters must not be used in indentation")), i = e.input.charCodeAt(e.position + 1), l = e.line, (w === 63 || w === 58) && O(i))
-      w === 63 ? (A && (re(e, a, m, g, C, null, o, u, s), g = C = y = null), N = !0, A = !0, t = !0) : A ? (A = !1, t = !0) : h(e, "incomplete explicit mapping pair; a key node is missed; or followed by a non-tabulated empty line"), e.position += 1, w = i;
+    if (!A && e.firstTabInLine !== -1 && (e.position = e.firstTabInLine, p(e, "tab characters must not be used in indentation")), i = e.input.charCodeAt(e.position + 1), l = e.line, (w === 63 || w === 58) && N(i))
+      w === 63 ? (A && (re(e, a, m, g, C, null, o, u, s), g = C = y = null), $ = !0, A = !0, t = !0) : A ? (A = !1, t = !0) : p(e, "incomplete explicit mapping pair; a key node is missed; or followed by a non-tabulated empty line"), e.position += 1, w = i;
     else {
       if (o = e.line, u = e.lineStart, s = e.position, !se(e, r, mr, !1, !0))
         break;
       if (e.line === l) {
-        for (w = e.input.charCodeAt(e.position); Q(w); )
+        for (w = e.input.charCodeAt(e.position); z(w); )
           w = e.input.charCodeAt(++e.position);
         if (w === 58)
-          w = e.input.charCodeAt(++e.position), O(w) || h(e, "a whitespace character is expected after the key-value separator within a block mapping"), A && (re(e, a, m, g, C, null, o, u, s), g = C = y = null), N = !0, A = !1, t = !1, g = e.tag, C = e.result;
-        else if (N)
-          h(e, "can not read an implicit mapping pair; a colon is missed");
+          w = e.input.charCodeAt(++e.position), N(w) || p(e, "a whitespace character is expected after the key-value separator within a block mapping"), A && (re(e, a, m, g, C, null, o, u, s), g = C = y = null), $ = !0, A = !1, t = !1, g = e.tag, C = e.result;
+        else if ($)
+          p(e, "can not read an implicit mapping pair; a colon is missed");
         else
           return e.tag = c, e.anchor = f, !0;
-      } else if (N)
-        h(e, "can not read a block mapping entry; a multiline key may not be an implicit key");
+      } else if ($)
+        p(e, "can not read a block mapping entry; a multiline key may not be an implicit key");
       else
         return e.tag = c, e.anchor = f, !0;
     }
     if ((e.line === l || e.lineIndent > n) && (A && (o = e.line, u = e.lineStart, s = e.position), se(e, n, Fe, !0, t) && (A ? C = e.result : y = e.result), A || (re(e, a, m, g, C, y, o, u, s), g = C = y = null), b(e, !0, -1), w = e.input.charCodeAt(e.position)), (e.line === l || e.lineIndent > n) && w !== 0)
-      h(e, "bad indentation of a mapping entry");
+      p(e, "bad indentation of a mapping entry");
     else if (e.lineIndent < n)
       break;
   }
-  return A && re(e, a, m, g, C, null, o, u, s), N && (e.tag = c, e.anchor = f, e.kind = "mapping", e.result = a), N;
+  return A && re(e, a, m, g, C, null, o, u, s), $ && (e.tag = c, e.anchor = f, e.kind = "mapping", e.result = a), $;
 }
-function _t(e) {
+function Tt(e) {
   var n, r = !1, i = !1, t, l, o;
   if (o = e.input.charCodeAt(e.position), o !== 33)
     return !1;
-  if (e.tag !== null && h(e, "duplication of a tag property"), o = e.input.charCodeAt(++e.position), o === 60 ? (r = !0, o = e.input.charCodeAt(++e.position)) : o === 33 ? (i = !0, t = "!!", o = e.input.charCodeAt(++e.position)) : t = "!", n = e.position, r) {
+  if (e.tag !== null && p(e, "duplication of a tag property"), o = e.input.charCodeAt(++e.position), o === 60 ? (r = !0, o = e.input.charCodeAt(++e.position)) : o === 33 ? (i = !0, t = "!!", o = e.input.charCodeAt(++e.position)) : t = "!", n = e.position, r) {
     do
       o = e.input.charCodeAt(++e.position);
     while (o !== 0 && o !== 62);
-    e.position < e.length ? (l = e.input.slice(n, e.position), o = e.input.charCodeAt(++e.position)) : h(e, "unexpected end of the stream within a verbatim tag");
+    e.position < e.length ? (l = e.input.slice(n, e.position), o = e.input.charCodeAt(++e.position)) : p(e, "unexpected end of the stream within a verbatim tag");
   } else {
-    for (; o !== 0 && !O(o); )
-      o === 33 && (i ? h(e, "tag suffix cannot contain exclamation marks") : (t = e.input.slice(n - 1, e.position + 1), xr.test(t) || h(e, "named tag handle cannot contain such characters"), i = !0, n = e.position + 1)), o = e.input.charCodeAt(++e.position);
-    l = e.input.slice(n, e.position), pt.test(l) && h(e, "tag suffix cannot contain flow indicator characters");
+    for (; o !== 0 && !N(o); )
+      o === 33 && (i ? p(e, "tag suffix cannot contain exclamation marks") : (t = e.input.slice(n - 1, e.position + 1), xr.test(t) || p(e, "named tag handle cannot contain such characters"), i = !0, n = e.position + 1)), o = e.input.charCodeAt(++e.position);
+    l = e.input.slice(n, e.position), pt.test(l) && p(e, "tag suffix cannot contain flow indicator characters");
   }
-  l && !Cr.test(l) && h(e, "tag name cannot contain such characters: " + l);
+  l && !Cr.test(l) && p(e, "tag name cannot contain such characters: " + l);
   try {
     l = decodeURIComponent(l);
   } catch {
-    h(e, "tag name is malformed: " + l);
+    p(e, "tag name is malformed: " + l);
   }
-  return r ? e.tag = l : K.call(e.tagMap, t) ? e.tag = e.tagMap[t] + l : t === "!" ? e.tag = "!" + l : t === "!!" ? e.tag = "tag:yaml.org,2002:" + l : h(e, 'undeclared tag handle "' + t + '"'), !0;
+  return r ? e.tag = l : K.call(e.tagMap, t) ? e.tag = e.tagMap[t] + l : t === "!" ? e.tag = "!" + l : t === "!!" ? e.tag = "tag:yaml.org,2002:" + l : p(e, 'undeclared tag handle "' + t + '"'), !0;
 }
-function Tt(e) {
+function _t(e) {
   var n, r;
   if (r = e.input.charCodeAt(e.position), r !== 38)
     return !1;
-  for (e.anchor !== null && h(e, "duplication of an anchor property"), r = e.input.charCodeAt(++e.position), n = e.position; r !== 0 && !O(r) && !ne(r); )
+  for (e.anchor !== null && p(e, "duplication of an anchor property"), r = e.input.charCodeAt(++e.position), n = e.position; r !== 0 && !N(r) && !ne(r); )
     r = e.input.charCodeAt(++e.position);
-  return e.position === n && h(e, "name of an anchor node must contain at least one character"), e.anchor = e.input.slice(n, e.position), !0;
+  return e.position === n && p(e, "name of an anchor node must contain at least one character"), e.anchor = e.input.slice(n, e.position), !0;
 }
 function Lt(e) {
   var n, r, i;
   if (i = e.input.charCodeAt(e.position), i !== 42)
     return !1;
-  for (i = e.input.charCodeAt(++e.position), n = e.position; i !== 0 && !O(i) && !ne(i); )
+  for (i = e.input.charCodeAt(++e.position), n = e.position; i !== 0 && !N(i) && !ne(i); )
     i = e.input.charCodeAt(++e.position);
-  return e.position === n && h(e, "name of an alias node must contain at least one character"), r = e.input.slice(n, e.position), K.call(e.anchorMap, r) || h(e, 'unidentified alias "' + r + '"'), e.result = e.anchorMap[r], b(e, !0, -1), !0;
+  return e.position === n && p(e, "name of an alias node must contain at least one character"), r = e.input.slice(n, e.position), K.call(e.anchorMap, r) || p(e, 'unidentified alias "' + r + '"'), e.result = e.anchorMap[r], b(e, !0, -1), !0;
 }
 function se(e, n, r, i, t) {
   var l, o, u, s = 1, c = !1, f = !1, a, m, g, C, y, A;
   if (e.listener !== null && e.listener("open", e), e.tag = null, e.anchor = null, e.kind = null, e.result = null, l = o = u = Fe === r || gr === r, i && b(e, !0, -1) && (c = !0, e.lineIndent > n ? s = 1 : e.lineIndent === n ? s = 0 : e.lineIndent < n && (s = -1)), s === 1)
-    for (; _t(e) || Tt(e); )
+    for (; Tt(e) || _t(e); )
       b(e, !0, -1) ? (c = !0, u = l, e.lineIndent > n ? s = 1 : e.lineIndent === n ? s = 0 : e.lineIndent < n && (s = -1)) : u = !1;
-  if (u && (u = c || t), (s === 1 || Fe === r) && (Ie === r || mr === r ? y = n : y = n + 1, A = e.position - e.lineStart, s === 1 ? u && (yn(e, A) || St(e, A, y)) || At(e, y) ? f = !0 : (o && bt(e, y) || yt(e, y) || Et(e, y) ? f = !0 : Lt(e) ? (f = !0, (e.tag !== null || e.anchor !== null) && h(e, "alias node should not have any properties")) : vt(e, y, Ie === r) && (f = !0, e.tag === null && (e.tag = "?")), e.anchor !== null && (e.anchorMap[e.anchor] = e.result)) : s === 0 && (f = u && yn(e, A))), e.tag === null)
+  if (u && (u = c || t), (s === 1 || Fe === r) && (Ie === r || mr === r ? y = n : y = n + 1, A = e.position - e.lineStart, s === 1 ? u && (yn(e, A) || St(e, A, y)) || At(e, y) ? f = !0 : (o && bt(e, y) || yt(e, y) || Et(e, y) ? f = !0 : Lt(e) ? (f = !0, (e.tag !== null || e.anchor !== null) && p(e, "alias node should not have any properties")) : vt(e, y, Ie === r) && (f = !0, e.tag === null && (e.tag = "?")), e.anchor !== null && (e.anchorMap[e.anchor] = e.result)) : s === 0 && (f = u && yn(e, A))), e.tag === null)
     e.anchor !== null && (e.anchorMap[e.anchor] = e.result);
   else if (e.tag === "?") {
-    for (e.result !== null && e.kind !== "scalar" && h(e, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + e.kind + '"'), a = 0, m = e.implicitTypes.length; a < m; a += 1)
+    for (e.result !== null && e.kind !== "scalar" && p(e, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + e.kind + '"'), a = 0, m = e.implicitTypes.length; a < m; a += 1)
       if (C = e.implicitTypes[a], C.resolve(e.result)) {
         e.result = C.construct(e.result), e.tag = C.tag, e.anchor !== null && (e.anchorMap[e.anchor] = e.result);
         break;
@@ -1378,17 +1377,17 @@ function se(e, n, r, i, t) {
           C = g[a];
           break;
         }
-    C || h(e, "unknown tag !<" + e.tag + ">"), e.result !== null && C.kind !== e.kind && h(e, "unacceptable node kind for !<" + e.tag + '> tag; it should be "' + C.kind + '", not "' + e.kind + '"'), C.resolve(e.result, e.tag) ? (e.result = C.construct(e.result, e.tag), e.anchor !== null && (e.anchorMap[e.anchor] = e.result)) : h(e, "cannot resolve a node with !<" + e.tag + "> explicit tag");
+    C || p(e, "unknown tag !<" + e.tag + ">"), e.result !== null && C.kind !== e.kind && p(e, "unacceptable node kind for !<" + e.tag + '> tag; it should be "' + C.kind + '", not "' + e.kind + '"'), C.resolve(e.result, e.tag) ? (e.result = C.construct(e.result, e.tag), e.anchor !== null && (e.anchorMap[e.anchor] = e.result)) : p(e, "cannot resolve a node with !<" + e.tag + "> explicit tag");
   }
   return e.listener !== null && e.listener("close", e), e.tag !== null || e.anchor !== null || f;
 }
 function kt(e) {
   var n = e.position, r, i, t, l = !1, o;
   for (e.version = null, e.checkLineBreaks = e.legacy, e.tagMap = /* @__PURE__ */ Object.create(null), e.anchorMap = /* @__PURE__ */ Object.create(null); (o = e.input.charCodeAt(e.position)) !== 0 && (b(e, !0, -1), o = e.input.charCodeAt(e.position), !(e.lineIndent > 0 || o !== 37)); ) {
-    for (l = !0, o = e.input.charCodeAt(++e.position), r = e.position; o !== 0 && !O(o); )
+    for (l = !0, o = e.input.charCodeAt(++e.position), r = e.position; o !== 0 && !N(o); )
       o = e.input.charCodeAt(++e.position);
-    for (i = e.input.slice(r, e.position), t = [], i.length < 1 && h(e, "directive name must not be less than one character in length"); o !== 0; ) {
-      for (; Q(o); )
+    for (i = e.input.slice(r, e.position), t = [], i.length < 1 && p(e, "directive name must not be less than one character in length"); o !== 0; ) {
+      for (; z(o); )
         o = e.input.charCodeAt(++e.position);
       if (o === 35) {
         do
@@ -1398,18 +1397,18 @@ function kt(e) {
       }
       if (B(o))
         break;
-      for (r = e.position; o !== 0 && !O(o); )
+      for (r = e.position; o !== 0 && !N(o); )
         o = e.input.charCodeAt(++e.position);
       t.push(e.input.slice(r, e.position));
     }
     o !== 0 && on(e), K.call(wn, i) ? wn[i](e, i, t) : Oe(e, 'unknown document directive "' + i + '"');
   }
-  if (b(e, !0, -1), e.lineIndent === 0 && e.input.charCodeAt(e.position) === 45 && e.input.charCodeAt(e.position + 1) === 45 && e.input.charCodeAt(e.position + 2) === 45 ? (e.position += 3, b(e, !0, -1)) : l && h(e, "directives end mark is expected"), se(e, e.lineIndent - 1, Fe, !1, !0), b(e, !0, -1), e.checkLineBreaks && ht.test(e.input.slice(n, e.position)) && Oe(e, "non-ASCII line breaks are interpreted as content"), e.documents.push(e.result), e.position === e.lineStart && Ke(e)) {
+  if (b(e, !0, -1), e.lineIndent === 0 && e.input.charCodeAt(e.position) === 45 && e.input.charCodeAt(e.position + 1) === 45 && e.input.charCodeAt(e.position + 2) === 45 ? (e.position += 3, b(e, !0, -1)) : l && p(e, "directives end mark is expected"), se(e, e.lineIndent - 1, Fe, !1, !0), b(e, !0, -1), e.checkLineBreaks && ht.test(e.input.slice(n, e.position)) && Oe(e, "non-ASCII line breaks are interpreted as content"), e.documents.push(e.result), e.position === e.lineStart && Ke(e)) {
     e.input.charCodeAt(e.position) === 46 && (e.position += 3, b(e, !0, -1));
     return;
   }
   if (e.position < e.length - 1)
-    h(e, "end of the stream or a document separator is expected");
+    p(e, "end of the stream or a document separator is expected");
   else
     return;
 }
@@ -1417,7 +1416,7 @@ function Er(e, n) {
   e = String(e), n = n || {}, e.length !== 0 && (e.charCodeAt(e.length - 1) !== 10 && e.charCodeAt(e.length - 1) !== 13 && (e += `
 `), e.charCodeAt(0) === 65279 && (e = e.slice(1)));
   var r = new wt(e, n), i = e.indexOf("\0");
-  for (i !== -1 && (r.position = i, h(r, "null byte is not allowed in input")), r.input += "\0"; r.input.charCodeAt(r.position) === 32; )
+  for (i !== -1 && (r.position = i, p(r, "null byte is not allowed in input")), r.input += "\0"; r.input.charCodeAt(r.position) === 32; )
     r.lineIndent += 1, r.position += 1;
   for (; r.position < r.length - 1; )
     kt(r);
@@ -1436,13 +1435,13 @@ function Ft(e, n) {
   if (r.length !== 0) {
     if (r.length === 1)
       return r[0];
-    throw new I("expected a single document in the stream, but found more");
+    throw new F("expected a single document in the stream, but found more");
   }
 }
 var Ot = It, Nt = Ft, Ar = {
   loadAll: Ot,
   load: Nt
-}, br = Object.prototype.toString, Sr = Object.prototype.hasOwnProperty, sn = 65279, $t = 9, he = 10, Rt = 13, Dt = 32, Mt = 33, Bt = 34, Qe = 35, Ht = 37, jt = 38, Pt = 39, Ut = 42, _r = 44, Yt = 45, Ne = 58, Kt = 61, Vt = 62, qt = 63, Gt = 64, Tr = 91, Lr = 93, Wt = 96, kr = 123, zt = 124, Ir = 125, L = {};
+}, br = Object.prototype.toString, Sr = Object.prototype.hasOwnProperty, sn = 65279, $t = 9, he = 10, Rt = 13, Dt = 32, Mt = 33, Bt = 34, ze = 35, Ht = 37, jt = 38, Pt = 39, Ut = 42, Tr = 44, Yt = 45, Ne = 58, Kt = 61, Vt = 62, qt = 63, Gt = 64, _r = 91, Lr = 93, Wt = 96, kr = 123, Qt = 124, Ir = 125, L = {};
 L[0] = "\\0";
 L[7] = "\\a";
 L[8] = "\\b";
@@ -1458,7 +1457,7 @@ L[133] = "\\N";
 L[160] = "\\_";
 L[8232] = "\\L";
 L[8233] = "\\P";
-var Qt = [
+var zt = [
   "y",
   "Y",
   "yes",
@@ -1493,7 +1492,7 @@ function Jt(e) {
   else if (e <= 4294967295)
     r = "U", i = 8;
   else
-    throw new I("code point within a string may not be greater than 0xFFFFFFFF");
+    throw new F("code point within a string may not be greater than 0xFFFFFFFF");
   return "\\" + r + S.repeat("0", i - n.length) + n;
 }
 var el = 1, pe = 2;
@@ -1534,11 +1533,11 @@ function bn(e, n, r) {
     (r ? (
       // c = flow-in
       i
-    ) : i && e !== _r && e !== Tr && e !== Lr && e !== kr && e !== Ir) && e !== Qe && !(n === Ne && !t) || An(n) && !$e(n) && e === Qe || n === Ne && t
+    ) : i && e !== Tr && e !== _r && e !== Lr && e !== kr && e !== Ir) && e !== ze && !(n === Ne && !t) || An(n) && !$e(n) && e === ze || n === Ne && t
   );
 }
 function il(e) {
-  return me(e) && e !== sn && !$e(e) && e !== Yt && e !== qt && e !== Ne && e !== _r && e !== Tr && e !== Lr && e !== kr && e !== Ir && e !== Qe && e !== jt && e !== Ut && e !== Mt && e !== zt && e !== Kt && e !== Vt && e !== Pt && e !== Bt && e !== Ht && e !== Gt && e !== Wt;
+  return me(e) && e !== sn && !$e(e) && e !== Yt && e !== qt && e !== Ne && e !== Tr && e !== _r && e !== Lr && e !== kr && e !== Ir && e !== ze && e !== jt && e !== Ut && e !== Mt && e !== Qt && e !== Kt && e !== Vt && e !== Pt && e !== Bt && e !== Ht && e !== Gt && e !== Wt;
 }
 function tl(e) {
   return !$e(e) && e !== Ne;
@@ -1577,7 +1576,7 @@ function ol(e, n, r, i, t) {
   e.dump = function() {
     if (n.length === 0)
       return e.quotingType === pe ? '""' : "''";
-    if (!e.noCompatMode && (Qt.indexOf(n) !== -1 || Xt.test(n)))
+    if (!e.noCompatMode && (zt.indexOf(n) !== -1 || Xt.test(n)))
       return e.quotingType === pe ? '"' + n + '"' : "'" + n + "'";
     var l = e.indent * Math.max(1, r), o = e.lineWidth === -1 ? -1 : Math.max(Math.min(e.lineWidth, 40), e.lineWidth - l), u = i || e.flowLevel > -1 && r >= e.flowLevel;
     function s(c) {
@@ -1598,13 +1597,13 @@ function ol(e, n, r, i, t) {
       case Ze:
         return "'" + n.replace(/'/g, "''") + "'";
       case Nr:
-        return "|" + Sn(n, e.indent) + _n(En(n, l));
+        return "|" + Sn(n, e.indent) + Tn(En(n, l));
       case $r:
-        return ">" + Sn(n, e.indent) + _n(En(ul(n, o), l));
+        return ">" + Sn(n, e.indent) + Tn(En(ul(n, o), l));
       case J:
         return '"' + sl(n) + '"';
       default:
-        throw new I("impossible error: invalid scalar style");
+        throw new F("impossible error: invalid scalar style");
     }
   }();
 }
@@ -1616,7 +1615,7 @@ function Sn(e, n) {
   return r + l + `
 `;
 }
-function _n(e) {
+function Tn(e) {
   return e[e.length - 1] === `
 ` ? e.slice(0, -1) : e;
 }
@@ -1624,16 +1623,16 @@ function ul(e, n) {
   for (var r = /(\n+)([^\n]*)/g, i = function() {
     var c = e.indexOf(`
 `);
-    return c = c !== -1 ? c : e.length, r.lastIndex = c, Tn(e.slice(0, c), n);
+    return c = c !== -1 ? c : e.length, r.lastIndex = c, _n(e.slice(0, c), n);
   }(), t = e[0] === `
 ` || e[0] === " ", l, o; o = r.exec(e); ) {
     var u = o[1], s = o[2];
     l = s[0] === " ", i += u + (!t && !l && s !== "" ? `
-` : "") + Tn(s, n), t = l;
+` : "") + _n(s, n), t = l;
   }
   return i;
 }
-function Tn(e, n) {
+function _n(e, n) {
   if (e === "" || e[0] === " ")
     return e;
   for (var r = / [^ ]/g, i, t = 0, l, o = 0, u = 0, s = ""; i = r.exec(e); )
@@ -1651,19 +1650,19 @@ function sl(e) {
 function cl(e, n, r) {
   var i = "", t = e.tag, l, o, u;
   for (l = 0, o = r.length; l < o; l += 1)
-    u = r[l], e.replacer && (u = e.replacer.call(r, String(l), u)), (H(e, n, u, !1, !1) || typeof u > "u" && H(e, n, null, !1, !1)) && (i !== "" && (i += "," + (e.condenseFlow ? "" : " ")), i += e.dump);
+    u = r[l], e.replacer && (u = e.replacer.call(r, String(l), u)), (j(e, n, u, !1, !1) || typeof u > "u" && j(e, n, null, !1, !1)) && (i !== "" && (i += "," + (e.condenseFlow ? "" : " ")), i += e.dump);
   e.tag = t, e.dump = "[" + i + "]";
 }
 function Ln(e, n, r, i) {
   var t = "", l = e.tag, o, u, s;
   for (o = 0, u = r.length; o < u; o += 1)
-    s = r[o], e.replacer && (s = e.replacer.call(r, String(o), s)), (H(e, n + 1, s, !0, !0, !1, !0) || typeof s > "u" && H(e, n + 1, null, !0, !0, !1, !0)) && ((!i || t !== "") && (t += Xe(e, n)), e.dump && he === e.dump.charCodeAt(0) ? t += "-" : t += "- ", t += e.dump);
+    s = r[o], e.replacer && (s = e.replacer.call(r, String(o), s)), (j(e, n + 1, s, !0, !0, !1, !0) || typeof s > "u" && j(e, n + 1, null, !0, !0, !1, !0)) && ((!i || t !== "") && (t += Xe(e, n)), e.dump && he === e.dump.charCodeAt(0) ? t += "-" : t += "- ", t += e.dump);
   e.tag = l, e.dump = t || "[]";
 }
 function al(e, n, r) {
   var i = "", t = e.tag, l = Object.keys(r), o, u, s, c, f;
   for (o = 0, u = l.length; o < u; o += 1)
-    f = "", i !== "" && (f += ", "), e.condenseFlow && (f += '"'), s = l[o], c = r[s], e.replacer && (c = e.replacer.call(r, s, c)), H(e, n, s, !1, !1) && (e.dump.length > 1024 && (f += "? "), f += e.dump + (e.condenseFlow ? '"' : "") + ":" + (e.condenseFlow ? "" : " "), H(e, n, c, !1, !1) && (f += e.dump, i += f));
+    f = "", i !== "" && (f += ", "), e.condenseFlow && (f += '"'), s = l[o], c = r[s], e.replacer && (c = e.replacer.call(r, s, c)), j(e, n, s, !1, !1) && (e.dump.length > 1024 && (f += "? "), f += e.dump + (e.condenseFlow ? '"' : "") + ":" + (e.condenseFlow ? "" : " "), j(e, n, c, !1, !1) && (f += e.dump, i += f));
   e.tag = t, e.dump = "{" + i + "}";
 }
 function fl(e, n, r, i) {
@@ -1673,9 +1672,9 @@ function fl(e, n, r, i) {
   else if (typeof e.sortKeys == "function")
     o.sort(e.sortKeys);
   else if (e.sortKeys)
-    throw new I("sortKeys must be a boolean or a function");
+    throw new F("sortKeys must be a boolean or a function");
   for (u = 0, s = o.length; u < s; u += 1)
-    m = "", (!i || t !== "") && (m += Xe(e, n)), c = o[u], f = r[c], e.replacer && (f = e.replacer.call(r, c, f)), H(e, n + 1, c, !0, !0, !0) && (a = e.tag !== null && e.tag !== "?" || e.dump && e.dump.length > 1024, a && (e.dump && he === e.dump.charCodeAt(0) ? m += "?" : m += "? "), m += e.dump, a && (m += Xe(e, n)), H(e, n + 1, f, !0, a) && (e.dump && he === e.dump.charCodeAt(0) ? m += ":" : m += ": ", m += e.dump, t += m));
+    m = "", (!i || t !== "") && (m += Xe(e, n)), c = o[u], f = r[c], e.replacer && (f = e.replacer.call(r, c, f)), j(e, n + 1, c, !0, !0, !0) && (a = e.tag !== null && e.tag !== "?" || e.dump && e.dump.length > 1024, a && (e.dump && he === e.dump.charCodeAt(0) ? m += "?" : m += "? "), m += e.dump, a && (m += Xe(e, n)), j(e, n + 1, f, !0, a) && (e.dump && he === e.dump.charCodeAt(0) ? m += ":" : m += ": ", m += e.dump, t += m));
   e.tag = l, e.dump = t || "{}";
 }
 function kn(e, n, r) {
@@ -1688,14 +1687,14 @@ function kn(e, n, r) {
         else if (Sr.call(u.represent, s))
           i = u.represent[s](n, s);
         else
-          throw new I("!<" + u.tag + '> tag resolver accepts not "' + s + '" style');
+          throw new F("!<" + u.tag + '> tag resolver accepts not "' + s + '" style');
         e.dump = i;
       }
       return !0;
     }
   return !1;
 }
-function H(e, n, r, i, t, l, o) {
+function j(e, n, r, i, t, l, o) {
   e.tag = null, e.dump = r, kn(e, r, !1) || kn(e, r, !0);
   var u = br.call(e.dump), s = i, c;
   i && (i = e.flowLevel < 0 || e.flowLevel > n);
@@ -1714,7 +1713,7 @@ function H(e, n, r, i, t, l, o) {
         return !1;
       if (e.skipInvalid)
         return !1;
-      throw new I("unacceptable kind of an object to dump " + u);
+      throw new F("unacceptable kind of an object to dump " + u);
     }
     e.tag !== null && e.tag !== "?" && (c = encodeURI(
       e.tag[0] === "!" ? e.tag.slice(1) : e.tag
@@ -1745,7 +1744,7 @@ function hl(e, n) {
   var r = new nl(n);
   r.noRefs || dl(e, r);
   var i = e;
-  return r.replacer && (i = r.replacer.call({ "": i }, "", i)), H(r, 0, i, !0, !0) ? r.dump + `
+  return r.replacer && (i = r.replacer.call({ "": i }, "", i)), j(r, 0, i, !0, !0) ? r.dump + `
 ` : "";
 }
 var pl = hl, ml = {
@@ -1756,7 +1755,7 @@ function cn(e, n) {
     throw new Error("Function yaml." + e + " is removed in js-yaml 4. Use yaml." + n + " instead, which is now safe by default.");
   };
 }
-var gl = _, xl = Qn, Cl = er, wl = lr, vl = or, yl = ln, El = Ar.load, Al = Ar.loadAll, bl = ml.dump, Sl = I, _l = {
+var gl = T, xl = zn, Cl = er, wl = lr, vl = or, yl = ln, El = Ar.load, Al = Ar.loadAll, bl = ml.dump, Sl = F, Tl = {
   binary: fr,
   float: tr,
   map: Jn,
@@ -1770,7 +1769,7 @@ var gl = _, xl = Qn, Cl = er, wl = lr, vl = or, yl = ln, El = Ar.load, Al = Ar.l
   omap: dr,
   seq: Zn,
   str: Xn
-}, Tl = cn("safeLoad", "load"), Ll = cn("safeLoadAll", "loadAll"), kl = cn("safeDump", "dump"), Il = {
+}, _l = cn("safeLoad", "load"), Ll = cn("safeLoadAll", "loadAll"), kl = cn("safeDump", "dump"), Il = {
   Type: gl,
   Schema: xl,
   FAILSAFE_SCHEMA: Cl,
@@ -1781,8 +1780,8 @@ var gl = _, xl = Qn, Cl = er, wl = lr, vl = or, yl = ln, El = Ar.load, Al = Ar.l
   loadAll: Al,
   dump: bl,
   YAMLException: Sl,
-  types: _l,
-  safeLoad: Tl,
+  types: Tl,
+  safeLoad: _l,
   safeLoadAll: Ll,
   safeDump: kl
 };
@@ -1916,7 +1915,7 @@ function Gl(e, n) {
   ) : void 0, u = e.revealed ? (
     // string of upper-cased revealed characters
     e.revealed.toUpperCase()
-  ) : void 0, [, s, c, f] = Rr.exec(e.clue), a = Yl(s, e), m = Kl(a), [g] = a, C = parseInt(g, 10), y = C.toString(), A = ql(g, l), [, N] = Ol.exec(c), w = jl(N), an = `(${f})`, fn = Vl(f, e), X = fn.reduce((Ur, Yr) => Ur + Yr, 0), Pr = e.answer ? e.answer.toUpperCase().replaceAll(/[^ A-Z]/g, " ").padEnd(X) : (
+  ) : void 0, [, s, c, f] = Rr.exec(e.clue), a = Yl(s, e), m = Kl(a), [g] = a, C = parseInt(g, 10), y = C.toString(), A = ql(g, l), [, $] = Ol.exec(c), w = jl($), an = `(${f})`, fn = Vl(f, e), X = fn.reduce((Ur, Yr) => Ur + Yr, 0), Pr = e.answer ? e.answer.toUpperCase().replaceAll(/[^ A-Z]/g, " ").padEnd(X) : (
     // pad out null or undefined answer with spaces
     "".padEnd(X)
   );
@@ -1954,7 +1953,7 @@ function Wl(e) {
       "error"
     ), null;
   let n = Xl(e);
-  n.cells = zl(n);
+  n.cells = Ql(n);
   const r = /across/i;
   return ["acrossClues", "downClues"].forEach((i) => {
     e[i].forEach(
@@ -1968,7 +1967,7 @@ function Wl(e) {
     );
   }), n;
 }
-function zl(e) {
+function Ql(e) {
   const { width: n } = e, { height: r } = e, i = new Array(n);
   for (let t = 0; t < n; t += 1) {
     i[t] = new Array(r);
@@ -1982,7 +1981,7 @@ function zl(e) {
   }
   return i;
 }
-function Ql(e, n) {
+function zl(e, n) {
   if (e >= 0) {
     let r = e, i = 0;
     for (; i < n.length; ) {
@@ -2078,7 +2077,7 @@ function no(e, n) {
     let { x: t, y: l } = i;
     for (let o = 0; o < i.segmentLength; o += 1) {
       const u = e.cells[t][l];
-      u.light = !0, u[n ? "acrossClue" : "downClue"] = i, u[n ? "acrossClueLetterIndex" : "downClueLetterIndex"] = o, i.cells.push(u), Ql(o, i.wordLengths) && (u[i.isAcross ? "acrossTerminator" : "downTerminator"] = !0), lo(u, i, o, r.answer, n), to(u, i, o, r.solution), ro(o, u, i), n ? t += 1 : l += 1;
+      u.light = !0, u[n ? "acrossClue" : "downClue"] = i, u[n ? "acrossClueLetterIndex" : "downClueLetterIndex"] = o, i.cells.push(u), zl(o, i.wordLengths) && (u[i.isAcross ? "acrossTerminator" : "downTerminator"] = !0), lo(u, i, o, r.answer, n), to(u, i, o, r.solution), ro(o, u, i), n ? t += 1 : l += 1;
     }
   };
 }
@@ -2258,7 +2257,7 @@ function mo(e, n, r) {
   return i != null && i.isValid ? i : null;
 }
 const so = /^[a-z]$/, co = /^[a-z]$/, ao = 5;
-var ie, R, ge, P, q, xe, Ce, we, te, ve, ye, Ee, G, Ae, Re, be, en, W, ae, z, fe, Se, nn, De, Me, _e, Be, k, $, U, ee, le, Te, He, Hr, je, jr;
+var ie, O, ge, P, q, xe, Ce, we, te, ve, ye, Ee, G, Ae, Re, be, en, W, ae, Q, fe, Se, nn, De, Me, Te, Be, k, R, U, ee, le, _e, He, Hr, je, jr;
 class fo {
   //////////////////////////
   //// Lifecycle methods
@@ -2271,7 +2270,7 @@ class fo {
     v(this, be);
     // Accessors for DOM parent/placeholder elements
     v(this, W);
-    v(this, z);
+    v(this, Q);
     // Common logic for CrosswordController constructor and loadCrosswordSource()
     v(this, Se);
     /**
@@ -2290,7 +2289,7 @@ class fo {
     // Assign event handlers to cell's input element
     v(this, je);
     v(this, ie, []);
-    v(this, R, new dn());
+    v(this, O, new dn());
     v(this, ge, void 0);
     v(this, P, void 0);
     v(this, q, { clue: null, cell: null });
@@ -2325,22 +2324,26 @@ class fo {
     //// Grid element helpers
     //////////////////////////
     // Helper function to retrieve corresponding cell for cellElement
-    j(this, "cell", (n) => p(this, R).modelCell(n));
+    H(this, "cell", (n) => h(this, O).modelCell(n));
     // Helper function to retrieve corresponding cellElement for cell
-    j(this, "cellElement", (n) => p(this, R).cellElement(n));
+    H(this, "cellElement", (n) => h(this, O).cellElement(n));
     // Helper function to retrieve corresponding inputElement for cell
-    j(this, "inputElement", (n) => (d(n.light, `dark cell! ${n}`), p(this, R).cellElement(n).children[0]));
+    H(this, "inputElement", (n) => (d(n.light, `dark cell! ${n}`), h(this, O).cellElement(n)));
+    // Helper function to set corresponding inputElement text for cell
+    H(this, "setInputElementText", (n, r) => {
+      d(n.light, `dark cell! ${n}`), h(this, O).cellElement(n).firstChild.nodeValue = r;
+    });
     // Helper function to retrieve corresponding revealedElement for cell
-    j(this, "revealedElement", (n) => {
+    H(this, "revealedElement", (n) => {
       d(n.light, `dark cell! ${n}`);
-      const r = n.labelText ? 2 : 1;
-      return p(this, R).cellElement(n).children[r];
+      const r = n.labelText ? 1 : 0;
+      return h(this, O).cellElement(n).children[r];
     });
     // Helper function to retrieve corresponding incorrectElement for cell
-    j(this, "incorrectElement", (n) => {
+    H(this, "incorrectElement", (n) => {
       d(n.light, `dark cell! ${n}`);
-      const r = n.labelText ? 3 : 2;
-      return p(this, R).cellElement(n).children[r];
+      const r = n.labelText ? 2 : 1;
+      return h(this, O).cellElement(n).children[r];
     });
     // Helper function for constructor
     v(this, De, () => {
@@ -2376,11 +2379,11 @@ class fo {
         d(
           this.controllerEventNames.includes(i),
           `event [${i}] is not a CrosswordController event.`
-        ), p(this, Ee).push(p(this, ye).subscribe(i, r));
+        ), h(this, Ee).push(h(this, ye).subscribe(i, r));
       });
     });
     // Helper for multi-segment current clue
-    v(this, _e, (n) => n && (n === this.currentClue.previousClueSegment || n === this.currentClue.nextClueSegment));
+    v(this, Te, (n) => n && (n === this.currentClue.previousClueSegment || n === this.currentClue.nextClueSegment));
     v(this, Be, (n) => {
       const r = (s, c) => {
         c !== this.currentClue && (x(
@@ -2393,7 +2396,7 @@ class fo {
         n.acrossClueLetterIndex,
         n.downClueLetterIndex
       ];
-      return [t, l].includes(this.currentClue) ? r(n, this.currentClue) : (t ? !l : l) ? r(n, t ?? l) : p(this, _e).call(this, t) ? r(n, t) : p(this, _e).call(this, l) ? r(n, l) : r(n, u === 0 && o !== 0 ? l : t), this.currentClue !== i;
+      return [t, l].includes(this.currentClue) ? r(n, this.currentClue) : (t ? !l : l) ? r(n, t ?? l) : h(this, Te).call(this, t) ? r(n, t) : h(this, Te).call(this, l) ? r(n, l) : r(n, u === 0 && o !== 0 ? l : t), this.currentClue !== i;
     });
     x("CrosswordController constructor"), d(
       n == null ? void 0 : n.width,
@@ -2404,14 +2407,14 @@ class fo {
     ), d(
       !i || i.ownerDocument,
       "[domCluesParentElement] argument is not a DOM element"
-    ), D(this, Ce, r), D(this, xe, i), this.setKeyboardEventBindings([oo, uo]), D(this, Ae, E(this, Se, nn).call(this, n)), this.isValid && p(this, De).call(this);
+    ), D(this, Ce, r), D(this, xe, i), this.setKeyboardEventBindings([oo, uo]), D(this, Ae, E(this, Se, nn).call(this, n)), this.isValid && h(this, De).call(this);
   }
   //  Completely cleans up the crossword.
   destroy() {
     var n, r;
-    D(this, R, null), D(this, P, null), (n = p(this, W, ae)) == null || n.removeChild(this.gridView), (r = p(this, z, fe)) == null || r.removeChild(this.cluesView), p(this, Ee).forEach((i) => {
+    D(this, O, null), D(this, P, null), (n = h(this, W, ae)) == null || n.removeChild(this.gridView), (r = h(this, Q, fe)) == null || r.removeChild(this.cluesView), h(this, Ee).forEach((i) => {
       i.remove();
-    }), p(this, ie).forEach((i) => {
+    }), h(this, ie).forEach((i) => {
       const { element: t, eventName: l, handler: o } = i;
       t.removeEventListener(l, o);
     });
@@ -2422,9 +2425,9 @@ class fo {
   // Helper function to access API event handler functions
   userEventHandler(n) {
     return x(`elementEventHandler:${n}`), d(
-      p(this, G).hasOwnProperty(n),
+      h(this, G).hasOwnProperty(n),
       `[${n}] is not a CrosswordController event handler.`
-    ), p(this, G)[n].bind(this);
+    ), h(this, G)[n].bind(this);
   }
   // Helper function to bind Controller user-event-handler to webpage
   // DOM elementId.
@@ -2432,7 +2435,7 @@ class fo {
     const t = On(n, i);
     if (t) {
       const l = this.userEventHandler(n);
-      t.addEventListener(r, l), p(this, ie).push({ element: t, eventName: r, handler: l });
+      t.addEventListener(r, l), h(this, ie).push({ element: t, eventName: r, handler: l });
     }
   }
   // Helper function to bind Controller user-event-handlers to a collection
@@ -2449,7 +2452,7 @@ class fo {
   bindUserEventHandlerToClass(n, r = "click", i = document) {
     Nn(n, i).forEach((l) => {
       const o = this.userEventHandler(n);
-      l.addEventListener(r, o), p(this, ie).push({ element: l, eventName: r, handler: o });
+      l.addEventListener(r, o), h(this, ie).push({ element: l, eventName: r, handler: o });
     });
   }
   // Helper function to bind Controller user-event-handlers to a collection
@@ -2463,48 +2466,48 @@ class fo {
   //// Public property accessors
   ////////////////////////////////
   get isValid() {
-    return p(this, Ae);
+    return h(this, Ae);
   }
   // Accessors for public property currentCell
   get currentCell() {
-    return p(this, q).cell;
+    return h(this, q).cell;
   }
   set currentCell(n) {
     x(`currentCell: ${n}`);
     const r = this.currentCell;
-    n !== r && (p(this, q).cell = n, this.inputElement(n).focus(), ni(this, n, r));
+    n !== r && (h(this, q).cell = n, this.inputElement(n).focus(), ni(this, n, r));
   }
   // Accessors for public property currentClue
   get currentClue() {
-    return p(this, q).clue;
+    return h(this, q).clue;
   }
   set currentClue(n) {
     const r = this.currentClue;
-    n !== r && (x(`currentClue: '${n}' [currentCell ${this.currentCell}]`), p(this, q).clue = n, ei(this, n, r), this.currentClue.cells.includes(this.currentCell) || (this.currentCell = n.cells[0]), E(this, k, $).call(this, "clueSelected", n));
+    n !== r && (x(`currentClue: '${n}' [currentCell ${this.currentCell}]`), h(this, q).clue = n, ei(this, n, r), this.currentClue.cells.includes(this.currentCell) || (this.currentCell = n.cells[0]), E(this, k, R).call(this, "clueSelected", n));
   }
   // Accessor for public property model
   get model() {
-    return p(this, P);
+    return h(this, P);
   }
   // Accessor for public property gridView
   get gridView() {
-    return p(this, we);
+    return h(this, we);
   }
   // Accessor for public property cluesView
   get cluesView() {
-    return p(this, ge);
+    return h(this, ge);
   }
   // Accessor for addEventsListener - public event publisher
   get addEventsListener() {
-    return p(this, Me);
+    return h(this, Me);
   }
   // Accessor for public property controllerEventNames
   get controllerEventNames() {
-    return [...p(this, Re)];
+    return [...h(this, Re)];
   }
   // Accessors for public property lastMoveEvent
   get lastMoveEvent() {
-    return p(this, ve);
+    return h(this, ve);
   }
   set lastMoveEvent(n) {
     const r = n.toLowerCase();
@@ -2512,7 +2515,7 @@ class fo {
   }
   // Accessor for public property userEventHandlerIds
   get userEventHandlerIds() {
-    return Object.keys(p(this, G));
+    return Object.keys(h(this, G));
   }
   //////////////////////////
   //// Public methods
@@ -2527,7 +2530,7 @@ class fo {
     const i = !0;
     Ye(
       this,
-      p(this, R).modelCell(n),
+      h(this, O).modelCell(n),
       r,
       i
     );
@@ -2559,7 +2562,7 @@ class fo {
       ), d(
         (o = i.keyBindings) == null ? void 0 : o.length,
         `Missing or  empty "keyBindings" array property for [${t}].`
-      ), x(`setKeyboardEventBindings: Setting keyBindings for "${t}".`), p(this, te)[t] = i.keyBindings;
+      ), x(`setKeyboardEventBindings: Setting keyBindings for "${t}".`), h(this, te)[t] = i.keyBindings;
     });
   }
   /////////////////////////////////
@@ -2568,100 +2571,98 @@ class fo {
   testCurrentClue() {
     x(`testCurrentClue:${this.currentClue}`);
     const n = !0, r = ti(this, this.currentClue, n);
-    return E(this, k, $).call(this, "clueTested", r), r === T.correct ? E(this, U, ee).call(this, "clueSolved", this.currentClue) : r === T.incomplete && E(this, U, ee).call(this, "clueIncomplete", this.currentClue), r;
+    return E(this, k, R).call(this, "clueTested", r), r === _.correct ? E(this, U, ee).call(this, "clueSolved", this.currentClue) : r === _.incomplete && E(this, U, ee).call(this, "clueIncomplete", this.currentClue), r;
   }
   testCrossword() {
     x("testCrossword");
     const r = li(this, !0);
-    return E(this, k, $).call(this, "crosswordTested", r), r === T.correct ? E(this, U, ee).call(this, "crosswordSolved", p(this, P)) : r === T.incomplete && E(this, U, ee).call(this, "crosswordIncomplete", p(this, P)), r;
+    return E(this, k, R).call(this, "crosswordTested", r), r === _.correct ? E(this, U, ee).call(this, "crosswordSolved", h(this, P)) : r === _.incomplete && E(this, U, ee).call(this, "crosswordIncomplete", h(this, P)), r;
   }
   revealCurrentCell() {
-    rn(this, this.currentCell), E(this, k, $).call(this, "cellRevealed", this.currentCell), E(this, le, Te).call(this);
+    rn(this, this.currentCell), E(this, k, R).call(this, "cellRevealed", this.currentCell), E(this, le, _e).call(this);
   }
   revealCurrentClue() {
-    ri(this, this.currentClue), E(this, k, $).call(this, "clueRevealed", this.currentClue), E(this, le, Te).call(this);
+    ri(this, this.currentClue), E(this, k, R).call(this, "clueRevealed", this.currentClue), E(this, le, _e).call(this);
   }
   revealCrossword() {
-    x("revealCrossword"), ii(this), E(this, k, $).call(this, "crosswordRevealed", this.model);
+    x("revealCrossword"), ii(this), E(this, k, R).call(this, "crosswordRevealed", this.model);
   }
   resetCurrentClue() {
-    ui(this, this.currentClue), E(this, k, $).call(this, "clueReset", this.currentClue);
+    ui(this, this.currentClue), E(this, k, R).call(this, "clueReset", this.currentClue);
   }
   resetCrossword() {
-    x("resetCrossword"), si(this), E(this, k, $).call(this, "crosswordReset", this.model);
+    x("resetCrossword"), si(this), E(this, k, R).call(this, "crosswordReset", this.model);
   }
   cleanCurrentClue() {
-    ci(this, this.currentClue), E(this, k, $).call(this, "clueCleaned", this.currentClue);
+    ci(this, this.currentClue), E(this, k, R).call(this, "clueCleaned", this.currentClue);
   }
   cleanCrossword() {
-    x("cleanCrossword"), ai(this), E(this, k, $).call(this, "crosswordCleaned", this.model);
+    x("cleanCrossword"), ai(this), E(this, k, R).call(this, "crosswordCleaned", this.model);
   }
 }
-ie = new WeakMap(), R = new WeakMap(), ge = new WeakMap(), P = new WeakMap(), q = new WeakMap(), xe = new WeakMap(), Ce = new WeakMap(), we = new WeakMap(), te = new WeakMap(), ve = new WeakMap(), ye = new WeakMap(), Ee = new WeakMap(), G = new WeakMap(), Ae = new WeakMap(), Re = new WeakMap(), be = new WeakSet(), en = function() {
-  return p(this, W, ae).ownerDocument;
+ie = new WeakMap(), O = new WeakMap(), ge = new WeakMap(), P = new WeakMap(), q = new WeakMap(), xe = new WeakMap(), Ce = new WeakMap(), we = new WeakMap(), te = new WeakMap(), ve = new WeakMap(), ye = new WeakMap(), Ee = new WeakMap(), G = new WeakMap(), Ae = new WeakMap(), Re = new WeakMap(), be = new WeakSet(), en = function() {
+  return h(this, W, ae).ownerDocument;
 }, W = new WeakSet(), ae = function() {
-  return p(this, Ce);
-}, z = new WeakSet(), fe = function() {
-  return p(this, xe);
+  return h(this, Ce);
+}, Q = new WeakSet(), fe = function() {
+  return h(this, xe);
 }, Se = new WeakSet(), nn = function(n) {
   var i;
   const r = Wl(n);
-  return r ? (this.model && (p(this, W, ae).removeChild(this.gridView), (i = p(this, z, fe)) == null || i.removeChild(this.cluesView), D(this, R, new dn())), D(this, P, r), D(this, we, Qr(
-    p(this, be, en),
+  return r ? (this.model && (h(this, W, ae).removeChild(this.gridView), (i = h(this, Q, fe)) == null || i.removeChild(this.cluesView), D(this, O, new dn())), D(this, P, r), D(this, we, zr(
+    h(this, be, en),
     this.model,
-    p(this, R)
-  )), p(this, R).modelCells.filter((t) => t.light).forEach((t) => {
+    h(this, O)
+  )), h(this, O).modelCells.filter((t) => t.light).forEach((t) => {
     E(this, je, jr).call(this, t.cellElement), E(this, He, Hr).call(this, this.inputElement(t));
-  }), p(this, W, ae).appendChild(this.gridView), p(this, z, fe) && (D(this, ge, zr(p(this, be, en), this)), p(this, z, fe).appendChild(this.cluesView)), this.currentClue = this.model.acrossClues.headSegments[0], E(this, k, $).call(this, "crosswordLoaded", n), !0) : (x("#bindDefinition: crosswordModel creation failed", "error"), !1);
-}, De = new WeakMap(), Me = new WeakMap(), _e = new WeakMap(), Be = new WeakMap(), k = new WeakSet(), $ = function(n, r) {
-  x(`stateChange: ${n}`), p(this, ye).publish(n, r);
+  }), h(this, W, ae).appendChild(this.gridView), h(this, Q, fe) && (D(this, ge, Qr(h(this, be, en), this)), h(this, Q, fe).appendChild(this.cluesView)), this.currentClue = this.model.acrossClues.headSegments[0], E(this, k, R).call(this, "crosswordLoaded", n), !0) : (x("#bindDefinition: crosswordModel creation failed", "error"), !1);
+}, De = new WeakMap(), Me = new WeakMap(), Te = new WeakMap(), Be = new WeakMap(), k = new WeakSet(), R = function(n, r) {
+  x(`stateChange: ${n}`), h(this, ye).publish(n, r);
 }, U = new WeakSet(), ee = function(n, r) {
   d(
     this.controllerEventNames.includes(n),
     `unknown event "${n}"`
   ), setTimeout(() => {
-    E(this, k, $).call(this, n, r);
+    E(this, k, R).call(this, n, r);
   }, ao);
-}, le = new WeakSet(), Te = function() {
-  x("checkSolved"), oi(this) === T.correct && E(this, U, ee).call(this, "crosswordSolved", this.model);
+}, le = new WeakSet(), _e = function() {
+  x("checkSolved"), oi(this) === _.correct && E(this, U, ee).call(this, "crosswordSolved", this.model);
 }, He = new WeakSet(), Hr = function(n) {
   d(n, "inputElement is null or undefined");
   const r = this;
   n.addEventListener("focus", (i) => {
     var l;
-    const t = r.cell(i.target.parentNode);
-    x(`event:focus ${t}`), r.currentCell !== t && (r.currentCell = t), r.lastMoveEvent = "focus", p(l = r, Be).call(l, t);
+    const t = r.cell(i.target);
+    x(`event:focus ${t}`), r.currentCell !== t && (r.currentCell = t), r.lastMoveEvent = "focus", h(l = r, Be).call(l, t);
   }), n.addEventListener("click", (i) => {
-    const t = r.cell(i.target.parentNode);
+    const t = r.cell(i.target);
     x(`event:click ${t}`), t === r.currentCell ? r.lastMoveEvent === "click" && Rn(r, t) : r.currentCell = t, r.lastMoveEvent = "click";
   });
 }, je = new WeakSet(), jr = function(n) {
   const r = this;
-  Object.keys(p(r, te)).forEach((i) => {
-    const t = p(r, te)[i];
+  Object.keys(h(r, te)).forEach((i) => {
+    const t = h(r, te)[i];
     d(t, `"${i}" bindings are null or undefined.`), n.addEventListener(i, (l) => {
       const o = l.key;
       x(`event:${i} key=[${o}]`);
-      const u = t.find((s) => s.key === o);
+      const u = t.find((f) => f.key === o), s = M.name(o), c = ["left", "right", "up", "down"].includes(s);
       if (u) {
-        l.preventDefault();
-        const s = M.name(o).toUpperCase();
-        x(l.shiftKey ? `SHIFT+${s}` : s);
-        const c = r.cell(l.target.parentNode);
-        u.action(r, l, c);
-      }
+        l.preventDefault(), x(
+          l.shiftKey ? `SHIFT+${s.toUpperCase()}` : s.toUpperCase()
+        );
+        const f = r.cell(l.target);
+        u.action(r, l, f);
+      } else
+        c && l.preventDefault();
     });
   }), n.addEventListener("keypress", (i) => {
     var s;
     x("event:keypress"), i.preventDefault();
-    const [t, l] = [
-      r.cell(i.target.parentNode),
-      i.key
-    ], [o, u] = [
+    const [t, l] = [r.cell(i.target), i.key], [o, u] = [
       l.toLowerCase(),
       l.toUpperCase()
     ];
-    so.test(o) && (x(`Setting cell content: [${u}]`), Kn(r, i, u), ue(r.incorrectElement(t)), E(s = r, le, Te).call(s)), co.test(o) && (x("Advancing to next cell"), Un(r, t));
+    so.test(o) && (x(`Setting cell content: [${u}]`), Kn(r, i, u), ue(r.incorrectElement(t)), E(s = r, le, _e).call(s)), co.test(o) && (x("Advancing to next cell"), Un(r, t));
   });
 };
 const go = {

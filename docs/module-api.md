@@ -141,55 +141,47 @@ _Duplicate cell types have been removed for clarity_
 ```html
 <div class="crossword-grid">
   <!-- labelled clue cell -->
-  <div class="cwcell light">
-    <input maxlength="1" class="" />
+  <div class="cwcell light noselect">
     <div class="cwclue-label">1</div>
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- unlabelled clue cell -->
-  <div class="cwcell light">
-    <input maxlength="1" />
+  <div class="cwcell light noselect">
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- dark grid cell -->
   <div class="cwcell dark"></div>
   <!-- cell in the current clue -->
-  <div class="cwcell light">
-    <input maxlength="1" class="active" />
+  <div class="cwcell light noselect active">
     <div class="cwclue-label">4</div>
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- current cell  -->
-  <div class="cwcell light">
-    <input maxlength="1" class="active highlighted" />
+  <div class="cwcell light noselect active highlighted">
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- cell with across word separator -->
   <!-- cell with across word separator -->
-  <div class="cwcell light">
-    <input maxlength="1" class="cw-across-word-separator" />
+  <div class="cwcell light noselect cw-across-word-separator">
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- cell with down word separator -->
-  <div class="cwcell light">
-    <input maxlength="1" class="cw-down-word-separator" />
+  <div class="cwcell light noselect cw-down-word-separator">
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- revealed cell -->
-  <div class="cwcell light">
-    <input maxlength="1" class="" />
+  <div class="cwcell light noselect">
     <div class="cwcell-revealed"></div>
     <div class="cwcell-incorrect hidden"></div>
   </div>
   <!-- incorrect cell -->
-  <div class="cwcell light">
-    <input maxlength="1" class="active highlighted" />
+  <div class="cwcell light noselect active highlighted">
     <div class="cwcell-revealed hidden"></div>
     <div class="cwcell-incorrect"></div>
   </div>
