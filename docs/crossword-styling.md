@@ -14,15 +14,15 @@
 
 The library ships with some simple default styles out of the box, under [`./dist/crosswords.css`][19], which can be applied in the normal way (e.g. `import 'crosswords-js/dist/crosswords.css'`, if your bundler has a CSS file loader). The styles use [CSS variables][17] to set styles. Some of these variables can be overridden to customise the look and feel of the crosswords on your web page. Refer to [`./style/cwdimensions.less`][11] to see variables related to UI sizing and dimensions, at various breakpoints (screen widths). See [`./style/cwcolors.less`][12] for variables related to colors (highlight/active/grid colors, etc.).
 
-The crossword uses [CSS grid][1] to arrange the cells, so the styles that we recommend you do _not_ modify are the properties related to that. That is, the `grid-template-rows` and `grid-template-columns` properties, as well as the CSS variables `--row-count` and `--column-count` which are set directly from JavaScript. Changing them can break the visual layout of the crossword.
+The crossword uses [CSS grid][1] to arrange the cells, so the styles that we recommend you do _not_ modify are the properties related to that. Specifically, the `grid-template-rows` and `grid-template-columns` properties. The values of those properties contain CSS variables `--row-count` and `--column-count`, respectively. The variable values are set directly in JavaScript ([newCrosswordGridView()][21]) from the puzzle dimensions, whenever a puzzle is loaded. Changing the `grid-template-*` properties can break the visual layout of the crossword.
 
-A goal of this library is to allow users to style their crosswords easily, while providing sensible defaults - but if the styles shipped by this library prove difficult to override in some areas (for example, if you find yourself having to override one thing in several places, or use `!important`), please [raise an issue][20].
+A goal of this library is to allow users to style their crosswords easily, while providing sensible defaults. If the styles shipped by this library prove difficult to override in some areas (for example, if you find yourself having to override one thing in several places, or use `!important`), please [raise an issue][20].
 
 ## Internals
 
 - The stylesheets for the **crosswords-js** module are located in the [`style`][8] directory
 - The stylesheets are mostly written in [Less][5], which is a [CSS][6] preprocessor.
-- The _Less_ source code is converted to _CSS_ automatically by the [ViteJS][7] bundler for the demo app, and using [lessc via the command-line][18] for npm distribution.
+- The _Less_ source code is converted to _CSS_ automatically by the [ViteJS][7] bundler for the demo app, and for npm distribution.
 
 The styles are spread across four files:
 
@@ -81,3 +81,4 @@ The styles are spread across four files:
 [18]: https://lesscss.org/usage/#command-line-usage
 [19]: ../dist/crosswords.css
 [20]: https://github.com/dwmkerr/crosswords-js/issues
+[21]: ../src/crossword-gridview.mjs

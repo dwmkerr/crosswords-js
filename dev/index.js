@@ -1,4 +1,4 @@
-import { newCrosswordController, helpers } from "./crosswords.js";
+import { newCrosswordController, helpers } from "../src/crosswords.js";
 
 const { assert, eid, trace, tracing } = helpers;
 

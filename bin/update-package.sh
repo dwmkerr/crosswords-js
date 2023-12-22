@@ -31,6 +31,7 @@ printf "\n** nvm version: $(nvm --version)...\n"
 # Update package versions
 
         printf "\n4. Updating to latest package versions...\n\n"   
+        npm ci &&
         npm update
       ) && (
 

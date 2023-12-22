@@ -5,13 +5,14 @@ on: [pull_request]
 
 jobs:
   validate-pull-request:
-    runs-on: ubuntu-20.04
-
+    # https://github.com/actions/runner-images#available-images 
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version:
           - 16.x
           - 18.x
+          - 20.x
 
     steps:
     - name: Checkout

@@ -24,7 +24,7 @@ class CellMap {
    */
   cellElement = (modelCell) => {
     assert(typeof modelCell === 'object', 'Cell is not an object');
-    // modelCell.cellElement set in CrosswordController.#newCellElement()
+    // modelCell.cellElement set in ./crosswordGridView.mjs:newCellElement()
     return modelCell.cellElement;
   };
 

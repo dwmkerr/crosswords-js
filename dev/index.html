@@ -1,7 +1,13 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com ;"
+    />
+
     <title>crosswords-js developer sandbox</title>
     <!-- Stop flash of unstyled content 
       https://stackoverflow.com/a/53364612/1090683 -->
@@ -16,6 +22,7 @@
       href="https://fonts.googleapis.com/css?family=PT+Sans:400,700i&display=swap"
       rel="stylesheet"
     />
+
     <!-- Application entry point -->
     <script type="module" src="index.js"></script>
   </head>
@@ -107,6 +114,6 @@
     </div>
     <!-- Preload styles to avoid flash of unstyled content -->
     <!-- Bundler (ViteJS) will convert LESS files to CSS -->
-    <link rel="stylesheet" href="./index.less" />
+    <link rel="stylesheet" href="index.less" />
   </body>
 </html>

@@ -1,4 +1,10 @@
-import { addClass, assert, removeClass, trace } from './helpers.mjs';
+import {
+  addClass,
+  addClasses,
+  assert,
+  removeClass,
+  trace,
+} from './helpers.mjs';
 
 /**
  * **newCrosswordCluesView**: build a crossword clues DOM element
@@ -75,8 +81,7 @@ function newCrosswordCluesView(document, controller) {
     downClues: newClueBlockElement('crossword-down-clues', 'Down'),
   };
 
-  addClass(view.wrapper, 'crosswords-js');
-  addClass(view.wrapper, 'crossword-clues');
+  addClasses(view.wrapper, ['crosswords-js', 'crossword-clues']);
 
   addClueElements(controller, view.acrossClues, controller.model.acrossClues);
   view.wrapper.appendChild(view.acrossClues);

@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+# Assuming npm managed via nvm
+export PATH=$PATH:$NVM_BIN
+# Spellchecker
+npm run spell &&
+# Formatting 
+npm run prettier:fix &&
+# Linting and formatting JS
+npm run lint:fix &&
+npm run test &&
+# Compile production assets 
+npm run build &&
+# Add production assets to git index
+git add dist/

@@ -6,20 +6,29 @@
 # Fill in the details for the pull request variables - trim all whitespace!
 
 export forkRepoOwner=<fork-repo-owner> 
-# For example: bobthecoder
+# For example: export forkRepoOwner=bobthecoder
 
 export forkRepoUrl=<fork-repo-url> 
-# For example: https://github.com/bobthecoder/forkedrepo.git
+# For example: export forkRepoUrl=https://github.com/bobthecoder/forkedrepo.git
 
-# The forker's branch name for the pull request code
+# The forker's branch name for the pull request
 # Often main/master
-export prBranch=<fork-repo-change-branch> 
-# For example: bobspr
+export prBranch=<fork-repo-pull-request-branch> 
+# For example: export prBranch=bobspr
 
 # The local destination branch for an accepted pull request 
 # Typically main/master
 export localTargetBranch=<local-target-branch> 
-# For example: main
+# For example: export localTargetBranch=main
+
+# The GitHub Pull Request number
+export prNumber=<pull-request-number>
+# For example: export prNumber=47
+
+# The tag to identify the head of $localTargetBranch prior to merging
+# Default: pre-PR${prNumber}
+export prePrTag=pre-PR${prNumber}
+# Using our example: pre-PR47
 
 # A (temporary) local branch to inspect the pull request code
 # Default: $forkRepoOwner-$prBranch
