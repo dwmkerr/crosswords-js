@@ -70,8 +70,13 @@ const Gr = (e) => {
 var V;
 class dn {
   constructor() {
+    /** @type {Record<string, any>} */
     v(this, V, {});
-    //  Gets the DOM element for a modelCell.
+    /**
+     * Gets the DOM element for a modelCell.
+     * @param {*} modelCell
+     * @returns {HTMLDivElement}
+     */
     j(this, "cellElement", (n) => (d(typeof n == "object", "Cell is not an object"), n.cellElement));
     //  Gets the modelCell for a DOM element.
     j(this, "modelCell", (n) => {
@@ -79,16 +84,20 @@ class dn {
         case "string":
           return p(this, V)[n];
         case "object":
-          return p(this, V)[n.id];
+          return p(this, V)[n.dataset.xy];
         default:
           d(!0, 'Unexpected type for "cellElement"');
           break;
       }
     });
   }
-  //  Adds a Cell <-> Cell Element mapping.
+  /**
+   * Adds a Cell <-> Cell Element mapping.
+   * @param {*} modelCell
+   * @param {HTMLDivElement} cellElement
+   */
   add(n, r) {
-    d(n, "modelCell is null or undefined"), d(r, "cellElement is null or undefined"), p(this, V)[r.id] = n;
+    d(n, "modelCell is null or undefined"), d(r, "cellElement is null or undefined"), p(this, V)[r.dataset.xy] = n;
   }
   get modelCells() {
     return Object.values(p(this, V));
@@ -155,10 +164,10 @@ function Qr(e, n, r) {
 }
 function Xr(e, n) {
   let r = e.createElement("div");
-  if (r.id = n, F(r, "cwcell"), n.cellElement = r, F(r, n.light ? "light" : "dark"), !n.light)
+  if (r.dataset.xy = n, F(r, "cwcell"), n.cellElement = r, F(r, n.light ? "light" : "dark"), !n.light)
     return r;
   const i = e.createElement("input");
-  if (i.id = `input-${n}`, i.maxLength = 1, i.size = 1, n.answer && (i.value = n.answer), r.appendChild(i), n.labelText) {
+  if (i.name = `input-${n}`, i.maxLength = 1, i.size = 1, n.answer && (i.value = n.answer), r.appendChild(i), n.labelText) {
     const o = e.createElement("div");
     F(o, "cwclue-label"), o.innerHTML = n.labelText, r.appendChild(o);
   }
@@ -1968,7 +1977,7 @@ function zl(e) {
         model: e,
         x: t,
         y: l,
-        toString: () => `(${t},${l})`
+        toString: () => `${t},${l}`
       };
   }
   return i;

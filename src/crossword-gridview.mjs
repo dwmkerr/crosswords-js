@@ -54,15 +54,15 @@ function newCrosswordGridView(document, model, cellMap) {
 
 /**
  * Build a crossword grid _cell_ DOM element with child elements.
- * @param {*} document the root node of the [DOM](https://en.wikipedia.org/wiki/Document_Object_Model#DOM_tree_structure)
- * @param {*} modelCell the representation of this grid cell in the  _crosswordModel_.
- * @returns the DOM element for the _cell_
+ * @param {Document} document the root node of the [DOM](https://en.wikipedia.org/wiki/Document_Object_Model#DOM_tree_structure)
+ * @param {HTMLDivElement} modelCell the representation of this grid cell in the  _crosswordModel_.
+ * @returns {HTMLDivElement} the DOM element for the _cell_
  */
 function newCellElement(document, modelCell) {
   let cellElement = document.createElement('div');
   // Identify cellElement with id of associated modelCell.
   // This simplifies implementation of CellMap
-  cellElement.id = modelCell;
+  cellElement.dataset.xy = modelCell;
   addClass(cellElement, 'cwcell');
   //  eslint-disable-next-line no-param-reassign
   modelCell.cellElement = cellElement;
@@ -76,8 +76,8 @@ function newCellElement(document, modelCell) {
 
   //  Light cells also need an input.
   const inputElement = document.createElement('input');
-  // 'id' is not used, but assignment silences chromium-dev-tools issue.
-  inputElement.id = `input-${modelCell}`;
+  // 'name' is not used, but assignment silences chromium-dev-tools issue.
+  inputElement.name = `input-${modelCell}`;
   inputElement.maxLength = 1;
   inputElement.size = 1;
   if (modelCell.answer) {

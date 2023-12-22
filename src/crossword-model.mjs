@@ -67,7 +67,7 @@ function buildCellGrid(crosswordModel) {
         x,
         y,
         toString: () => {
-          return `(${x},${y})`;
+          return `${x},${y}`;
         },
       };
     }
