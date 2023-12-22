@@ -31,9 +31,10 @@ This page describes the requirements and design of features to leverage a suppli
 2. Check an answer.
 3. Reveal all solutions for a crossword.
 4. Reveal a solution for a clue.
-5. Reveal a solution letter in an answer.
-6. Reset an answer.
-7. Reset an entire crossword.
+5. Copy the solution for a clue to the clipboard
+6. Reveal a solution letter in an answer.
+7. Reset an answer.
+8. Reset an entire crossword.
 
 ### Checking of solutions
 

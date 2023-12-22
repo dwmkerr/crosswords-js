@@ -1,10 +1,11 @@
 import { CellMap } from './cell-map.mjs';
 import { newCrosswordCluesView } from './crossword-cluesview.mjs';
 import {
-  Outcome,
   checkSolved,
   cleanClue,
   cleanCrossword,
+  copyClueSolution,
+  Outcome,
   resetClue,
   resetCrossword,
   revealCell,
@@ -91,6 +92,7 @@ class CrosswordController {
     'clueIncomplete',
     'clueReset',
     'clueRevealed',
+    'clueSolutionCopied',
     'clueSelected',
     'clueSolved',
     'clueTested',
@@ -460,6 +462,12 @@ class CrosswordController {
     this.#checkSolved();
   }
 
+  copyCurrentClueSolution() {
+    if (copyClueSolution(this, this.currentClue)) {
+      this.#stateChange('clueSolutionCopied', this.currentClue);
+    }
+  }
+
   revealCrossword() {
     trace('revealCrossword');
     revealCrossword(this);
@@ -571,6 +579,8 @@ class CrosswordController {
       'reveal-cell': this.revealCurrentCell,
       // Remove incorrect letters in the answer after testing.
       'clean-clue': this.cleanCurrentClue,
+      // Copy the solution to the current clue to the clipboard.
+      'copy-clue-solution': this.copyCurrentClueSolution,
       // Clear out the answer for the current clue
       'reset-clue': this.resetCurrentClue,
       // Reveal solution for current clue
