@@ -168,23 +168,20 @@ class CrosswordController {
 
   // Helper function to retrieve corresponding cellElement for cell
   cellElement = (cell) => {
-    return this.#cellMap.cellElement(cell);
-  };
-
-  // Helper function to retrieve corresponding inputElement for cell
-  inputElement = (cell) => {
-    assert(cell.light, `dark cell! ${cell}`);
+    if (!cell.light) {
+      trace(`cellElement: dark cell! ${cell}`, 'warn');
+    }
     // The input element of a cellElement is the cellElement.
-    // Refer to #newCellElement()
+    // Refer to ./crosswordGridView.mjs:newCellElement()
     return this.#cellMap.cellElement(cell);
   };
 
-  // Helper function to set corresponding inputElement text for cell
-  setInputElementText = (cell, character) => {
+  // Helper function to set corresponding cellElement text for cell
+  setCellElementText = (cell, character) => {
     assert(cell.light, `dark cell! ${cell}`);
     // The input element of a cellElement is the cellElement.
     // The first child of the cellElement is a Text node.
-    // Refer to #newCellElement()
+    // Refer to ./crosswordGridView.mjs:newCellElement()
     this.#cellMap.cellElement(cell).firstChild.nodeValue = character;
   };
 
@@ -294,7 +291,7 @@ class CrosswordController {
     const oldCell = this.currentCell;
     if (newCell !== oldCell) {
       this.#current.cell = newCell;
-      this.inputElement(newCell).focus();
+      this.cellElement(newCell).focus();
       styleCurrentCell(this, newCell, oldCell);
     }
   }
@@ -542,8 +539,8 @@ class CrosswordController {
     this.#cellMap.modelCells
       .filter((cell) => cell.light)
       .forEach((lc) => {
-        this.#addCellEventListeners(lc.cellElement);
-        this.#addInputEventListeners(this.inputElement(lc));
+        this.#addKeyboardEventListeners(lc.cellElement);
+        this.#addCellEventListeners(this.cellElement(lc));
       });
 
     //  Add the crossword grid to the webpage DOM
@@ -687,19 +684,19 @@ class CrosswordController {
   }
 
   // Assign event handlers to cell's input element
-  #addInputEventListeners(inputElement) {
-    assert(inputElement, 'inputElement is null or undefined');
+  #addCellEventListeners(cellElement) {
+    assert(cellElement, 'cellElement is null or undefined');
     const controller = this;
 
-    // 1. A user clicking on or touching an unfocussed inputElement generates
+    // 1. A user clicking on or touching an unfocussed cellElement generates
     //    two events (focus, click)
-    // 2. A user clicking on a focussed inputElement only produces a click event
+    // 2. A user clicking on a focussed cellElement only produces a click event
     // 3. Keyboard-based movements set currentCell programmatically,
     //    and the setter method calls element.focus() only, AFTER setting
     //    the currentCell value.
 
     //  Listen for focus events.
-    inputElement.addEventListener('focus', (event) => {
+    cellElement.addEventListener('focus', (event) => {
       //  Get the cell data.
       const eventCell = controller.cell(event.target);
       trace(`event:focus ${eventCell}`);
@@ -712,7 +709,7 @@ class CrosswordController {
     });
 
     //  Listen for click events.
-    inputElement.addEventListener('click', (event) => {
+    cellElement.addEventListener('click', (event) => {
       const eventCell = controller.cell(event.target);
       trace(`event:click ${eventCell}`);
       // Test for second click on same cell
@@ -729,8 +726,8 @@ class CrosswordController {
     });
   }
 
-  // Assign event handlers to cell's input element
-  #addCellEventListeners(cellElement) {
+  // Assign keyboard event handlers to cell element
+  #addKeyboardEventListeners(cellElement) {
     const controller = this;
 
     // Iterate over bindable keyboard events

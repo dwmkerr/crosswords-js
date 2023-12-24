@@ -352,10 +352,10 @@ function styleCurrentClue(controller, newClue, oldClue) {
   assert(newClue, 'newClue is undefined');
   // Remove styles from the oldClue
   oldClue?.headSegment.flatCells.forEach((cell) => {
-    removeClass(controller.inputElement(cell), 'active');
+    removeClass(controller.cellElement(cell), 'active');
   });
   newClue.headSegment.flatCells.forEach((cell) => {
-    addClass(controller.inputElement(cell), 'active');
+    addClass(controller.cellElement(cell), 'active');
   });
 }
 
@@ -364,9 +364,9 @@ function styleCurrentCell(controller, newCell, oldCell) {
   assert(newCell, 'newCell is undefined');
   // Remove styles from the oldCell
   if (oldCell) {
-    removeClass(controller.inputElement(oldCell), 'highlighted');
+    removeClass(controller.cellElement(oldCell), 'highlighted');
   }
-  addClass(controller.inputElement(newCell), 'highlighted');
+  addClass(controller.cellElement(newCell), 'highlighted');
 }
 
 const EventKey = Object.freeze({
