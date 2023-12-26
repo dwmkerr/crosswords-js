@@ -168,23 +168,29 @@ class CrosswordController {
 
   // Helper function to retrieve corresponding cellElement for cell
   cellElement = (cell) => {
+    if (!cell.light) {
+      trace(`cellElement: dark cell! ${cell}`, 'warn');
+    }
+    // The input element of a cellElement is the cellElement.
+    // Refer to ./crosswordGridView.mjs:newCellElement()
     return this.#cellMap.cellElement(cell);
   };
 
-  // Helper function to retrieve corresponding inputElement for cell
-  inputElement = (cell) => {
+  // Helper function to set corresponding cellElement text for cell
+  setCellElementText = (cell, character) => {
     assert(cell.light, `dark cell! ${cell}`);
-    // The input element of a cellElement is the first child element.
+    // The input element of a cellElement is the cellElement.
+    // The first child of the cellElement is a Text node.
     // Refer to ./crosswordGridView.mjs:newCellElement()
-    return this.#cellMap.cellElement(cell).children[0];
+    this.#cellMap.cellElement(cell).firstChild.nodeValue = character;
   };
 
   // Helper function to retrieve corresponding revealedElement for cell
   revealedElement = (cell) => {
     assert(cell.light, `dark cell! ${cell}`);
     // The revealed element of a cellElement is the second or third child element.
-    // Refer to ./crosswordGridView.mjs:newCellElement()
-    const childIndex = cell.labelText ? 2 : 1;
+    // Refer to #newCellElement()
+    const childIndex = cell.labelText ? 1 : 0;
     return this.#cellMap.cellElement(cell).children[childIndex];
   };
 
@@ -192,8 +198,8 @@ class CrosswordController {
   incorrectElement = (cell) => {
     assert(cell.light, `dark cell! ${cell}`);
     // The incorrect element of a cellElement is the third or fourth child element.
-    // Refer to ./crosswordGridView.mjs:newCellElement()
-    const childIndex = cell.labelText ? 3 : 2;
+    // Refer to #newCellElement()
+    const childIndex = cell.labelText ? 2 : 1;
     return this.#cellMap.cellElement(cell).children[childIndex];
   };
 
@@ -285,7 +291,7 @@ class CrosswordController {
     const oldCell = this.currentCell;
     if (newCell !== oldCell) {
       this.#current.cell = newCell;
-      this.inputElement(newCell).focus();
+      this.cellElement(newCell).focus();
       styleCurrentCell(this, newCell, oldCell);
     }
   }
@@ -533,8 +539,8 @@ class CrosswordController {
     this.#cellMap.modelCells
       .filter((cell) => cell.light)
       .forEach((lc) => {
-        this.#addCellEventListeners(lc.cellElement);
-        this.#addInputEventListeners(this.inputElement(lc));
+        this.#addKeyboardEventListeners(lc.cellElement);
+        this.#addCellEventListeners(this.cellElement(lc));
       });
 
     //  Add the crossword grid to the webpage DOM
@@ -678,21 +684,21 @@ class CrosswordController {
   }
 
   // Assign event handlers to cell's input element
-  #addInputEventListeners(inputElement) {
-    assert(inputElement, 'inputElement is null or undefined');
+  #addCellEventListeners(cellElement) {
+    assert(cellElement, 'cellElement is null or undefined');
     const controller = this;
 
-    // 1. A user clicking on or touching an unfocussed inputElement generates
+    // 1. A user clicking on or touching an unfocussed cellElement generates
     //    two events (focus, click)
-    // 2. A user clicking on a focussed inputElement only produces a click event
+    // 2. A user clicking on a focussed cellElement only produces a click event
     // 3. Keyboard-based movements set currentCell programmatically,
     //    and the setter method calls element.focus() only, AFTER setting
     //    the currentCell value.
 
     //  Listen for focus events.
-    inputElement.addEventListener('focus', (event) => {
+    cellElement.addEventListener('focus', (event) => {
       //  Get the cell data.
-      const eventCell = controller.cell(event.target.parentNode);
+      const eventCell = controller.cell(event.target);
       trace(`event:focus ${eventCell}`);
       // Have this event fired as a result of a touch or mouse click?
       if (controller.currentCell !== eventCell) {
@@ -703,8 +709,8 @@ class CrosswordController {
     });
 
     //  Listen for click events.
-    inputElement.addEventListener('click', (event) => {
-      const eventCell = controller.cell(event.target.parentNode);
+    cellElement.addEventListener('click', (event) => {
+      const eventCell = controller.cell(event.target);
       trace(`event:click ${eventCell}`);
       // Test for second click on same cell
       if (eventCell === controller.currentCell) {
@@ -720,8 +726,8 @@ class CrosswordController {
     });
   }
 
-  // Assign event handlers to cell's input element
-  #addCellEventListeners(cellElement) {
+  // Assign keyboard event handlers to cell element
+  #addKeyboardEventListeners(cellElement) {
     const controller = this;
 
     // Iterate over bindable keyboard events
@@ -732,14 +738,22 @@ class CrosswordController {
         const eventKey = event.key;
         trace(`event:${eventName} key=[${eventKey}]`);
         const keyBinding = keyBindings.find((kb) => kb.key === eventKey);
+        const ekName = EventKey.name(eventKey);
+        //  We don't want directional KeyboardEvents to be handled beyond the cellElement.
+        const preventDefault = ['left', 'right', 'up', 'down'].includes(ekName);
 
         if (keyBinding) {
-          //  We don't want default behaviour.
+          //  We don't want KeyboardEvents to be handled beyond the cellElement.
           event.preventDefault();
-          const ekName = EventKey.name(eventKey).toUpperCase();
-          trace(event.shiftKey ? `SHIFT+${ekName}` : ekName);
-          const eventCell = controller.cell(event.target.parentNode);
+          trace(
+            event.shiftKey
+              ? `SHIFT+${ekName.toUpperCase()}`
+              : ekName.toUpperCase(),
+          );
+          const eventCell = controller.cell(event.target);
           keyBinding.action(controller, event, eventCell);
+        } else if (preventDefault) {
+          event.preventDefault();
         }
       });
     });
@@ -748,13 +762,10 @@ class CrosswordController {
     cellElement.addEventListener('keypress', (event) => {
       trace('event:keypress');
       // We've just pressed a key that generates a character.
-      // Stop default handling for input component
+      // Stop event propagation beyond cellElement
       event.preventDefault();
       //  Get cell data.
-      const [eventCell, character] = [
-        controller.cell(event.target.parentNode),
-        event.key,
-      ];
+      const [eventCell, character] = [controller.cell(event.target), event.key];
       const [testCharacter, displayCharacter] = [
         character.toLowerCase(),
         character.toUpperCase(),

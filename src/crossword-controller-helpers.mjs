@@ -165,7 +165,7 @@ function setCellText(controller, cell, newText, clearRevealed = true) {
     adjustClue(clue, letterIndex);
   }
   // eslint-disable-next-line no-param-reassign
-  controller.inputElement(cell).value = newText;
+  controller.setCellElementText(cell, newText);
 }
 
 function resetCell(controller, cell, clearRevealed = false) {
