@@ -27,6 +27,26 @@ function revealClue(controller, clue) {
   });
 }
 
+function copyClueSolution(controller, clue) {
+  assert(controller, '<controller> is null or undefined');
+  assert(clue, '<clue> is null or undefined');
+  trace(`copyClueSolution: '${clue}'`);
+  const showIncorrect = false;
+  //
+  if (
+    //  Does the clue have a solution?
+    clue.solution &&
+    // Check for browser context
+    navigator &&
+    // Is the answer correct or the solution revealed
+    testClue(controller, clue, showIncorrect) === Outcome.correct
+  ) {
+    navigator.clipboard.writeText(clue.solution);
+    return true;
+  }
+  return false;
+}
+
 function revealCrossword(controller) {
   assert(controller, '<controller> is null or undefined');
   controller.model.lightCells.forEach((cell) => {
@@ -234,6 +254,7 @@ export {
   checkSolved,
   cleanClue,
   cleanCrossword,
+  copyClueSolution,
   Outcome,
   resetClue,
   resetCrossword,
