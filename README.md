@@ -9,7 +9,7 @@
 [![Release Please][3]][4]
 [![NPM Package Version][5]][6]
 [![codecov][7]][8]
-[![Buy me a coffee](https://img.shields.io/badge/thanks-buy%20me%20a%20coffee-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dwmkerr?frequency=one-time)
+[![Donate](https://img.shields.io/badge/thanks-donate-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dwmkerr/sponsorships?frequency=one-time&amount=5)
 
 > **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
 
