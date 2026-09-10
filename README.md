@@ -9,6 +9,7 @@
 [![Release Please][3]][4]
 [![NPM Package Version][5]][6]
 [![codecov][7]][8]
+[![Donate](https://img.shields.io/badge/thanks-donate-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dwmkerr/sponsorships?frequency=one-time&amount=5)
 
 > **IMPORTANT**: This is work in progress! The API may change dramatically as I work out what is most suitable.
 
