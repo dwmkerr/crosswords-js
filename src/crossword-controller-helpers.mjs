@@ -4,10 +4,13 @@ import { hideElement, showElement } from './crossword-gridview.mjs';
 function revealCell(controller, cell) {
   assert(controller, '<controller> is null or undefined');
   assert(cell, '<cell> is null or undefined');
-  const clue = cell.acrossClue ? cell.acrossClue : cell.downClue;
-  const letterIndex = cell.acrossClue
-    ? cell.acrossClueLetterIndex
-    : cell.downClueLetterIndex;
+  const clue = cell.acrossClue?.solution
+    ? cell.acrossClue
+    : cell.downClue ?? cell.acrossClue;
+  const letterIndex =
+    clue === cell.acrossClue
+      ? cell.acrossClueLetterIndex
+      : cell.downClueLetterIndex;
   const solutionLetter =
     letterIndex < clue.solution?.length ? clue.solution[letterIndex] : ' ';
   const clearRevealed = false;
@@ -56,11 +59,18 @@ function testCell(controller, cell, showIncorrect = true) {
 
   // Get index of cell-letter in clue
   // Cell can be in across and/or down clue
-  const [clue, letterIndex] = cell.acrossClue
-    ? [cell.acrossClue, cell.acrossClueLetterIndex]
-    : [cell.downClue, cell.downClueLetterIndex];
+  const clue = cell.acrossClue?.solution
+    ? cell.acrossClue
+    : cell.downClue ?? cell.acrossClue;
+  const letterIndex =
+    clue === cell.acrossClue
+      ? cell.acrossClueLetterIndex
+      : cell.downClueLetterIndex;
+  if (!clue.solution) {
+    return Outcome.incomplete;
+  }
   const answerLetter = clue.answer[letterIndex];
-  const solutionLetter = clue.solution ? clue.solution[letterIndex] : undefined;
+  const solutionLetter = clue.solution[letterIndex];
   const outcome = getOutcome(
     !(answerLetter === solutionLetter || answerLetter === ' '),
     answerLetter === ' ' || answerLetter === undefined,
