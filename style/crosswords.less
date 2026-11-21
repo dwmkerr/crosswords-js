@@ -3,6 +3,7 @@
 
 .crossword-grid {
   --letter-weight: bold;
+  --label-weight: 100;
 
   display: grid;
   grid-template-rows: repeat(var(--row-count), var(--grid-cell-size));
@@ -10,7 +11,7 @@
 
   .cwclue-label {
     font-size: var(--label-size);
-    font-weight: 100;
+    font-weight: var(--label-weight);
   }
 
   .cwcell-revealed {
