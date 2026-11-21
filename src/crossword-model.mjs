@@ -495,15 +495,17 @@ function setCellAnswer(cell, clueModel, letterIndex, clueAnswer, isAcrossClue) {
       cell.answer &&
       // We can overwrite any cells that have default value
       cell.answer !== cellDefaultAnswer &&
+      clueAnswerLetter !== cellDefaultAnswer &&
       cell.answer !== clueAnswerLetter
     ) {
       throw new Error(
         propertyErrorText(clueModel, cell, letterIndex, 'answer'),
       );
     }
-    // if cell.answer && cell.answer !== ' '
-    // eslint-disable-next-line no-param-reassign
-    cell.answer = clueAnswerLetter;
+    if (clueAnswerLetter !== cellDefaultAnswer || !cell.answer) {
+      // eslint-disable-next-line no-param-reassign
+      cell.answer = clueAnswerLetter;
+    }
     // check if cell appears in a clue in the other direction
     updateOrthogonalClueAnswer(cell, cell.answer, isAcrossClue);
   }
