@@ -322,12 +322,13 @@ function addMultiSegmentProperties(crosswordModel) {
     //  Rebuild the lengthText.
     //  For head clue segments, it will be the aggregate of the multi-word descriptors for each segment.
     //  For tail clue segments, it will be the multi-word descriptors for itself (no change).
+    const isTailSegment = cmClue.headSegment && cmClue.headSegment !== cmClue;
     const multiSegmentLengths = [
       ...cmClue.wordLengths,
       ...cmClue.tailSegments.flatMap((ts) => ts.wordLengths),
     ];
     //  eslint-disable-next-line no-param-reassign
-    cmClue.lengthText = `(${multiSegmentLengths})`;
+    cmClue.lengthText = isTailSegment ? '' : `(${multiSegmentLengths})`;
 
     //  Each clue should know its head segment as well as the next and
     //  previous clue segments.
@@ -337,8 +338,10 @@ function addMultiSegmentProperties(crosswordModel) {
     clueSegments.forEach((cs) => {
       //  Set the head segment for _each_ clue segment via destructuring.
       //  Note that the head segment for a one-segment clue is itself.
-      //  eslint-disable-next-line no-param-reassign
-      [cs.headSegment] = clueSegments;
+      if (!isTailSegment) {
+        //  eslint-disable-next-line no-param-reassign
+        [cs.headSegment] = clueSegments;
+      }
 
       // Assign previousClueSegment (all except first)
       if (clueSegmentIndex > 0) {
